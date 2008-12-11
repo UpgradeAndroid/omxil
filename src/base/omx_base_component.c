@@ -36,6 +36,7 @@ extern "C" {
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <asm/unistd.h>
 
 #include <OMX_Core.h>
 #include <OMX_Component.h>
@@ -47,7 +48,7 @@ extern "C" {
 #include "queue.h"
 
 /**
- * @brief The base contructor for the OpenMAX st components
+ * @brief The base constructor for the OpenMAX ST components
  *
  * This function is executed by the ST static component loader.
  * It takes care of constructing the instance of the component.
@@ -142,6 +143,7 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
   omx_base_component_Private->messageHandler = omx_base_component_MessageHandler;
   omx_base_component_Private->destructor = omx_base_component_Destructor;
   omx_base_component_Private->bufferMgmtThreadID = -1;
+  omx_base_component_Private->bellagioThreads = calloc(1, sizeof(OMX_PARAM_BELLAGIOTHREADS_ID));
   omx_base_component_Private->bIsEOSReached = OMX_FALSE;
 
   pthread_mutex_init(&omx_base_component_Private->flush_mutex, NULL);
@@ -758,6 +760,7 @@ OMX_ERRORTYPE omx_base_component_GetParameter(
   OMX_PORT_PARAM_TYPE* pPortDomains;
   OMX_ERRORTYPE err = OMX_ErrorNone;
   OMX_VENDOR_PROP_TUNNELSETUPTYPE *pPropTunnelSetup;
+  OMX_PARAM_BELLAGIOTHREADS_ID *threadID;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
   DEBUG(DEB_LEV_PARAMS, "Getting parameter %i\n", nParamIndex);
@@ -765,6 +768,14 @@ OMX_ERRORTYPE omx_base_component_GetParameter(
     return OMX_ErrorBadParameter;
   }
   switch(nParamIndex) {
+  case OMX_IndexParameterThreadsID:
+	    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_BELLAGIOTHREADS_ID))) != OMX_ErrorNone) {
+	      break;
+	    }
+	  threadID = (OMX_PARAM_BELLAGIOTHREADS_ID *)ComponentParameterStructure;
+	  threadID->nThreadBufferMngtID = omx_base_component_Private->bellagioThreads->nThreadBufferMngtID;
+	  threadID->nThreadMessageID = omx_base_component_Private->bellagioThreads->nThreadMessageID;
+	  break;
   case OMX_IndexParamAudioInit:
   case OMX_IndexParamVideoInit:
   case OMX_IndexParamImageInit:
@@ -1097,8 +1108,12 @@ OMX_ERRORTYPE omx_base_component_GetExtensionIndex(
   OMX_OUT OMX_INDEXTYPE* pIndexType) {
 
   DEBUG(DEB_LEV_FUNCTION_NAME,"In  %s \n",__func__);
-
-  return OMX_ErrorBadParameter;
+  if(strcmp(cParameterName,"OMX.OMP.index.param.BellagioThreadsID") == 0) {
+	  *pIndexType = OMX_IndexParameterThreadsID;
+  } else {
+	  return OMX_ErrorBadParameter;
+  }
+  return OMX_ErrorNone;
 }
 
 /** @return the state of the component
@@ -1265,6 +1280,9 @@ void* compMessageHandlerFunction(void* param) {
   OMX_COMPONENTTYPE *openmaxStandComp = (OMX_COMPONENTTYPE *)param;
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
   internalRequestMessageType *message;
+
+  omx_base_component_Private->bellagioThreads->nThreadMessageID = (long int)syscall(__NR_gettid);
+  DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s the thread ID is %i\n", __func__, (int)omx_base_component_Private->bellagioThreads->nThreadMessageID);
 
   while(1){
     /* Wait for an incoming message */
@@ -1708,8 +1726,8 @@ OMX_ERRORTYPE omx_base_component_FillThisBuffer(
   }
   pPort = omx_base_component_Private->ports[pBuffer->nOutputPortIndex];
   if (pPort->sPortParam.eDir != OMX_DirOutput) {
-    DEBUG(DEB_LEV_ERR, "In %s: wrong port(%d) direction(%x) pBuffer=%x in Component %s\n", __func__,
-      (int)pBuffer->nOutputPortIndex, (int)pPort->sPortParam.eDir,(int)pBuffer,omx_base_component_Private->name);
+	  DEBUG(DEB_LEV_ERR, "In %s: wrong port(%d) direction(%x) pBuffer=%x in Component %s\n", __func__,
+			  (int)pBuffer->nOutputPortIndex, (int)pPort->sPortParam.eDir,(int)pBuffer,omx_base_component_Private->name);
     return OMX_ErrorBadPortIndex;
   }
   return pPort->Port_SendBufferFunction(pPort,  pBuffer);

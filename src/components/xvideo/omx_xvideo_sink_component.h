@@ -1,7 +1,7 @@
 /**
   @file src/components/xvideo/omx_xvideo_sink_component.h
-  
-  OpenMAX X-Video sink component. 
+
+  OpenMAX X-Video sink component.
 
   Copyright (C) 2007-2008 STMicroelectronics
   Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
@@ -61,7 +61,7 @@
 /**  Filename of devnode for framebuffer device
   *  Should somehow be passed from client
   */
-#define FBDEV_FILENAME  "/dev/fb0" 
+#define FBDEV_FILENAME  "/dev/fb0"
 
 /** FBDEV sink port component port structure.
   */
@@ -81,20 +81,20 @@ ENDCLASS(omx_xvideo_sink_component_PortType)
 
 /** FBDEV sink port component private structure.
   * see the define above
-  * @param fd The file descriptor for the framebuffer 
-  * @param vscr_info The fb_var_screeninfo structure for the framebuffer 
+  * @param fd The file descriptor for the framebuffer
+  * @param vscr_info The fb_var_screeninfo structure for the framebuffer
   * @param fscr_info The fb_fix_screeninfo structure for the framebuffer
-  * @param scr_data Pointer to the mmapped memory for the framebuffer 
+  * @param scr_data Pointer to the mmapped memory for the framebuffer
   * @param fbpxlfmt frame buffer pixel format
-  * @param fbwidth frame buffer display width 
-  * @param fbheight frame buffer display height 
+  * @param fbwidth frame buffer display width
+  * @param fbheight frame buffer display height
   * @param fbbpp frame buffer pixel depth
-  * @param fbstride frame buffer display stride 
+  * @param fbstride frame buffer display stride
   * @param xScale the scale of the media clock
   * @param eState the state of the media clock
-  * @param product frame buffer memory area 
-  * @param frameDropFlag the flag active on scale change indicates that frames are to be dropped 
-  * @param dropFrameCount counts the number of frames dropped 
+  * @param product frame buffer memory area
+  * @param frameDropFlag the flag active on scale change indicates that frames are to be dropped
+  * @param dropFrameCount counts the number of frames dropped
   */
 DERIVEDCLASS(omx_xvideo_sink_component_PrivateType, omx_base_sink_PrivateType)
 #define omx_xvideo_sink_component_PrivateType_FIELDS omx_base_sink_PrivateType_FIELDS \
@@ -172,7 +172,7 @@ OMX_S32 calcStride(OMX_U32 width, OMX_COLOR_FORMATTYPE omx_pxlfmt);
 
 /** Returns a time value in milliseconds based on a clock starting at
  *  some arbitrary base. Given a call to GetTime that returns a value
- *  of n a subsequent call to GetTime made m milliseconds later should 
+ *  of n a subsequent call to GetTime made m milliseconds later should
  *  return a value of (approximately) (n+m). This method is used, for
  *  instance, to compute the duration of call. */
 long GetTime();

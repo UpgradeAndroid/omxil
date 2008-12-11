@@ -45,7 +45,6 @@
 #include <OMX_Core.h>
 #include <user_debug_levels.h>
 #include "omxjpegenctest.h"
-#include "tsemaphore.h"
 
 #define _DEBUG
 

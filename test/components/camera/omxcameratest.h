@@ -30,7 +30,7 @@
 
 #include <pthread.h>
 
-#include "tsemaphore.h"
+#include <bellagio/tsemaphore.h>
 #include <user_debug_levels.h>
 
 
@@ -55,7 +55,7 @@
 #define MAXBUFNUM_PERPORT 16
 
 /** Port Index for Camera Component */
-enum 
+enum
 {
     OMX_CAMPORT_INDEX_VF = 0, /* preview/viewfinder */
     OMX_CAMPORT_INDEX_CP,       /* captured video */

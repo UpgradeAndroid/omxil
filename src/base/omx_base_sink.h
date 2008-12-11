@@ -36,8 +36,8 @@
 #include <OMX_Component.h>
 #include <OMX_Core.h>
 #include <pthread.h>
-#include "omx_base_component.h"
 #include <stdlib.h>
+#include "omx_base_component.h"
 
 
 #define OMX_BASE_SINK_INPUTPORT_INDEX    0     /* The index of the input port for the derived components */

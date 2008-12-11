@@ -160,7 +160,7 @@ OMX_ERRORTYPE omx_videodec_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
   openmaxStandComp->SetParameter = omx_videodec_component_SetParameter;
   openmaxStandComp->GetParameter = omx_videodec_component_GetParameter;
   openmaxStandComp->ComponentRoleEnum = omx_videodec_component_ComponentRoleEnum;
-  
+
   noVideoDecInstance++;
 
   if(noVideoDecInstance > MAX_COMPONENT_VIDEODEC) {
@@ -418,7 +418,7 @@ void omx_videodec_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandCo
 
   if(omx_videodec_component_Private->isFirstBuffer == OMX_TRUE) {
     omx_videodec_component_Private->isFirstBuffer = OMX_FALSE;
-    
+
     if(pInputBuffer->nFlags == OMX_BUFFERFLAG_CODECCONFIG) {
       omx_videodec_component_Private->extradata_size = pInputBuffer->nFilledLen;
       if(omx_videodec_component_Private->extradata_size > 0) {
@@ -441,8 +441,8 @@ void omx_videodec_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandCo
         return;
       }
       omx_videodec_component_Private->avcodecReady = OMX_TRUE;
-    }    
-    
+    }
+
     if(pInputBuffer->nFilledLen == 0) {
       return;
     }

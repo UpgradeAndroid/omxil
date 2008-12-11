@@ -1,12 +1,12 @@
 /**
   @file test/components/audio/omxaudiodectest.h
-  
-  Test application that uses three OpenMAX components, a file reader,an audio decoder 
+
+  Test application that uses three OpenMAX components, a file reader,an audio decoder
   and an ALSA sink. The application receives an compressed audio stream on input port
   from a file, decodes it and sends it to the ALSA sink, or to a file or standard output.
   The audio formats supported are:
   mp3 (ffmpeg)
-  
+
   Copyright (C) 2007-2008 STMicroelectronics
   Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
 
@@ -24,7 +24,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-  
+
   $Date$
   Revision $Rev$
   Author $Author$
@@ -44,7 +44,7 @@
 #include <OMX_Types.h>
 #include <OMX_Audio.h>
 
-#include <tsemaphore.h>
+#include <bellagio/tsemaphore.h>
 #include <user_debug_levels.h>
 
 typedef struct appPrivateType{
@@ -99,7 +99,7 @@ OMX_ERRORTYPE audiosinkEmptyBufferDone(
   OMX_OUT OMX_HANDLETYPE hComponent,
   OMX_OUT OMX_PTR pAppData,
   OMX_OUT OMX_BUFFERHEADERTYPE* pBuffer);
-  
+
 OMX_ERRORTYPE filereaderEventHandler(
   OMX_OUT OMX_HANDLETYPE hComponent,
   OMX_OUT OMX_PTR pAppData,
@@ -107,7 +107,7 @@ OMX_ERRORTYPE filereaderEventHandler(
   OMX_OUT OMX_U32 Data1,
   OMX_OUT OMX_U32 Data2,
   OMX_OUT OMX_PTR pEventData);
-  
+
 OMX_ERRORTYPE filereaderFillBufferDone(
   OMX_OUT OMX_HANDLETYPE hComponent,
   OMX_OUT OMX_PTR pAppData,

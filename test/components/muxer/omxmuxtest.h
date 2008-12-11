@@ -1,11 +1,11 @@
 /**
   @file test/components/parser/omxparsertest.h
-  
-  Test application uses following OpenMAX components, 
+
+  Test application uses following OpenMAX components,
     mux  -- 3gp file muxer ,
     audio encoder pipeline  - alsa src and audio encoder
     video encoder pipeline  - video src and video encoder
-  
+
   Test application that uses five OpenMAX components, a mux, an audio encoder,
   a video deocder, an alsa src and a video src. The application capture audio and video stream
   using a mic and camera then encode it using audio and video encoders.
@@ -16,7 +16,7 @@
     H264  (ffmpeg)
   The audio formats supported are:
     amr (ffmpeg)
-       
+
 
   Copyright (C) 2007-2008 STMicroelectronics
   Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
@@ -35,7 +35,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-  
+
   $Date$
   Revision $Rev$
   Author $Author$
@@ -57,7 +57,7 @@
 #include <OMX_Video.h>
 #include <OMX_Audio.h>
 
-#include <tsemaphore.h>
+#include <bellagio/tsemaphore.h>
 #include <user_debug_levels.h>
 
 typedef struct appPrivateType{
@@ -76,10 +76,10 @@ typedef struct appPrivateType{
   OMX_HANDLETYPE clocksrchandle;
 }appPrivateType;
 
-#define BUFFER_IN_SIZE 32768    
+#define BUFFER_IN_SIZE 32768
 #define BUFFER_OUT_SIZE_AUDIO 32768
 #define BUFFER_OUT_SIZE_VIDEO 32768
-#define BUFFER_OUT_SIZE   640*480*3 // 1382400    //921600 -- the output buffer size is chosen to support upto VGA picture: 640*480*3 
+#define BUFFER_OUT_SIZE   640*480*3 // 1382400    //921600 -- the output buffer size is chosen to support upto VGA picture: 640*480*3
 
 /** Specification version*/
 #define VERSIONMAJOR    1
@@ -119,7 +119,7 @@ OMX_ERRORTYPE videosrcFillBufferDone(
   OMX_OUT OMX_HANDLETYPE hComponent,
   OMX_OUT OMX_PTR pAppData,
   OMX_OUT OMX_BUFFERHEADERTYPE* pBuffer);
-  
+
 /** callback prototypes for mux */
 OMX_ERRORTYPE muxEventHandler(
   OMX_OUT OMX_HANDLETYPE hComponent,
@@ -184,8 +184,8 @@ OMX_ERRORTYPE audiosrcFillBufferDone(
 /** display general help  */
 void display_help();
 
-/** this function sets the video src port characteristics 
-  * based on the video decoder output port settings 
+/** this function sets the video src port characteristics
+  * based on the video decoder output port settings
   */
 int setPortParametersVideo();
 int setPortParametersAudio();

@@ -1,9 +1,9 @@
 /**
   @file test/components/audio/omxaudiocapnplay.h
 
-  This test application is supposed to exchange voice over the network 
-  using some client server mechanism.  
-  
+  This test application is supposed to exchange voice over the network
+  using some client server mechanism.
+
   Copyright (C) 2007-2008 STMicroelectronics
   Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
 
@@ -21,7 +21,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-  
+
   $Date: 2008-02-04 12:14:14 +0530 (Mon, 04 Feb 2008) $
   Revision $Rev: 1286 $
   Author $Author: pankaj_sen $
@@ -34,7 +34,7 @@
 #include <pthread.h>
 #include <ctype.h>
 #include <unistd.h>
-#include <sys/types.h> 
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -42,10 +42,10 @@
 #include <OMX_Core.h>
 #include <OMX_Component.h>
 #include <OMX_Types.h>
-#include <tsemaphore.h>
+#include <bellagio/tsemaphore.h>
 #include <user_debug_levels.h>
 
-#define BUFFER_OUT_SIZE 16384 
+#define BUFFER_OUT_SIZE 16384
 
 /** Specification version*/
 #define VERSIONMAJOR    1
@@ -118,8 +118,8 @@ OMX_ERRORTYPE audiosinkEventHandler(
 /** display general help  */
 void display_help();
 
-/** this function sets the color converter and audio sink port characteristics 
-  * based on the audio decoder output port settings 
+/** this function sets the color converter and audio sink port characteristics
+  * based on the audio decoder output port settings
   */
 int setPortParameters();
 

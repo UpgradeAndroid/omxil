@@ -63,7 +63,6 @@ AC_CONFIG_FILES([
     m4/Makefile
     test/Makefile
     test/components/Makefile
-    test/components/common/Makefile
     test/components/audio/Makefile
     test/components/video/Makefile
     test/components/audio_effects/Makefile
@@ -275,6 +274,8 @@ fi
 # Check if X-Video header file is present
 if test "x$with_xvideosink" = "xyes"; then
 	AC_CHECK_HEADER([X11/Xlib.h], [with_xvideosink=yes], [with_xvideosink=no])
+        X11_LIBS="-lX11 -lXext -lXv" 
+        AC_SUBST(X11_LIBS) 
 fi
 
 ################################################################################

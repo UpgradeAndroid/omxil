@@ -60,12 +60,20 @@ typedef struct OMX_VENDOR_PROP_TUNNELSETUPTYPE  {
   OMX_TUNNELSETUPTYPE nTunnelSetup;   // Tunnel setup flags
 } OMX_VENDOR_PROP_TUNNELSETUPTYPE;
 
+typedef struct OMX_PARAM_BELLAGIOTHREADS_ID {
+    OMX_U32 nSize;                 /**< Size of the structure in bytes */
+    OMX_VERSIONTYPE nVersion;      /**< OMX specification version information */
+	long int nThreadBufferMngtID; /**< @param nThreadBufferMngtID the linux thread ID of the buffer management thread*/\
+	long int nThreadMessageID; /**< @param nThreadMessageID the linux thread ID of the message handler thread*/\
+} OMX_PARAM_BELLAGIOTHREADS_ID;
+
 /** this is the list of custom vendor index */
 typedef enum OMX_INDEXVENDORTYPE {
-  /** only one index for file reader component input file */
-  OMX_IndexVendorInputFilename          = 0xFF000001,
-  OMX_IndexVendorOutputFilename         = 0xFF000002,
-  OMX_IndexVendorCompPropTunnelFlags    = 0xFF000003 /* Will use OMX_TUNNELSETUPTYPE structure*/
+	/** only one index for file reader component input file */
+	OMX_IndexVendorInputFilename          = 0xFF000001,
+	OMX_IndexVendorOutputFilename         = 0xFF000002,
+	OMX_IndexVendorCompPropTunnelFlags    = 0xFF000003, /* Will use OMX_TUNNELSETUPTYPE structure*/
+	OMX_IndexParameterThreadsID           = 0xFF000004
 } OMX_INDEXVENDORTYPE;
 
 /** This enum defines the transition states of the Component*/
@@ -126,6 +134,7 @@ CLASS(omx_base_component_PrivateType)
 	tsem_t* messageSem;/**< the semaphore that coordinates the access to the message queue */\
 	OMX_U32 nGroupPriority; /**< @param nGroupPriority Resource management field: component priority (common to a group of components) */\
 	OMX_U32 nGroupID; /**< @param nGroupID ID of a group of components that share the same logical chain */\
+	OMX_PARAM_BELLAGIOTHREADS_ID* bellagioThreads;\
 	OMX_BOOL bIsEOSReached; /** @param bIsEOSReached boolean flag is true when EOS has been reached */ \
 	OMX_MARKTYPE pMark; /**< @param pMark This field holds the private data associated with a mark request, if any */\
 	pthread_mutex_t flush_mutex;  /** @param flush_mutex mutex for the flush condition from buffers */ \

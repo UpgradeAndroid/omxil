@@ -1,7 +1,7 @@
 /**
   @file src/components/audio_effects/omx_volume_component.h
 
-  OpenMAX volume control component. This component implements a filter that 
+  OpenMAX volume control component. This component implements a filter that
   controls the volume level of the audio PCM stream.
 
   Copyright (C) 2007-2008 STMicroelectronics
@@ -34,8 +34,8 @@
 #include <OMX_Component.h>
 #include <OMX_Core.h>
 #include <stdlib.h>
-#include <string.h>
 #include <pthread.h>
+#include <string.h>
 #include <omx_base_filter.h>
 
 /** Twoport component private structure.

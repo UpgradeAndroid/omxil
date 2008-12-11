@@ -1,10 +1,10 @@
 /**
   @file test/components/video/omxvideocapturetest.h
-  
-  Test application that uses a OpenMAX component, a generic video videosrc. 
+
+  Test application that uses a OpenMAX component, a generic video videosrc.
   The application receives an video stream (.yuv) captured using a camera.
   The capture picture is then stored into a file, which can be seen by a yuv viewer.
-  
+
   Copyright (C) 2007-2008 STMicroelectronics
   Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
 
@@ -22,7 +22,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-  
+
   $Date: 2008-02-13 16:34:49 +0100 (Wed, 13 Feb 2008) $
   Revision $Rev: 1304 $
   Author $Author: giulio_urlini $
@@ -41,7 +41,7 @@
 #include <OMX_Types.h>
 #include <OMX_Video.h>
 
-#include <tsemaphore.h>
+#include <bellagio/tsemaphore.h>
 #include <user_debug_levels.h>
 
 /* Application's private data */

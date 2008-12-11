@@ -164,7 +164,7 @@ OMX_ERRORTYPE omx_filereader_component_Init(OMX_COMPONENTTYPE *openmaxStandComp)
 
   omx_filereader_component_PrivateType* omx_filereader_component_Private = openmaxStandComp->pComponentPrivate;
   int error;
-  
+
   DEBUG(DEB_LEV_FUNCTION_NAME,"In %s \n",__func__);
 
   avcodec_init();
@@ -212,7 +212,7 @@ OMX_ERRORTYPE omx_filereader_component_Init(OMX_COMPONENTTYPE *openmaxStandComp)
   /** send callback regarding codec context extradata which will be required to
     * open the codec in the audio decoder component
     */
-  
+
   (*(omx_filereader_component_Private->callbacks->EventHandler))
     (openmaxStandComp,
     omx_filereader_component_Private->callbackData,
@@ -227,7 +227,7 @@ OMX_ERRORTYPE omx_filereader_component_Init(OMX_COMPONENTTYPE *openmaxStandComp)
     OMX_EventPortSettingsChanged, /* The command was completed */
     OMX_IndexParamCommonExtraQuantData, /* port settings changed */
     0, /* This is the output port index - only one port*/
-    NULL);  
+    NULL);
 
   omx_filereader_component_Private->avformatReady = OMX_TRUE;
   omx_filereader_component_Private->isFirstBuffer = OMX_TRUE;
@@ -278,8 +278,8 @@ void omx_filereader_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStand
     omx_filereader_component_Private->isFirstBuffer = OMX_FALSE;
 
     if(omx_filereader_component_Private->avformatcontext->streams[0]->codec->extradata_size > 0) {
-      memcpy(pOutputBuffer->pBuffer, 
-             omx_filereader_component_Private->avformatcontext->streams[0]->codec->extradata, 
+      memcpy(pOutputBuffer->pBuffer,
+             omx_filereader_component_Private->avformatcontext->streams[0]->codec->extradata,
              omx_filereader_component_Private->avformatcontext->streams[0]->codec->extradata_size);
       pOutputBuffer->nFilledLen = omx_filereader_component_Private->avformatcontext->streams[0]->codec->extradata_size;
       pOutputBuffer->nFlags = OMX_BUFFERFLAG_CODECCONFIG;
@@ -366,7 +366,7 @@ OMX_ERRORTYPE omx_filereader_component_SetParameter(
     }
     break;
 
-  case OMX_IndexVendorInputFilename : 
+  case OMX_IndexVendorInputFilename :
     nFileNameLength = strlen((char *)ComponentParameterStructure) + 1;
     if(nFileNameLength > DEFAULT_FILENAME_LENGTH) {
       free(omx_filereader_component_Private->sInputFileName);
@@ -452,15 +452,15 @@ OMX_ERRORTYPE omx_filereader_component_GetParameter(
     if (pAudioAmr->nPortIndex != 0) {
       return OMX_ErrorBadPortIndex;
     }
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_AUDIO_PARAM_AMRTYPE))) != OMX_ErrorNone) { 
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_AUDIO_PARAM_AMRTYPE))) != OMX_ErrorNone) {
       break;
     }
     if(omx_filereader_component_Private->avformatcontext) {
-      pAudioAmr->nChannels = omx_filereader_component_Private->avformatcontext->streams[0]->codec->channels;    
+      pAudioAmr->nChannels = omx_filereader_component_Private->avformatcontext->streams[0]->codec->channels;
       pAudioAmr->nBitRate = omx_filereader_component_Private->avformatcontext->streams[0]->codec->bit_rate;
       switch(pAudioAmr->nBitRate) {
       case 4750 :                 /**< AMRNB Mode 0 =  4750 bps */
-        pAudioAmr->eAMRBandMode = OMX_AUDIO_AMRBandModeNB0; 
+        pAudioAmr->eAMRBandMode = OMX_AUDIO_AMRBandModeNB0;
         break;
       case 5150:                 /**< AMRNB Mode 1 =  5150 bps */
         pAudioAmr->eAMRBandMode = OMX_AUDIO_AMRBandModeNB1;
@@ -484,7 +484,7 @@ OMX_ERRORTYPE omx_filereader_component_GetParameter(
         pAudioAmr->eAMRBandMode =  OMX_AUDIO_AMRBandModeNB7;
         break;
       case 6600:                 /**< AMRWB Mode 0 =  6600 bps */
-        pAudioAmr->eAMRBandMode =  OMX_AUDIO_AMRBandModeWB0; 
+        pAudioAmr->eAMRBandMode =  OMX_AUDIO_AMRBandModeWB0;
         break;
       case 8850:                 /**< AMRWB Mode 1 =  8850 bps */
         pAudioAmr->eAMRBandMode =  OMX_AUDIO_AMRBandModeWB1;
@@ -518,14 +518,14 @@ OMX_ERRORTYPE omx_filereader_component_GetParameter(
         } else {
           pAudioAmr->eAMRBandMode = OMX_AUDIO_AMRBandModeUnused;
         }
-        DEBUG(DEB_LEV_ERR, "In %s AMR Band Mode %x Unused\n",__func__,pAudioAmr->eAMRBandMode); 
+        DEBUG(DEB_LEV_ERR, "In %s AMR Band Mode %x Unused\n",__func__,pAudioAmr->eAMRBandMode);
         break;
       }
       pAudioAmr->eAMRDTXMode = OMX_AUDIO_AMRDTXModeOff;
       pAudioAmr->eAMRFrameFormat = OMX_AUDIO_AMRFrameFormatConformance;
     }
     break;
-  case OMX_IndexVendorInputFilename : 
+  case OMX_IndexVendorInputFilename :
     strcpy((char *)ComponentParameterStructure, "still no filename");
     break;
   default: /*Call the base component function*/
@@ -613,7 +613,7 @@ OMX_ERRORTYPE omx_filereader_component_GetExtensionIndex(
   DEBUG(DEB_LEV_FUNCTION_NAME,"In  %s \n",__func__);
 
   if(strcmp(cParameterName,"OMX.ST.index.param.inputfilename") == 0) {
-    *pIndexType = OMX_IndexVendorInputFilename;  
+    *pIndexType = OMX_IndexVendorInputFilename;
   } else {
     return OMX_ErrorBadParameter;
   }

@@ -287,7 +287,7 @@ OMX_ERRORTYPE OMX_SetupTunnel(
   if (hOutput){
     err = (component->ComponentTunnelRequest)(hOutput, nPortOutput, hInput, nPortInput, tunnelSetup);
     if (err != OMX_ErrorNone) {
-    DEBUG(DEB_LEV_ERR, "Tunneling failed: output port rejects it - err = %x \n", err);
+    DEBUG(DEB_LEV_ERR, "Tunneling failed: output port rejects it - err = %x\n", err);
     free(tunnelSetup);
     tunnelSetup = NULL;
     return err;
@@ -295,7 +295,7 @@ OMX_ERRORTYPE OMX_SetupTunnel(
   }
   DEBUG(DEB_LEV_PARAMS, "First stage of tunneling acheived:\n");
   DEBUG(DEB_LEV_PARAMS, "       - supplier proposed = %i\n", tunnelSetup->eSupplier);
-  DEBUG(DEB_LEV_PARAMS, "       - flags             = %i\n", (int)tunnelSetup->nTunnelFlags);
+  DEBUG(DEB_LEV_PARAMS, "       - flags             = %i\n", tunnelSetup->nTunnelFlags);
 
   component = (OMX_COMPONENTTYPE*)hInput;
   if (hInput) {
@@ -416,7 +416,6 @@ OMX_ERRORTYPE OMX_GetComponentsOfRole (
   return OMX_ErrorNone;
 }
 
-
 OMX_ERRORTYPE OMX_GetContentPipe(
     OMX_HANDLETYPE *hPipe,
     OMX_STRING szURI) {
@@ -436,4 +435,3 @@ OMX_ERRORTYPE OMX_GetContentPipe(
 	  }
 	  return err;
 }
-

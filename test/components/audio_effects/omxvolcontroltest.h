@@ -1,9 +1,9 @@
 /**
   @file test/components/audio_effects/omxvolcontroltest.c
-  
-  This simple test application provides a testing stream for the volume control component. 
+
+  This simple test application provides a testing stream for the volume control component.
   It will be added in the more complex audio test application in the next release.
-  
+
   Copyright (C) 2007-2008 STMicroelectronics
   Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
 
@@ -21,7 +21,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-  
+
   $Date$
   Revision $Rev$
   Author $Author$
@@ -43,7 +43,7 @@
 #include <OMX_Types.h>
 #include <OMX_Audio.h>
 
-#include <tsemaphore.h>
+#include <bellagio/tsemaphore.h>
 #include <user_debug_levels.h>
 
 /** Specification version*/

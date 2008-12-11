@@ -1,13 +1,13 @@
-/** 
+/**
   @file test/components/image/omxjpegdectest.h
- 
+
   OpenMAX Integration Layer JPEG component test program
-  
+
   This test program operates the OMX IL jpeg decoder component
   which decodes an jpeg file.
   Input file is given as the first argument and output
   is written to another file.
-  
+
   Copyright (C) 2007-2008 STMicroelectronics
   Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
 
@@ -25,7 +25,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-  
+
   $Date$
   Revision $Rev$
   Author $Author$
@@ -42,7 +42,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "tsemaphore.h"
+#include <bellagio/tsemaphore.h>
 
 /* Application's private data */
 typedef struct appPrivateType{
@@ -80,10 +80,10 @@ typedef struct appPrivateType{
 
 /* Callback prototypes */
 OMX_ERRORTYPE jpegDecEventHandler(
-  OMX_IN OMX_HANDLETYPE hComponent, 
-  OMX_IN OMX_PTR pAppData, 
-  OMX_IN OMX_EVENTTYPE eEvent, 
-  OMX_IN OMX_U32 nData1, 
+  OMX_IN OMX_HANDLETYPE hComponent,
+  OMX_IN OMX_PTR pAppData,
+  OMX_IN OMX_EVENTTYPE eEvent,
+  OMX_IN OMX_U32 nData1,
   OMX_IN OMX_U32 nData2,
   OMX_IN OMX_PTR pEventData);
 

@@ -60,16 +60,16 @@
  * see the define above
  * @param sTimeStamp Store Time Stamp to be set
  * @param avformatcontext is the ffmpeg video format context
- * @param avformatparameters is the ffmpeg video format related parameters 
- * @param avinputformat is the ffmpeg video format related settings 
- * @param pTmpOutputBuffer is a temporary buffer to hold the data from av_read_frame 
- * @param sInputFileName is the input filename provided by client 
- * @param video_coding_type is the coding type determined by input file 
- * @param audio_coding_type is the coding type determined by input file 
- * @param semaphore for avformat syncrhonization 
- * @param avformatReady boolean flag that is true when the video format has been initialized 
+ * @param avformatparameters is the ffmpeg video format related parameters
+ * @param avinputformat is the ffmpeg video format related settings
+ * @param pTmpOutputBuffer is a temporary buffer to hold the data from av_read_frame
+ * @param sInputFileName is the input filename provided by client
+ * @param video_coding_type is the coding type determined by input file
+ * @param audio_coding_type is the coding type determined by input file
+ * @param semaphore for avformat syncrhonization
+ * @param avformatReady boolean flag that is true when the video format has been initialized
  * @param xScale the scale of the media clock
- * @param pkt is the ffmpeg packet structure for data delivery 
+ * @param pkt is the ffmpeg packet structure for data delivery
  * @param isFirstBufferAudio Field that the buffer is the first buffer of Audio Stream
  * @param isFirstBufferVideo Field that the buffer is the first buffer of Video Stream
  */

@@ -1,10 +1,10 @@
 /**
   @file test/components/video/omxvideodectest.h
-  
-  Test application that uses a OpenMAX component, a generic video decoder. 
+
+  Test application that uses a OpenMAX component, a generic video decoder.
   The application receives an video stream (.m4v or .264) decoded by a multiple format decoder component.
   The decoded output is seen by a yuv viewer.
-  
+
   Copyright (C) 2007-2008 STMicroelectronics
   Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
 
@@ -22,7 +22,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-  
+
   $Date$
   Revision $Rev$
   Author $Author$
@@ -40,7 +40,7 @@
 #include <OMX_Types.h>
 #include <OMX_Video.h>
 
-#include <tsemaphore.h>
+#include <bellagio/tsemaphore.h>
 #include <user_debug_levels.h>
 
 /* Application's private data */
@@ -54,7 +54,7 @@ typedef struct appPrivateType{
   OMX_HANDLETYPE video_sink_handle;
 }appPrivateType;
 
-#define BUFFER_IN_SIZE 2*8192 
+#define BUFFER_IN_SIZE 2*8192
 
 /** Specification version*/
 #define VERSIONMAJOR    1
@@ -122,8 +122,8 @@ void display_help();
 /**  Try to determine resolution based on filename */
 int find_resolution(char* searchname);
 
-/** this function sets the color converter and video sink port characteristics 
-  * based on the video decoder output port settings 
+/** this function sets the color converter and video sink port characteristics
+  * based on the video decoder output port settings
   */
 int setPortParameters();
 

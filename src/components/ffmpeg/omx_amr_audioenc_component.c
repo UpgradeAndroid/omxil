@@ -43,11 +43,11 @@ static const char AMRWB_header [] = "#!AMR-WB\n";
 /** Number of Audio Component Instance*/
 static OMX_U32 noamr_audioencInstance=0;
 
-/** The Constructor 
+/** The Constructor
  */
 OMX_ERRORTYPE omx_amr_audioenc_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OMX_STRING cComponentName) {
 
-  OMX_ERRORTYPE err = OMX_ErrorNone;  
+  OMX_ERRORTYPE err = OMX_ErrorNone;
   omx_amr_audioenc_component_PrivateType* omx_amr_audioenc_component_Private;
   OMX_U32 i;
 
@@ -57,19 +57,19 @@ OMX_ERRORTYPE omx_amr_audioenc_component_Constructor(OMX_COMPONENTTYPE *openmaxS
     if(openmaxStandComp->pComponentPrivate==NULL)
       return OMX_ErrorInsufficientResources;
   }
-  else 
+  else
     DEBUG(DEB_LEV_FUNCTION_NAME,"In %s, Error Component %x Already Allocated\n",__func__, (int)openmaxStandComp->pComponentPrivate);
-  
+
   omx_amr_audioenc_component_Private = openmaxStandComp->pComponentPrivate;
   omx_amr_audioenc_component_Private->ports = NULL;
 
   /** Calling base filter constructor */
   err = omx_base_filter_Constructor(openmaxStandComp,cComponentName);
-  
+
   omx_amr_audioenc_component_Private->sPortTypesParam[OMX_PortDomainAudio].nStartPortNumber = 0;
   omx_amr_audioenc_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts = 2;
 
-  /** Allocate Ports and call port constructor. */  
+  /** Allocate Ports and call port constructor. */
   if (omx_amr_audioenc_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts && !omx_amr_audioenc_component_Private->ports) {
     omx_amr_audioenc_component_Private->ports = calloc(omx_amr_audioenc_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts, sizeof(omx_base_PortType *));
     if (!omx_amr_audioenc_component_Private->ports) {
@@ -89,14 +89,14 @@ OMX_ERRORTYPE omx_amr_audioenc_component_Constructor(OMX_COMPONENTTYPE *openmaxS
   //common parameters related to output port
   omx_amr_audioenc_component_Private->ports[OMX_BASE_FILTER_OUTPUTPORT_INDEX]->sPortParam.nBufferSize = DEFAULT_IN_BUFFER_SIZE;
 
-  
+
   base_audio_port_Constructor(openmaxStandComp, &omx_amr_audioenc_component_Private->ports[0], 0, OMX_TRUE);
   base_audio_port_Constructor(openmaxStandComp, &omx_amr_audioenc_component_Private->ports[1], 1, OMX_FALSE);
 
   // now it's time to know the audio coding type of the component
   if(!strcmp(cComponentName, AUDIO_ENC_AMR_NAME))  // AMR format encoder
     omx_amr_audioenc_component_Private->audio_coding_type = OMX_AUDIO_CodingAMR;
-  /** Domain specific section for the ports. */  
+  /** Domain specific section for the ports. */
   else  // IL client specified an invalid component name
     return OMX_ErrorInvalidComponentName;
 
@@ -109,7 +109,7 @@ OMX_ERRORTYPE omx_amr_audioenc_component_Constructor(OMX_COMPONENTTYPE *openmaxS
   omx_amr_audioenc_component_SetInternalParameters(openmaxStandComp);
 
   //general configuration irrespective of any audio formats
-  //setting other parameters of omx_amr_audioenc_component_private  
+  //setting other parameters of omx_amr_audioenc_component_private
   omx_amr_audioenc_component_Private->avCodec = NULL;
   omx_amr_audioenc_component_Private->avCodecContext= NULL;
   omx_amr_audioenc_component_Private->avcodecReady = OMX_FALSE;
@@ -120,13 +120,13 @@ OMX_ERRORTYPE omx_amr_audioenc_component_Constructor(OMX_COMPONENTTYPE *openmaxS
   avcodec_init();
   av_register_all();
   omx_amr_audioenc_component_Private->avCodecContext = avcodec_alloc_context();
-                                         
+
   omx_amr_audioenc_component_Private->messageHandler = omx_amr_audioenc_component_MessageHandler;
   omx_amr_audioenc_component_Private->destructor = omx_amr_audioenc_component_Destructor;
   openmaxStandComp->SetParameter = omx_amr_audioenc_component_SetParameter;
   openmaxStandComp->GetParameter = omx_amr_audioenc_component_GetParameter;
   openmaxStandComp->ComponentRoleEnum = omx_amr_audioenc_component_ComponentRoleEnum;
-  
+
   noamr_audioencInstance++;
 
   if(noamr_audioencInstance>MAX_COMPONENT_AUDIOENC)
@@ -137,11 +137,11 @@ OMX_ERRORTYPE omx_amr_audioenc_component_Constructor(OMX_COMPONENTTYPE *openmaxS
 
 /** The destructor
  */
-OMX_ERRORTYPE omx_amr_audioenc_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp) 
+OMX_ERRORTYPE omx_amr_audioenc_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp)
 {
   omx_amr_audioenc_component_PrivateType* omx_amr_audioenc_component_Private = openmaxStandComp->pComponentPrivate;
   OMX_U32 i;
-  
+
   /*Free Codec Context*/
   av_free (omx_amr_audioenc_component_Private->avCodecContext);
 
@@ -170,11 +170,11 @@ OMX_ERRORTYPE omx_amr_audioenc_component_Destructor(OMX_COMPONENTTYPE *openmaxSt
   return OMX_ErrorNone;
 }
 
-/** 
+/**
   It initializates the ffmpeg framework, and opens an ffmpeg amr_audioencoder of type specified by IL client - currently only used for AMR encoding
-*/ 
+*/
 OMX_ERRORTYPE omx_amr_audioenc_component_ffmpegLibInit(omx_amr_audioenc_component_PrivateType* omx_amr_audioenc_component_Private) {
-  OMX_U32 target_codecID = 0;  // id of ffmpeg codec to be used for different audio formats 
+  OMX_U32 target_codecID = 0;  // id of ffmpeg codec to be used for different audio formats
 
   DEBUG(DEB_LEV_SIMPLE_SEQ, "FFMpeg Library/codec iniited\n");
 
@@ -185,13 +185,13 @@ OMX_ERRORTYPE omx_amr_audioenc_component_ffmpegLibInit(omx_amr_audioenc_componen
     } else if(omx_amr_audioenc_component_Private->pAudioAmr.eAMRBandMode <= OMX_AUDIO_AMRBandModeWB8) {
       target_codecID = CODEC_ID_AMR_WB;
       omx_amr_audioenc_component_Private->pAudioPcmMode.nSamplingRate = 16000; /*AMR - WB Support only 16k Sample Rate*/
-    } 
+    }
     break;
   default :
     DEBUG(DEB_LEV_ERR, "Audio format other than not supported\nCodec not found\n");
     return OMX_ErrorComponentNotFound;
   }
-  
+
   DEBUG(DEB_ALL_MESS, "Opening Codec %x ch=%d,rate=%d,sr=%d Band Mode=%d bps=%d\n",(int)target_codecID,
     (int)omx_amr_audioenc_component_Private->pAudioAmr.nChannels,
     (int)omx_amr_audioenc_component_Private->pAudioAmr.nBitRate,
@@ -223,7 +223,7 @@ OMX_ERRORTYPE omx_amr_audioenc_component_ffmpegLibInit(omx_amr_audioenc_componen
   } else if(omx_amr_audioenc_component_Private->pAudioPcmMode.nBitPerSample == 32) {
     omx_amr_audioenc_component_Private->avCodecContext->sample_fmt = SAMPLE_FMT_S32;
   }
-  
+
   DEBUG(DEB_LEV_FULL_SEQ, "In %s Coding Type=%x target id=%x\n",__func__,(int)omx_amr_audioenc_component_Private->audio_coding_type,(int)target_codecID);
   /*open the avcodec if amr selected */
   if (avcodec_open(omx_amr_audioenc_component_Private->avCodecContext, omx_amr_audioenc_component_Private->avCodec) < 0) {
@@ -233,13 +233,13 @@ OMX_ERRORTYPE omx_amr_audioenc_component_ffmpegLibInit(omx_amr_audioenc_componen
 
   /* apply flags */
   //omx_amr_audioenc_component_Private->avCodecContext->flags |= CODEC_FLAG_TRUNCATED;
-  
+
   //omx_amr_audioenc_component_Private->avCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
   omx_amr_audioenc_component_Private->avCodecContext->workaround_bugs |= FF_BUG_AUTODETECT;
-  
-  omx_amr_audioenc_component_Private->temp_buffer = malloc(DEFAULT_OUT_BUFFER_SIZE*2); 
+
+  omx_amr_audioenc_component_Private->temp_buffer = malloc(DEFAULT_OUT_BUFFER_SIZE*2);
   omx_amr_audioenc_component_Private->temp_buffer_filledlen=0;
- 
+
   if(omx_amr_audioenc_component_Private->avCodecContext->frame_size == 0) {
     omx_amr_audioenc_component_Private->avCodecContext->frame_size = 80;
   }
@@ -247,21 +247,21 @@ OMX_ERRORTYPE omx_amr_audioenc_component_ffmpegLibInit(omx_amr_audioenc_componen
   omx_amr_audioenc_component_Private->frame_length = omx_amr_audioenc_component_Private->avCodecContext->frame_size*
                                                  (omx_amr_audioenc_component_Private->pAudioPcmMode.nBitPerSample/8)*
                                                  omx_amr_audioenc_component_Private->avCodecContext->channels;
-  
+
   tsem_up(omx_amr_audioenc_component_Private->avCodecSyncSem);
-  
+
   return OMX_ErrorNone;
 }
 
-/** 
+/**
   It Deinitializates the ffmpeg framework, and close the ffmpeg encoder
 */
 void omx_amr_audioenc_component_ffmpegLibDeInit(omx_amr_audioenc_component_PrivateType* omx_amr_audioenc_component_Private) {
-  
+
   avcodec_close(omx_amr_audioenc_component_Private->avCodecContext);
 
   free(omx_amr_audioenc_component_Private->temp_buffer);
-   
+
 }
 
 void omx_amr_audioenc_component_SetInternalParameters(OMX_COMPONENTTYPE *openmaxStandComp) {
@@ -269,7 +269,7 @@ void omx_amr_audioenc_component_SetInternalParameters(OMX_COMPONENTTYPE *openmax
   omx_base_audio_PortType *pPort = (omx_base_audio_PortType *) omx_amr_audioenc_component_Private->ports[OMX_BASE_FILTER_OUTPUTPORT_INDEX];
 
   //settings of input port
-  //input is pcm mode for all encoders - so generalise it 
+  //input is pcm mode for all encoders - so generalise it
   setHeader(&omx_amr_audioenc_component_Private->pAudioPcmMode,sizeof(OMX_AUDIO_PARAM_PCMMODETYPE));
   omx_amr_audioenc_component_Private->pAudioPcmMode.nPortIndex = 0;
   omx_amr_audioenc_component_Private->pAudioPcmMode.nChannels = 1;
@@ -285,15 +285,15 @@ void omx_amr_audioenc_component_SetInternalParameters(OMX_COMPONENTTYPE *openmax
   if(omx_amr_audioenc_component_Private->audio_coding_type == OMX_AUDIO_CodingAMR) {
     strcpy(pPort->sPortParam.format.audio.cMIMEType, "audio/amr");
     pPort->sPortParam.format.audio.eEncoding = OMX_AUDIO_CodingAMR;
-                                                                                                                             
-    setHeader(&omx_amr_audioenc_component_Private->pAudioAmr,sizeof(OMX_AUDIO_PARAM_AMRTYPE)); 
+
+    setHeader(&omx_amr_audioenc_component_Private->pAudioAmr,sizeof(OMX_AUDIO_PARAM_AMRTYPE));
     omx_amr_audioenc_component_Private->pAudioAmr.nPortIndex = 1;
-    omx_amr_audioenc_component_Private->pAudioAmr.nChannels = 1;    
+    omx_amr_audioenc_component_Private->pAudioAmr.nChannels = 1;
     omx_amr_audioenc_component_Private->pAudioAmr.nBitRate = 12200;
     omx_amr_audioenc_component_Private->pAudioAmr.eAMRBandMode = OMX_AUDIO_AMRBandModeNB7;
     omx_amr_audioenc_component_Private->pAudioAmr.eAMRDTXMode = OMX_AUDIO_AMRDTXModeOff;
     omx_amr_audioenc_component_Private->pAudioAmr.eAMRFrameFormat = OMX_AUDIO_AMRFrameFormatConformance;
-    
+
     pPort->sAudioParam.nIndex = OMX_IndexParamAudioAmr;
     pPort->sAudioParam.eEncoding = OMX_AUDIO_CodingAMR;
 
@@ -304,7 +304,7 @@ void omx_amr_audioenc_component_SetInternalParameters(OMX_COMPONENTTYPE *openmax
 
 //int headersent=0;
 //unsigned char *tmp;
-/** The Initialization function 
+/** The Initialization function
  */
 OMX_ERRORTYPE omx_amr_audioenc_component_Init(OMX_COMPONENTTYPE *openmaxStandComp)
 {
@@ -323,10 +323,10 @@ OMX_ERRORTYPE omx_amr_audioenc_component_Init(OMX_COMPONENTTYPE *openmaxStandCom
   omx_amr_audioenc_component_Private->isFirstBuffer = 1;
 
   return err;
-  
+
 };
 
-/** The Deinitialization function 
+/** The Deinitialization function
  */
 OMX_ERRORTYPE omx_amr_audioenc_component_Deinit(OMX_COMPONENTTYPE *openmaxStandComp) {
   omx_amr_audioenc_component_PrivateType* omx_amr_audioenc_component_Private = openmaxStandComp->pComponentPrivate;
@@ -340,15 +340,13 @@ OMX_ERRORTYPE omx_amr_audioenc_component_Deinit(OMX_COMPONENTTYPE *openmaxStandC
   free(omx_amr_audioenc_component_Private->internalOutputBuffer);
   omx_amr_audioenc_component_Private->internalOutputBuffer = NULL;
 
-//  free(tmp);
-
   return err;
 }
 
-/** buffer management callback function for encoding in new standard 
- * of ffmpeg library 
+/** buffer management callback function for encoding in new standard
+ * of ffmpeg library
  */
-void omx_amr_audioenc_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandComp, OMX_BUFFERHEADERTYPE* pInputBuffer, OMX_BUFFERHEADERTYPE* pOutputBuffer) 
+void omx_amr_audioenc_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandComp, OMX_BUFFERHEADERTYPE* pInputBuffer, OMX_BUFFERHEADERTYPE* pOutputBuffer)
 {
   omx_amr_audioenc_component_PrivateType* omx_amr_audioenc_component_Private = openmaxStandComp->pComponentPrivate;
   int nLen;
@@ -368,8 +366,8 @@ void omx_amr_audioenc_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxSta
       memcpy(pOutputBuffer->pBuffer,AMRWB_header,9);
       pBuffer = pOutputBuffer->pBuffer + 9;
       pOutputBuffer->nFilledLen = 9;
-    } 
-    
+    }
+
     omx_amr_audioenc_component_Private->isFirstBuffer = 0;
     pOutputBuffer->nOffset=0;
   } else {
@@ -377,14 +375,14 @@ void omx_amr_audioenc_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxSta
     pOutputBuffer->nFilledLen = 0;
     pOutputBuffer->nOffset=0;
   }
-  
-  
+
+
   /*If temporary buffer exist then process that first*/
   if(omx_amr_audioenc_component_Private->temp_buffer_filledlen > 0 && omx_amr_audioenc_component_Private->isNewBuffer) {
     nLen = omx_amr_audioenc_component_Private->frame_length-omx_amr_audioenc_component_Private->temp_buffer_filledlen;
     DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s copying residue buffer %d\n",__func__,nLen);
     memcpy(&omx_amr_audioenc_component_Private->temp_buffer[omx_amr_audioenc_component_Private->temp_buffer_filledlen],pInputBuffer->pBuffer,nLen);
-    omx_amr_audioenc_component_Private->isNewBuffer = 0; 
+    omx_amr_audioenc_component_Private->isNewBuffer = 0;
     data = &pInputBuffer->pBuffer[nLen];
     pInputBuffer->nFilledLen -= nLen;
     omx_amr_audioenc_component_Private->temp_buffer_filledlen = 0;
@@ -408,12 +406,12 @@ void omx_amr_audioenc_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxSta
       DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s Consumed 2 frame_length=%d,frame_size=%d,pInputBuffer->nFilledLen=%d nLen=%d\n",
       __func__,(int)omx_amr_audioenc_component_Private->frame_length,
       (int)omx_amr_audioenc_component_Private->avCodecContext->frame_size,(int)pInputBuffer->nFilledLen,nLen);
-    
+
       if ( nLen >= 0) {
         pOutputBuffer->nFilledLen += nLen;
         pOutputBuffer->nTimeStamp = av_rescale_q(omx_amr_audioenc_component_Private->avCodecContext->coded_frame->pts,
           omx_amr_audioenc_component_Private->avCodecContext->time_base, bq);
-      } 
+      }
       nOutputFilled = 1;
     }
 
@@ -431,10 +429,10 @@ void omx_amr_audioenc_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxSta
   } else {
 
     if(omx_amr_audioenc_component_Private->isNewBuffer) {
-      omx_amr_audioenc_component_Private->isNewBuffer = 0; 
+      omx_amr_audioenc_component_Private->isNewBuffer = 0;
       data = pInputBuffer->pBuffer;
     }
-      
+
     while (!nOutputFilled) {
       if (!omx_amr_audioenc_component_Private->avcodecReady) {
         tsem_down(omx_amr_audioenc_component_Private->avCodecSyncSem);
@@ -456,12 +454,12 @@ void omx_amr_audioenc_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxSta
       DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s Consumed 1 frame_length=%d,frame_size=%d pInputBuffer->nFilledLen=%d nLen=%d\n",
         __func__,(int)omx_amr_audioenc_component_Private->frame_length,
         (int)omx_amr_audioenc_component_Private->avCodecContext->frame_size,(int)pInputBuffer->nFilledLen,(int)nLen);
-    
+
       if ( nLen >= 0) {
         pOutputBuffer->nFilledLen += nLen;
         pOutputBuffer->nTimeStamp = av_rescale_q(omx_amr_audioenc_component_Private->avCodecContext->coded_frame->pts,
           omx_amr_audioenc_component_Private->avCodecContext->time_base, bq);
-      } 
+      }
       nOutputFilled = 1;
     }
 
@@ -515,29 +513,29 @@ OMX_ERRORTYPE omx_amr_audioenc_component_SetParameter(
     portIndex = pAudioPortFormat->nPortIndex;
     /*Check Structure Header and verify component state*/
     err = omx_base_component_ParameterSanityCheck(hComponent, portIndex, pAudioPortFormat, sizeof(OMX_AUDIO_PARAM_PORTFORMATTYPE));
-    if(err!=OMX_ErrorNone) { 
-      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err); 
+    if(err!=OMX_ErrorNone) {
+      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err);
       break;
-    } 
+    }
     if (portIndex <= 1) {
       port = (omx_base_audio_PortType *) omx_amr_audioenc_component_Private->ports[portIndex];
       memcpy(&port->sAudioParam,pAudioPortFormat,sizeof(OMX_AUDIO_PARAM_PORTFORMATTYPE));
     } else {
       err = OMX_ErrorBadPortIndex;
     }
-    break;  
+    break;
 
   case OMX_IndexParamAudioPcm:
     pAudioPcmMode = (OMX_AUDIO_PARAM_PCMMODETYPE*)ComponentParameterStructure;
     portIndex = pAudioPcmMode->nPortIndex;
     /*Check Structure Header and verify component state*/
     err = omx_base_component_ParameterSanityCheck(hComponent, portIndex, pAudioPcmMode, sizeof(OMX_AUDIO_PARAM_PCMMODETYPE));
-    if(err!=OMX_ErrorNone) { 
-      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err); 
+    if(err!=OMX_ErrorNone) {
+      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err);
       break;
-    } 
+    }
     if(pAudioPcmMode->nPortIndex == 0) {
-      if((pAudioPcmMode->nSamplingRate != 8000 && 
+      if((pAudioPcmMode->nSamplingRate != 8000 &&
          pAudioPcmMode->nSamplingRate != 16000 ) ||
          pAudioPcmMode->nChannels != 1) {
         DEBUG(DEB_LEV_ERR, "AMR-NB Support only 8000Hz Mono \n AMR-WB Support only 16000Hz Mono\n");
@@ -550,15 +548,15 @@ OMX_ERRORTYPE omx_amr_audioenc_component_SetParameter(
     }
     break;
 
-  case OMX_IndexParamAudioAmr:  
+  case OMX_IndexParamAudioAmr:
     pAudioAmr = (OMX_AUDIO_PARAM_AMRTYPE*) ComponentParameterStructure;
     portIndex = pAudioAmr->nPortIndex;
 
     err = omx_base_component_ParameterSanityCheck(hComponent,portIndex,pAudioAmr,sizeof(OMX_AUDIO_PARAM_AMRTYPE));
-    if(err!=OMX_ErrorNone) { 
-      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err); 
+    if(err!=OMX_ErrorNone) {
+      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err);
       break;
-    } 
+    }
     if (pAudioAmr->nPortIndex == 1) {
 
       if(pAudioAmr->nChannels != 1) {
@@ -569,7 +567,7 @@ OMX_ERRORTYPE omx_amr_audioenc_component_SetParameter(
 
       switch(pAudioAmr->eAMRBandMode) {
       case OMX_AUDIO_AMRBandModeNB0:                 /**< AMRNB Mode 0 =  4750 bps */
-        pAudioAmr->nBitRate = 4750; 
+        pAudioAmr->nBitRate = 4750;
         break;
       case OMX_AUDIO_AMRBandModeNB1:                 /**< AMRNB Mode 1 =  5150 bps */
         pAudioAmr->nBitRate = 5150;
@@ -593,7 +591,7 @@ OMX_ERRORTYPE omx_amr_audioenc_component_SetParameter(
         pAudioAmr->nBitRate = 12200;
         break;
       case OMX_AUDIO_AMRBandModeWB0:                 /**< AMRWB Mode 0 =  6600 bps */
-        pAudioAmr->nBitRate = 6600; 
+        pAudioAmr->nBitRate = 6600;
         break;
       case OMX_AUDIO_AMRBandModeWB1:                 /**< AMRWB Mode 1 =  8850 bps */
         pAudioAmr->nBitRate = 8850;
@@ -620,7 +618,7 @@ OMX_ERRORTYPE omx_amr_audioenc_component_SetParameter(
         pAudioAmr->nBitRate = 23850;
         break;
       default:
-        DEBUG(DEB_LEV_ERR, "In %s AMR Band Mode %x Not Supported\n",__func__,pAudioAmr->eAMRBandMode); 
+        DEBUG(DEB_LEV_ERR, "In %s AMR Band Mode %x Not Supported\n",__func__,pAudioAmr->eAMRBandMode);
         return OMX_ErrorBadParameter;
         break;
       }
@@ -638,8 +636,8 @@ OMX_ERRORTYPE omx_amr_audioenc_component_SetParameter(
       DEBUG(DEB_LEV_ERR, "In %s Incorrect State=%x lineno=%d\n",__func__,omx_amr_audioenc_component_Private->state,__LINE__);
       return OMX_ErrorIncorrectStateOperation;
     }
-  
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) { 
+
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
       break;
     }
 
@@ -663,7 +661,7 @@ OMX_ERRORTYPE omx_amr_audioenc_component_GetParameter(
   OMX_IN  OMX_INDEXTYPE nParamIndex,
   OMX_INOUT OMX_PTR ComponentParameterStructure)
 {
-  OMX_AUDIO_PARAM_PORTFORMATTYPE *pAudioPortFormat;  
+  OMX_AUDIO_PARAM_PORTFORMATTYPE *pAudioPortFormat;
   OMX_AUDIO_PARAM_PCMMODETYPE *pAudioPcmMode;
   OMX_PARAM_COMPONENTROLETYPE * pComponentRole;
   OMX_AUDIO_PARAM_AMRTYPE *pAudioAmr;
@@ -679,15 +677,15 @@ OMX_ERRORTYPE omx_amr_audioenc_component_GetParameter(
   /* Check which structure we are being fed and fill its header */
   switch(nParamIndex) {
   case OMX_IndexParamAudioInit:
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PORT_PARAM_TYPE))) != OMX_ErrorNone) { 
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PORT_PARAM_TYPE))) != OMX_ErrorNone) {
       break;
     }
     memcpy(ComponentParameterStructure, &omx_amr_audioenc_component_Private->sPortTypesParam[OMX_PortDomainAudio], sizeof(OMX_PORT_PARAM_TYPE));
-    break;    
+    break;
 
   case OMX_IndexParamAudioPortFormat:
     pAudioPortFormat = (OMX_AUDIO_PARAM_PORTFORMATTYPE*)ComponentParameterStructure;
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_AUDIO_PARAM_PORTFORMATTYPE))) != OMX_ErrorNone) { 
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_AUDIO_PARAM_PORTFORMATTYPE))) != OMX_ErrorNone) {
       break;
     }
     if (pAudioPortFormat->nPortIndex <= 1) {
@@ -696,37 +694,37 @@ OMX_ERRORTYPE omx_amr_audioenc_component_GetParameter(
     } else {
       return OMX_ErrorBadPortIndex;
     }
-    break;  
-    
+    break;
+
   case OMX_IndexParamAudioPcm:
     pAudioPcmMode = (OMX_AUDIO_PARAM_PCMMODETYPE*)ComponentParameterStructure;
     if (pAudioPcmMode->nPortIndex != 0) {
       return OMX_ErrorBadPortIndex;
     }
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_AUDIO_PARAM_PCMMODETYPE))) != OMX_ErrorNone) { 
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_AUDIO_PARAM_PCMMODETYPE))) != OMX_ErrorNone) {
       break;
     }
     memcpy(pAudioPcmMode,&omx_amr_audioenc_component_Private->pAudioPcmMode,sizeof(OMX_AUDIO_PARAM_PCMMODETYPE));
     break;
 
-  case OMX_IndexParamAudioAmr:  
+  case OMX_IndexParamAudioAmr:
     pAudioAmr = (OMX_AUDIO_PARAM_AMRTYPE*)ComponentParameterStructure;
     if (pAudioAmr->nPortIndex != 1) {
       return OMX_ErrorBadPortIndex;
     }
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_AUDIO_PARAM_AMRTYPE))) != OMX_ErrorNone) { 
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_AUDIO_PARAM_AMRTYPE))) != OMX_ErrorNone) {
       break;
     }
     memcpy(pAudioAmr,&omx_amr_audioenc_component_Private->pAudioAmr,sizeof(OMX_AUDIO_PARAM_AMRTYPE));
     break;
-    
+
   case OMX_IndexParamStandardComponentRole:
     pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) { 
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
       break;
     }
 
-    if (omx_amr_audioenc_component_Private->audio_coding_type == OMX_AUDIO_CodingAMR && 
+    if (omx_amr_audioenc_component_Private->audio_coding_type == OMX_AUDIO_CodingAMR &&
         omx_amr_audioenc_component_Private->pAudioAmr.eAMRBandMode <= OMX_AUDIO_AMRBandModeNB7) {
         strcpy((char*)pComponentRole->cRole, AUDIO_ENC_AMR_ROLE);
     } else {
@@ -757,19 +755,19 @@ OMX_ERRORTYPE omx_amr_audioenc_component_MessageHandler(OMX_COMPONENTTYPE* openm
         }
         omx_amr_audioenc_component_Private->avcodecReady = OMX_TRUE;
       }
-    } 
+    }
     else if ((message->messageParam == OMX_StateIdle ) && (omx_amr_audioenc_component_Private->state == OMX_StateLoaded)) {
       err = omx_amr_audioenc_component_Init(openmaxStandComp);
-      if(err!=OMX_ErrorNone) { 
-        DEBUG(DEB_LEV_ERR, "In %s Audio Encoder Init Failed Error=%x\n",__func__,err); 
+      if(err!=OMX_ErrorNone) {
+        DEBUG(DEB_LEV_ERR, "In %s Audio Encoder Init Failed Error=%x\n",__func__,err);
         return err;
-      } 
+      }
     } else if ((message->messageParam == OMX_StateLoaded) && (omx_amr_audioenc_component_Private->state == OMX_StateIdle)) {
       err = omx_amr_audioenc_component_Deinit(openmaxStandComp);
-      if(err!=OMX_ErrorNone) { 
-        DEBUG(DEB_LEV_ERR, "In %s Audio Encoder Deinit Failed Error=%x\n",__func__,err); 
+      if(err!=OMX_ErrorNone) {
+        DEBUG(DEB_LEV_ERR, "In %s Audio Encoder Deinit Failed Error=%x\n",__func__,err);
         return err;
-      } 
+      }
     }
   }
   // Execute the base message handling

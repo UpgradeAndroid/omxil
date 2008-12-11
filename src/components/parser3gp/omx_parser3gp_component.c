@@ -30,7 +30,7 @@
 
 #include <omxcore.h>
 #include <omx_base_video_port.h>
-#include <omx_base_audio_port.h>  
+#include <omx_base_audio_port.h>
 #include <omx_base_clock_port.h>
 #include <omx_parser3gp_component.h>
 
@@ -47,13 +47,13 @@ static OMX_U32 noParser3gpInstance=0;
 
 static OMX_BOOL FirstTimeStampFlag[2];  // flags for the start time stamp for audio and video
 
-/** The Constructor 
+/** The Constructor
  */
 OMX_ERRORTYPE omx_parser3gp_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OMX_STRING cComponentName) {
- 
+
   OMX_ERRORTYPE err = OMX_ErrorNone;
   omx_base_video_PortType *pPortV;
-  omx_base_audio_PortType *pPortA;  
+  omx_base_audio_PortType *pPortA;
   omx_parser3gp_component_PrivateType* omx_parser3gp_component_Private;
   DEBUG(DEB_LEV_FUNCTION_NAME,"In %s \n",__func__);
 
@@ -90,34 +90,34 @@ OMX_ERRORTYPE omx_parser3gp_component_Constructor(OMX_COMPONENTTYPE *openmaxStan
       return OMX_ErrorInsufficientResources;
     }
     /* allocate video port*/
-   omx_parser3gp_component_Private->ports[VIDEO_PORT_INDEX] = calloc(1, sizeof(omx_base_video_PortType)); 
-   if (!omx_parser3gp_component_Private->ports[VIDEO_PORT_INDEX]) 
+   omx_parser3gp_component_Private->ports[VIDEO_PORT_INDEX] = calloc(1, sizeof(omx_base_video_PortType));
+   if (!omx_parser3gp_component_Private->ports[VIDEO_PORT_INDEX])
        return OMX_ErrorInsufficientResources;
    /* allocate audio port*/
-   omx_parser3gp_component_Private->ports[AUDIO_PORT_INDEX] = calloc(1, sizeof(omx_base_audio_PortType)); 
-   if (!omx_parser3gp_component_Private->ports[AUDIO_PORT_INDEX]) 
+   omx_parser3gp_component_Private->ports[AUDIO_PORT_INDEX] = calloc(1, sizeof(omx_base_audio_PortType));
+   if (!omx_parser3gp_component_Private->ports[AUDIO_PORT_INDEX])
        return OMX_ErrorInsufficientResources;
    /* allocate clock port*/
    omx_parser3gp_component_Private->ports[CLOCK_PORT_INDEX] = calloc(1, sizeof(omx_base_clock_PortType));
-   if (!omx_parser3gp_component_Private->ports[CLOCK_PORT_INDEX]) 
+   if (!omx_parser3gp_component_Private->ports[CLOCK_PORT_INDEX])
      return OMX_ErrorInsufficientResources;
-       
+
   }
 
   base_video_port_Constructor(openmaxStandComp, &omx_parser3gp_component_Private->ports[VIDEO_PORT_INDEX], VIDEO_PORT_INDEX, OMX_FALSE);
-  base_audio_port_Constructor(openmaxStandComp, &omx_parser3gp_component_Private->ports[AUDIO_PORT_INDEX], AUDIO_PORT_INDEX, OMX_FALSE); 
-  base_clock_port_Constructor(openmaxStandComp, &omx_parser3gp_component_Private->ports[CLOCK_PORT_INDEX], CLOCK_PORT_INDEX, OMX_TRUE); 
+  base_audio_port_Constructor(openmaxStandComp, &omx_parser3gp_component_Private->ports[AUDIO_PORT_INDEX], AUDIO_PORT_INDEX, OMX_FALSE);
+  base_clock_port_Constructor(openmaxStandComp, &omx_parser3gp_component_Private->ports[CLOCK_PORT_INDEX], CLOCK_PORT_INDEX, OMX_TRUE);
   omx_parser3gp_component_Private->ports[CLOCK_PORT_INDEX]->sPortParam.bEnabled = OMX_FALSE;
 
   pPortV = (omx_base_video_PortType *) omx_parser3gp_component_Private->ports[VIDEO_PORT_INDEX];
-  pPortA = (omx_base_audio_PortType *) omx_parser3gp_component_Private->ports[AUDIO_PORT_INDEX]; 
+  pPortA = (omx_base_audio_PortType *) omx_parser3gp_component_Private->ports[AUDIO_PORT_INDEX];
 
   /*Input pPort buffer size is equal to the size of the output buffer of the previous component*/
   pPortV->sPortParam.nBufferSize = DEFAULT_OUT_BUFFER_SIZE;
   pPortA->sPortParam.nBufferSize = DEFAULT_IN_BUFFER_SIZE;
 
   omx_parser3gp_component_Private->BufferMgmtCallback = omx_parser3gp_component_BufferMgmtCallback;
-  omx_parser3gp_component_Private->BufferMgmtFunction = omx_base_source_twoport_BufferMgmtFunction; 
+  omx_parser3gp_component_Private->BufferMgmtFunction = omx_base_source_twoport_BufferMgmtFunction;
 
   setHeader(&omx_parser3gp_component_Private->sTimeStamp, sizeof(OMX_TIME_CONFIG_TIMESTAMPTYPE));
   omx_parser3gp_component_Private->sTimeStamp.nPortIndex=0;
@@ -143,7 +143,7 @@ OMX_ERRORTYPE omx_parser3gp_component_Constructor(OMX_COMPONENTTYPE *openmaxStan
   omx_parser3gp_component_Private->pTmpOutputBuffer->nFilledLen=0;
   omx_parser3gp_component_Private->pTmpOutputBuffer->nAllocLen=DEFAULT_OUT_BUFFER_SIZE;
   omx_parser3gp_component_Private->pTmpOutputBuffer->nOffset=0;
- 
+
   omx_parser3gp_component_Private->avformatReady      = OMX_FALSE;
   omx_parser3gp_component_Private->isFirstBufferAudio = OMX_TRUE;
   omx_parser3gp_component_Private->isFirstBufferVideo = OMX_TRUE;
@@ -156,7 +156,7 @@ OMX_ERRORTYPE omx_parser3gp_component_Constructor(OMX_COMPONENTTYPE *openmaxStan
   omx_parser3gp_component_Private->sInputFileName = malloc(DEFAULT_FILENAME_LENGTH);
   /*Default Coding type*/
   omx_parser3gp_component_Private->video_coding_type = OMX_VIDEO_CodingAVC;
-  omx_parser3gp_component_Private->audio_coding_type = OMX_AUDIO_CodingMP3; 
+  omx_parser3gp_component_Private->audio_coding_type = OMX_AUDIO_CodingMP3;
   av_register_all();  /* without this file opening gives an error */
 
   return err;
@@ -181,7 +181,7 @@ OMX_ERRORTYPE omx_parser3gp_component_Destructor(OMX_COMPONENTTYPE *openmaxStand
   if(omx_parser3gp_component_Private->pTmpOutputBuffer) {
     free(omx_parser3gp_component_Private->pTmpOutputBuffer);
   }
-  
+
   /* frees port/s */
   if (omx_parser3gp_component_Private->ports) {
     for (i=0; i < (omx_parser3gp_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts  +
@@ -193,13 +193,13 @@ OMX_ERRORTYPE omx_parser3gp_component_Destructor(OMX_COMPONENTTYPE *openmaxStand
     free(omx_parser3gp_component_Private->ports);
     omx_parser3gp_component_Private->ports=NULL;
   }
-  
+
   noParser3gpInstance--;
   DEBUG(DEB_LEV_FUNCTION_NAME,"In %s \n",__func__);
   return omx_base_source_Destructor(openmaxStandComp);
 }
 
-/** The Initialization function 
+/** The Initialization function
  */
 OMX_ERRORTYPE omx_parser3gp_component_Init(OMX_COMPONENTTYPE *openmaxStandComp) {
 
@@ -207,7 +207,7 @@ OMX_ERRORTYPE omx_parser3gp_component_Init(OMX_COMPONENTTYPE *openmaxStandComp) 
   omx_base_video_PortType *pPortV;
   omx_base_audio_PortType *pPortA;
   int error;
-  
+
   DEBUG(DEB_LEV_FUNCTION_NAME,"In %s \n",__func__);
 
   /* set the first time stamp flags to false */
@@ -216,7 +216,7 @@ OMX_ERRORTYPE omx_parser3gp_component_Init(OMX_COMPONENTTYPE *openmaxStandComp) 
 
   /** initialization of parser3gp  component private data structures */
   /** opening the input file whose name is already set via setParameter */
-  error = av_open_input_file(&omx_parser3gp_component_Private->avformatcontext, 
+  error = av_open_input_file(&omx_parser3gp_component_Private->avformatcontext,
                             (char*)omx_parser3gp_component_Private->sInputFileName,
                             omx_parser3gp_component_Private->avinputformat,
                             0,
@@ -225,7 +225,7 @@ OMX_ERRORTYPE omx_parser3gp_component_Init(OMX_COMPONENTTYPE *openmaxStandComp) 
   if(error != 0) {
     DEBUG(DEB_LEV_ERR,"Couldn't Open Input Stream error=%d File Name=%s\n",
       error,(char*)omx_parser3gp_component_Private->sInputFileName);
-  
+
     return OMX_ErrorBadParameter;
   }
 
@@ -236,16 +236,16 @@ OMX_ERRORTYPE omx_parser3gp_component_Init(OMX_COMPONENTTYPE *openmaxStandComp) 
   pPortV = (omx_base_video_PortType *) omx_parser3gp_component_Private->ports[VIDEO_PORT_INDEX];
   switch(omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_PORT_INDEX]->codec->codec_id){
     case  CODEC_ID_H264:
-        pPortV->sPortParam.format.video.eCompressionFormat = OMX_VIDEO_CodingAVC; 
-        pPortV->sPortParam.format.video.nFrameWidth =omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->width;   
-        pPortV->sPortParam.format.video.nFrameHeight =omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->height;   
+        pPortV->sPortParam.format.video.eCompressionFormat = OMX_VIDEO_CodingAVC;
+        pPortV->sPortParam.format.video.nFrameWidth =omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->width;
+        pPortV->sPortParam.format.video.nFrameHeight =omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->height;
         omx_parser3gp_component_Private->video_coding_type = OMX_VIDEO_CodingAVC;
         DEBUG(DEB_LEV_SIMPLE_SEQ,"In %s Video Coding Type h.264\n",__func__);
         break;
     case CODEC_ID_MPEG4:
-        pPortV->sPortParam.format.video.eCompressionFormat = OMX_VIDEO_CodingMPEG4; 
-        pPortV->sPortParam.format.video.nFrameWidth =omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->width;   
-        pPortV->sPortParam.format.video.nFrameHeight =omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->height;   
+        pPortV->sPortParam.format.video.eCompressionFormat = OMX_VIDEO_CodingMPEG4;
+        pPortV->sPortParam.format.video.nFrameWidth =omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->width;
+        pPortV->sPortParam.format.video.nFrameHeight =omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->height;
         omx_parser3gp_component_Private->video_coding_type = OMX_VIDEO_CodingMPEG4;
         DEBUG(DEB_LEV_SIMPLE_SEQ,"In %s Video Coding Type Mpeg4\n",__func__);
         break;
@@ -254,9 +254,9 @@ OMX_ERRORTYPE omx_parser3gp_component_Init(OMX_COMPONENTTYPE *openmaxStandComp) 
       (openmaxStandComp,
       omx_parser3gp_component_Private->callbackData,
       OMX_EventError, /* The command was completed */
-      OMX_ErrorFormatNotDetected, /* Format Not Detected */ 
-      VIDEO_PORT_INDEX, /* This is the output port index*/ 
-      NULL);  
+      OMX_ErrorFormatNotDetected, /* Format Not Detected */
+      VIDEO_PORT_INDEX, /* This is the output port index*/
+      NULL);
     DEBUG(DEB_LEV_ERR,"Trouble in %s No Video Coding Type Selected (only H264 and MPEG4 codecs supported)\n",__func__);
     return OMX_ErrorBadParameter;
   }
@@ -279,42 +279,42 @@ OMX_ERRORTYPE omx_parser3gp_component_Init(OMX_COMPONENTTYPE *openmaxStandComp) 
       (openmaxStandComp,
       omx_parser3gp_component_Private->callbackData,
       OMX_EventError, /* The command was completed */
-      OMX_ErrorFormatNotDetected, /* Format Not Detected */ 
+      OMX_ErrorFormatNotDetected, /* Format Not Detected */
       AUDIO_PORT_INDEX, /* This is the output port index */
-      NULL);  
+      NULL);
     DEBUG(DEB_LEV_ERR,"Trouble in %s No Audio Coding Type Selected (only MP3 and AAC codecs supported)\n",__func__);
     return OMX_ErrorBadParameter;
 
   }
 
   DEBUG(DEB_LEV_SIMPLE_SEQ,"In %s Video Extra data size=%d\n",__func__,omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->extradata_size);
-  DEBUG(DEB_LEV_SIMPLE_SEQ,"In %s Audio Extra data size=%d\n",__func__,omx_parser3gp_component_Private->avformatcontext->streams[AUDIO_STREAM]->codec->extradata_size); 
+  DEBUG(DEB_LEV_SIMPLE_SEQ,"In %s Audio Extra data size=%d\n",__func__,omx_parser3gp_component_Private->avformatcontext->streams[AUDIO_STREAM]->codec->extradata_size);
   /** initialization for buff mgmt callback function */
 
-  /** send callback regarding codec context extradata which will be required to 
-    * open the codec in the audio  and video decoder component 
-    */    
+  /** send callback regarding codec context extradata which will be required to
+    * open the codec in the audio  and video decoder component
+    */
   (*(omx_parser3gp_component_Private->callbacks->EventHandler))
     (openmaxStandComp,
     omx_parser3gp_component_Private->callbackData,
     OMX_EventPortFormatDetected, /* The command was completed */
-    OMX_IndexParamVideoPortFormat, /* port Format Detected */ 
+    OMX_IndexParamVideoPortFormat, /* port Format Detected */
     VIDEO_PORT_INDEX, /* This is the output port index */
-    NULL);  
+    NULL);
 
   (*(omx_parser3gp_component_Private->callbacks->EventHandler))
     (openmaxStandComp,
     omx_parser3gp_component_Private->callbackData,
     OMX_EventPortSettingsChanged, /* The command was completed */
-    OMX_IndexParamCommonExtraQuantData, /* port settings changed */ 
-    VIDEO_PORT_INDEX, /* This is the output port index */  
-    NULL);  
+    OMX_IndexParamCommonExtraQuantData, /* port settings changed */
+    VIDEO_PORT_INDEX, /* This is the output port index */
+    NULL);
 
   (*(omx_parser3gp_component_Private->callbacks->EventHandler))
     (openmaxStandComp,
     omx_parser3gp_component_Private->callbackData,
     OMX_EventPortFormatDetected, /* The command was completed */
-    OMX_IndexParamVideoPortFormat, /* port Format Detected */ 
+    OMX_IndexParamVideoPortFormat, /* port Format Detected */
     AUDIO_PORT_INDEX, /* This is the output port index */
     NULL);
 
@@ -322,9 +322,9 @@ OMX_ERRORTYPE omx_parser3gp_component_Init(OMX_COMPONENTTYPE *openmaxStandComp) 
     (openmaxStandComp,
     omx_parser3gp_component_Private->callbackData,
     OMX_EventPortSettingsChanged, /* The command was completed */
-    OMX_IndexParamCommonExtraQuantData, /* port settings changed */ 
+    OMX_IndexParamCommonExtraQuantData, /* port settings changed */
     AUDIO_PORT_INDEX, /* This is the output port index */
-    NULL);  
+    NULL);
 
   omx_parser3gp_component_Private->avformatReady = OMX_TRUE;
   omx_parser3gp_component_Private->isFirstBufferAudio = OMX_TRUE;
@@ -336,7 +336,7 @@ OMX_ERRORTYPE omx_parser3gp_component_Init(OMX_COMPONENTTYPE *openmaxStandComp) 
   return OMX_ErrorNone;
 }
 
-/** The DeInitialization function 
+/** The DeInitialization function
  */
 OMX_ERRORTYPE omx_parser3gp_component_Deinit(OMX_COMPONENTTYPE *openmaxStandComp) {
 
@@ -345,14 +345,14 @@ OMX_ERRORTYPE omx_parser3gp_component_Deinit(OMX_COMPONENTTYPE *openmaxStandComp
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s \n",__func__);
   /** closing input file */
   av_close_input_file(omx_parser3gp_component_Private->avformatcontext);
-  
+
   omx_parser3gp_component_Private->avformatReady = OMX_FALSE;
   tsem_reset(omx_parser3gp_component_Private->avformatSyncSem);
 
   return OMX_ErrorNone;
 }
 
-/** 
+/**
  * This function processes the input file and returns packet by packet as an output data
  * this packet is used in audio/video decoder component for decoding
  */
@@ -383,8 +383,8 @@ void omx_parser3gp_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandC
     omx_parser3gp_component_Private->isFirstBufferAudio = OMX_FALSE;
 
     if(omx_parser3gp_component_Private->avformatcontext->streams[AUDIO_STREAM]->codec->extradata_size > 0) {
-      memcpy(pOutputBuffer->pBuffer, 
-             omx_parser3gp_component_Private->avformatcontext->streams[AUDIO_STREAM]->codec->extradata, 
+      memcpy(pOutputBuffer->pBuffer,
+             omx_parser3gp_component_Private->avformatcontext->streams[AUDIO_STREAM]->codec->extradata,
              omx_parser3gp_component_Private->avformatcontext->streams[AUDIO_STREAM]->codec->extradata_size);
       pOutputBuffer->nFilledLen = omx_parser3gp_component_Private->avformatcontext->streams[AUDIO_STREAM]->codec->extradata_size;
       pOutputBuffer->nFlags = OMX_BUFFERFLAG_CODECCONFIG;
@@ -399,8 +399,8 @@ void omx_parser3gp_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandC
     omx_parser3gp_component_Private->isFirstBufferVideo = OMX_FALSE;
 
     if(omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->extradata_size > 0) {
-      memcpy(pOutputBuffer->pBuffer, 
-             omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->extradata, 
+      memcpy(pOutputBuffer->pBuffer,
+             omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->extradata,
              omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->extradata_size);
       pOutputBuffer->nFilledLen = omx_parser3gp_component_Private->avformatcontext->streams[VIDEO_STREAM]->codec->extradata_size;
       pOutputBuffer->nFlags = OMX_BUFFERFLAG_CODECCONFIG;
@@ -431,12 +431,12 @@ void omx_parser3gp_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandC
        DEBUG(DEB_LEV_FULL_SEQ,"In %s EOS - no more packet,state=%x\n",__func__, omx_parser3gp_component_Private->state);
        pOutputBuffer->nFlags = OMX_BUFFERFLAG_EOS;
      } else {
-       stream_index = omx_parser3gp_component_Private->pkt.stream_index; 
+       stream_index = omx_parser3gp_component_Private->pkt.stream_index;
        Scale = omx_parser3gp_component_Private->xScale >> 16;
        if(Scale!=1  && Scale!=0 && stream_index==VIDEO_STREAM){  /* TODO - change to a switch statement to handle all cases */
          /* fast forward the stream if Scale>1 */
         if(Scale>1){
-           error = av_seek_frame(omx_parser3gp_component_Private->avformatcontext, stream_index, omx_parser3gp_component_Private->pkt.pts+Scale ,0); 
+           error = av_seek_frame(omx_parser3gp_component_Private->avformatcontext, stream_index, omx_parser3gp_component_Private->pkt.pts+Scale ,0);
            if(error < 0) {
               DEBUG(DEB_LEV_ERR,"Error in seeking stream=%d\n",stream_index);
            }else DEBUG(DEB_LEV_SIMPLE_SEQ,"Success in seeking stream=%d\n",stream_index);
@@ -448,18 +448,18 @@ void omx_parser3gp_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandC
          }else DEBUG(DEB_LEV_SIMPLE_SEQ,"Success in seeking stream=%d\n",stream_index);
         }
        }
-       if((stream_index==VIDEO_STREAM && pOutputBuffer->nOutputPortIndex==VIDEO_PORT_INDEX) || 
-          (stream_index==AUDIO_STREAM && pOutputBuffer->nOutputPortIndex==AUDIO_PORT_INDEX)){  
+       if((stream_index==VIDEO_STREAM && pOutputBuffer->nOutputPortIndex==VIDEO_PORT_INDEX) ||
+          (stream_index==AUDIO_STREAM && pOutputBuffer->nOutputPortIndex==AUDIO_PORT_INDEX)){
          /** copying the packetized data in the output buffer that will be decoded in the decoder component  */
          if(pOutputBuffer->nAllocLen >= omx_parser3gp_component_Private->pkt.size) {
            memcpy(pOutputBuffer->pBuffer, omx_parser3gp_component_Private->pkt.data, omx_parser3gp_component_Private->pkt.size);
            pOutputBuffer->nFilledLen = omx_parser3gp_component_Private->pkt.size;
-           pOutputBuffer->nTimeStamp = av_rescale_q(omx_parser3gp_component_Private->pkt.pts, 
+           pOutputBuffer->nTimeStamp = av_rescale_q(omx_parser3gp_component_Private->pkt.pts,
                                                     omx_parser3gp_component_Private->avformatcontext->streams[stream_index]->time_base, bq);
            if(FirstTimeStampFlag[stream_index]==OMX_FALSE){
               pOutputBuffer->nFlags = OMX_BUFFERFLAG_STARTTIME;
               FirstTimeStampFlag[stream_index] = OMX_TRUE;
-           } 
+           }
          } else {
            DEBUG(DEB_LEV_ERR,"In %s Buffer Size=%d less than Pkt size=%d buffer=%x port_index=%d \n",__func__,
                               (int)pOutputBuffer->nAllocLen,(int)omx_parser3gp_component_Private->pkt.size,
@@ -469,13 +469,13 @@ void omx_parser3gp_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandC
          if(temp_buffer->nAllocLen >= omx_parser3gp_component_Private->pkt.size) {
            memcpy(temp_buffer->pBuffer, omx_parser3gp_component_Private->pkt.data, omx_parser3gp_component_Private->pkt.size);
            temp_buffer->nFilledLen = omx_parser3gp_component_Private->pkt.size;
-           temp_buffer->nTimeStamp = av_rescale_q (omx_parser3gp_component_Private->pkt.pts, 
+           temp_buffer->nTimeStamp = av_rescale_q (omx_parser3gp_component_Private->pkt.pts,
                                                    omx_parser3gp_component_Private->avformatcontext->streams[stream_index]->time_base, bq);
            temp_buffer->nOutputPortIndex = omx_parser3gp_component_Private->pkt.stream_index; /* keep the stream_index in OutputPortIndex for identification */
            if(FirstTimeStampFlag[temp_buffer->nOutputPortIndex]==OMX_FALSE){
              temp_buffer->nFlags = OMX_BUFFERFLAG_STARTTIME;
              FirstTimeStampFlag[temp_buffer->nOutputPortIndex] = OMX_TRUE;
-           } 
+           }
          } else {
            DEBUG(DEB_LEV_ERR,"In %s Buffer Size=%d less than Pkt size=%d\n",__func__,
              (int)temp_buffer->nAllocLen,(int)omx_parser3gp_component_Private->pkt.size);
@@ -503,15 +503,15 @@ void omx_parser3gp_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandC
    }
 
   av_free_packet(&omx_parser3gp_component_Private->pkt);
-  
+
   /** return the current output buffer */
   DEBUG(DEB_LEV_FULL_SEQ, "One output buffer %x len=%d is full returning\n", (int)pOutputBuffer->pBuffer, (int)pOutputBuffer->nFilledLen);
 }
 
 OMX_ERRORTYPE omx_parser3gp_component_SetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_IN  OMX_PTR ComponentParameterStructure) {
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure) {
 
   OMX_ERRORTYPE err = OMX_ErrorNone;
   OMX_VIDEO_PARAM_PORTFORMATTYPE *pVideoPortFormat;
@@ -539,8 +539,8 @@ OMX_ERRORTYPE omx_parser3gp_component_SetParameter(
     portIndex = pVideoPortFormat->nPortIndex;
     /*Check Structure Header and verify component state*/
     err = omx_base_component_ParameterSanityCheck(hComponent, portIndex, pVideoPortFormat, sizeof(OMX_VIDEO_PARAM_PORTFORMATTYPE));
-    if(err!=OMX_ErrorNone) { 
-      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err); 
+    if(err!=OMX_ErrorNone) {
+      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err);
       break;
     }
     if (portIndex < 1) {
@@ -549,12 +549,12 @@ OMX_ERRORTYPE omx_parser3gp_component_SetParameter(
       return OMX_ErrorBadPortIndex;
     }
     break;
-  case OMX_IndexParamVideoAvc: 
+  case OMX_IndexParamVideoAvc:
     pVideoAvc = (OMX_VIDEO_PARAM_AVCTYPE*)ComponentParameterStructure;
     /*Check Structure Header and verify component state*/
     err = omx_base_component_ParameterSanityCheck(hComponent, pVideoAvc->nPortIndex, pVideoAvc, sizeof(OMX_VIDEO_PARAM_AVCTYPE));
-    if(err!=OMX_ErrorNone) { 
-      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err); 
+    if(err!=OMX_ErrorNone) {
+      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err);
       break;
     }
     break;
@@ -582,7 +582,7 @@ OMX_ERRORTYPE omx_parser3gp_component_SetParameter(
       break;
     }
     break;
-  case OMX_IndexVendorInputFilename : 
+  case OMX_IndexVendorInputFilename :
     nFileNameLength = strlen((char *)ComponentParameterStructure) * sizeof(char) + 1;
     if(nFileNameLength > DEFAULT_FILENAME_LENGTH) {
       free(omx_parser3gp_component_Private->sInputFileName);
@@ -597,9 +597,9 @@ OMX_ERRORTYPE omx_parser3gp_component_SetParameter(
 }
 
 OMX_ERRORTYPE omx_parser3gp_component_GetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_INOUT OMX_PTR ComponentParameterStructure) {
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure) {
 
   OMX_ERRORTYPE err = OMX_ErrorNone;
   OMX_PORT_PARAM_TYPE *pVideoPortParam, *pAudioPortParam;
@@ -622,7 +622,7 @@ OMX_ERRORTYPE omx_parser3gp_component_GetParameter(
   switch(nParamIndex) {
   case OMX_IndexParamVideoInit:
     pVideoPortParam = (OMX_PORT_PARAM_TYPE*)  ComponentParameterStructure;
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PORT_PARAM_TYPE))) != OMX_ErrorNone) { 
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PORT_PARAM_TYPE))) != OMX_ErrorNone) {
       break;
     }
     pVideoPortParam->nStartPortNumber = 0;
@@ -630,7 +630,7 @@ OMX_ERRORTYPE omx_parser3gp_component_GetParameter(
     break;
   case OMX_IndexParamVideoPortFormat:
     pVideoPortFormat = (OMX_VIDEO_PARAM_PORTFORMATTYPE*)ComponentParameterStructure;
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_VIDEO_PARAM_PORTFORMATTYPE))) != OMX_ErrorNone) { 
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_VIDEO_PARAM_PORTFORMATTYPE))) != OMX_ErrorNone) {
       break;
     }
     if (pVideoPortFormat->nPortIndex < 1) {
@@ -680,17 +680,17 @@ OMX_ERRORTYPE omx_parser3gp_component_MessageHandler(OMX_COMPONENTTYPE* openmaxS
   /* Execute the base message handling */
   err = omx_base_component_MessageHandler(openmaxStandComp,message);
 
-  if (message->messageType == OMX_CommandStateSet){ 
+  if (message->messageType == OMX_CommandStateSet){
     if ((message->messageParam == OMX_StateExecuting) && (oldState == OMX_StateIdle)) {
       err = omx_parser3gp_component_Init(openmaxStandComp);
-      if(err!=OMX_ErrorNone) { 
-        DEBUG(DEB_LEV_ERR, "In %s  parser3gp Init Failed Error=%x\n",__func__,err); 
+      if(err!=OMX_ErrorNone) {
+        DEBUG(DEB_LEV_ERR, "In %s  parser3gp Init Failed Error=%x\n",__func__,err);
         return err;
       }
     } else if ((message->messageParam == OMX_StateIdle) && (oldState == OMX_StateExecuting)) {
       err = omx_parser3gp_component_Deinit(openmaxStandComp);
-      if(err!=OMX_ErrorNone) { 
-        DEBUG(DEB_LEV_ERR, "In %s parser3gp Deinit Failed Error=%x\n",__func__,err); 
+      if(err!=OMX_ErrorNone) {
+        DEBUG(DEB_LEV_ERR, "In %s parser3gp Deinit Failed Error=%x\n",__func__,err);
         return err;
       }
     }
@@ -701,9 +701,9 @@ OMX_ERRORTYPE omx_parser3gp_component_MessageHandler(OMX_COMPONENTTYPE* openmaxS
 
 /** setting configurations */
 OMX_ERRORTYPE omx_parser3gp_component_SetConfig(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nIndex,
-  OMX_IN  OMX_PTR pComponentConfigStructure) {
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nIndex,
+  OMX_PTR pComponentConfigStructure) {
 
   OMX_TIME_CONFIG_TIMESTAMPTYPE* sTimeStamp;
   OMX_COMPONENTTYPE *openmaxStandComp = (OMX_COMPONENTTYPE *)hComponent;
@@ -743,9 +743,9 @@ OMX_ERRORTYPE omx_parser3gp_component_SetConfig(
 }
 
 OMX_ERRORTYPE omx_parser3gp_component_GetExtensionIndex(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_STRING cParameterName,
-  OMX_OUT OMX_INDEXTYPE* pIndexType) {
+  OMX_HANDLETYPE hComponent,
+  OMX_STRING cParameterName,
+  OMX_INDEXTYPE* pIndexType) {
 
   DEBUG(DEB_LEV_FUNCTION_NAME,"In  %s \n",__func__);
 

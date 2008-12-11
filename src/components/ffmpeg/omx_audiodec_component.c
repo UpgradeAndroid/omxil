@@ -162,7 +162,7 @@ OMX_ERRORTYPE omx_audiodec_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
   openmaxStandComp->SetParameter = omx_audiodec_component_SetParameter;
   openmaxStandComp->GetParameter = omx_audiodec_component_GetParameter;
   openmaxStandComp->ComponentRoleEnum = omx_audiodec_component_ComponentRoleEnum;
-  
+
   noAudioDecInstance++;
 
   if(noAudioDecInstance>MAX_COMPONENT_AUDIODEC)
@@ -420,7 +420,7 @@ void omx_audiodec_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandCo
 
   if(omx_audiodec_component_Private->isFirstBuffer == OMX_TRUE) {
     omx_audiodec_component_Private->isFirstBuffer = OMX_FALSE;
-    
+
     if(pInputBuffer->nFlags == OMX_BUFFERFLAG_CODECCONFIG) {
       omx_audiodec_component_Private->extradata_size = pInputBuffer->nFilledLen;
       if(omx_audiodec_component_Private->extradata_size > 0) {
@@ -447,8 +447,8 @@ void omx_audiodec_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandCo
         return;
       }
       omx_audiodec_component_Private->avcodecReady = OMX_TRUE;
-    }    
-    
+    }
+
     if(pInputBuffer->nFilledLen == 0) {
       return;
     }
@@ -481,8 +481,8 @@ void omx_audiodec_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandCo
                               pInputBuffer->nFilledLen);
 #endif
 
-  DEBUG(DEB_LEV_FULL_SEQ, "In %s chl=%d sRate=%d \n", __func__, 
-    (int)omx_audiodec_component_Private->pAudioPcmMode.nChannels, 
+  DEBUG(DEB_LEV_FULL_SEQ, "In %s chl=%d sRate=%d \n", __func__,
+    (int)omx_audiodec_component_Private->pAudioPcmMode.nChannels,
     (int)omx_audiodec_component_Private->pAudioPcmMode.nSamplingRate);
 
 

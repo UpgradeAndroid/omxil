@@ -566,9 +566,9 @@ void omx_maddec_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandComp
 
 /** this function sets the parameter values regarding audio format & index */
 OMX_ERRORTYPE omx_maddec_component_SetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_IN  OMX_PTR ComponentParameterStructure)  {
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure)  {
 
   OMX_ERRORTYPE err = OMX_ErrorNone;
   OMX_AUDIO_PARAM_PORTFORMATTYPE *pAudioPortFormat;
@@ -660,9 +660,9 @@ OMX_ERRORTYPE omx_maddec_component_SetParameter(
 
 /** this function gets the parameters regarding audio formats and index */
 OMX_ERRORTYPE omx_maddec_component_GetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_INOUT OMX_PTR ComponentParameterStructure)  {
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure)  {
 
   OMX_AUDIO_PARAM_PORTFORMATTYPE *pAudioPortFormat;
   OMX_AUDIO_PARAM_PCMMODETYPE *pAudioPcmMode;

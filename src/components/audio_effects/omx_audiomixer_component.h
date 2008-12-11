@@ -34,8 +34,8 @@
 #include <OMX_Component.h>
 #include <OMX_Core.h>
 #include <stdlib.h>
-#include <string.h>
 #include <pthread.h>
+#include <string.h>
 #include <omx_base_filter.h>
 #include <omx_base_audio_port.h>
 

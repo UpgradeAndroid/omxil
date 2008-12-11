@@ -29,6 +29,7 @@
 
 */
 
+#include <asm/unistd.h>
 #include <omxcore.h>
 
 #include "omx_base_filter.h"
@@ -71,8 +72,7 @@ OMX_ERRORTYPE omx_base_filter_Destructor(OMX_COMPONENTTYPE *openmaxStandComp) {
   */
 void* omx_base_filter_BufferMgmtFunction (void* param) {
   OMX_COMPONENTTYPE* openmaxStandComp = (OMX_COMPONENTTYPE*)param;
-  omx_base_component_PrivateType* omx_base_component_Private=(omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
-  omx_base_filter_PrivateType* omx_base_filter_Private = (omx_base_filter_PrivateType*)omx_base_component_Private;
+  omx_base_filter_PrivateType* omx_base_filter_Private = (omx_base_filter_PrivateType*)openmaxStandComp->pComponentPrivate;
   omx_base_PortType *pInPort=(omx_base_PortType *)omx_base_filter_Private->ports[OMX_BASE_FILTER_INPUTPORT_INDEX];
   omx_base_PortType *pOutPort=(omx_base_PortType *)omx_base_filter_Private->ports[OMX_BASE_FILTER_OUTPUTPORT_INDEX];
   tsem_t* pInputSem = pInPort->pBufferSem;
@@ -83,6 +83,9 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
   OMX_BUFFERHEADERTYPE* pInputBuffer=NULL;
   OMX_BOOL isInputBufferNeeded=OMX_TRUE,isOutputBufferNeeded=OMX_TRUE;
   int inBufExchanged=0,outBufExchanged=0;
+
+  omx_base_filter_Private->bellagioThreads->nThreadBufferMngtID = (long int)syscall(__NR_gettid);
+  DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s the thread ID is %i\n", __func__, (int)omx_base_filter_Private->bellagioThreads->nThreadBufferMngtID);
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
   while(omx_base_filter_Private->state == OMX_StateIdle || omx_base_filter_Private->state == OMX_StateExecuting ||  omx_base_filter_Private->state == OMX_StatePause ||
@@ -238,7 +241,7 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
       }
       if(omx_base_filter_Private->state==OMX_StatePause && !(PORT_IS_BEING_FLUSHED(pInPort) || PORT_IS_BEING_FLUSHED(pOutPort))) {
         /*Waiting at paused state*/
-        tsem_wait(omx_base_component_Private->bStateSem);
+        tsem_wait(omx_base_filter_Private->bStateSem);
       }
 
       /*If EOS and Input buffer Filled Len Zero then Return output buffer immediately*/
@@ -252,7 +255,7 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
 
     if(omx_base_filter_Private->state==OMX_StatePause && !(PORT_IS_BEING_FLUSHED(pInPort) || PORT_IS_BEING_FLUSHED(pOutPort))) {
       /*Waiting at paused state*/
-      tsem_wait(omx_base_component_Private->bStateSem);
+      tsem_wait(omx_base_filter_Private->bStateSem);
     }
 
     /*Input Buffer has been completely consumed. So, return input buffer*/

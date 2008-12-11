@@ -43,7 +43,6 @@ static OMX_U32 noVolumeCompInstance = 0;
 
 #define VOLUME_COMP_ROLE "volume.component"
 
-
 OMX_ERRORTYPE omx_volume_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp, OMX_STRING cComponentName) {
   OMX_ERRORTYPE err = OMX_ErrorNone;
   omx_volume_component_PrivateType* omx_volume_component_Private;

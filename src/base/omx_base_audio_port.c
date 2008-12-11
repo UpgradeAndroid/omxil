@@ -56,7 +56,7 @@ OMX_ERRORTYPE base_audio_port_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,om
   omx_base_audio_PortType *omx_base_audio_Port;
 
   if (!(*openmaxStandPort)) {
-    *openmaxStandPort = calloc(1,sizeof (omx_base_audio_PortType));
+    *openmaxStandPort = calloc(1, sizeof(omx_base_audio_PortType));
   }
 
   if (!(*openmaxStandPort)) {

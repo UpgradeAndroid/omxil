@@ -33,7 +33,6 @@
 #include <OMX_Component.h>
 #include <OMX_Types.h>
 #include <pthread.h>
-#include <sys/msg.h>
 
 #include "component_loader.h"
 #include "omx_comp_debug_levels.h"

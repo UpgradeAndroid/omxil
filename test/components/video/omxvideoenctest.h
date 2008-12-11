@@ -1,10 +1,10 @@
 /**
   @file test/components/video/omxvideoenctest.h
-  
-  Test application that uses a OpenMAX component, a generic video encoder. 
+
+  Test application that uses a OpenMAX component, a generic video encoder.
   The application receives an video stream (.yuv) and encodes it in
   MPEG-4 Video format (.m4v).
-  
+
   Copyright (C) 2008  STMicroelectronics and Nokia
   Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 
@@ -21,7 +21,7 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
-  
+
   $Date$
   Revision $Rev$
   Author $Author$
@@ -39,7 +39,7 @@
 #include <OMX_Types.h>
 #include <OMX_Video.h>
 
-#include <tsemaphore.h>
+#include <bellagio/tsemaphore.h>
 #include <user_debug_levels.h>
 
 /* Application's private data */

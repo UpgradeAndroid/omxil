@@ -1,7 +1,7 @@
 /**
   @file src/components/xvideo/omx_xvideo_sink_component.c
-  
-  OpenMAX X-Video sink component. 
+
+  OpenMAX X-Video sink component.
 
   Copyright (C) 2007-2008 STMicroelectronics
   Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
@@ -57,7 +57,7 @@ static FILE *fd = NULL;
 
 /** Returns a time value in milliseconds based on a clock starting at
  *  some arbitrary base. Given a call to GetTime that returns a value
- *  of n a subsequent call to GetTime made m milliseconds later should 
+ *  of n a subsequent call to GetTime made m milliseconds later should
  *  return a value of (approximately) (n+m). This method is used, for
  *  instance, to compute the duration of call. */
 long GetTime() {
@@ -67,13 +67,13 @@ long GetTime() {
 }
 
 /** The Constructor
- * 
+ *
  * @param openmaxStandComp is the handle to be constructed
  * @param cComponentName is the name of the constructed component
- * 
- */ 
+ *
+ */
 OMX_ERRORTYPE omx_xvideo_sink_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OMX_STRING cComponentName) {
-  OMX_ERRORTYPE err = OMX_ErrorNone;  
+  OMX_ERRORTYPE err = OMX_ErrorNone;
   omx_xvideo_sink_component_PortType *pPort;
   omx_xvideo_sink_component_PrivateType* omx_xvideo_sink_component_Private;
 
@@ -89,16 +89,16 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Constructor(OMX_COMPONENTTYPE *openmaxSt
 
   omx_xvideo_sink_component_Private = openmaxStandComp->pComponentPrivate;
   omx_xvideo_sink_component_Private->ports = NULL;
-  
+
   /** we could create our own port structures here
-    * fixme maybe the base class could use a "port factory" function pointer?  
+    * fixme maybe the base class could use a "port factory" function pointer?
     */
   err = omx_base_sink_Constructor(openmaxStandComp, cComponentName);
 
   omx_xvideo_sink_component_Private->sPortTypesParam[OMX_PortDomainVideo].nStartPortNumber = 0;
   omx_xvideo_sink_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts = 1;
 
-  /** Allocate Ports and call port constructor. */  
+  /** Allocate Ports and call port constructor. */
   if ((omx_xvideo_sink_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts )  && !omx_xvideo_sink_component_Private->ports) {
     omx_xvideo_sink_component_Private->ports = calloc((omx_xvideo_sink_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts ), sizeof(omx_base_PortType *));
     if (!omx_xvideo_sink_component_Private->ports) {
@@ -131,26 +131,26 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Constructor(OMX_COMPONENTTYPE *openmaxSt
   pPort->sVideoParam.xFramerate = 25;
 
   DEBUG(DEB_LEV_PARAMS, "In %s, bSize=%d stride=%d\n", __func__,(int)pPort->sPortParam.nBufferSize,(int)pPort->sPortParam.format.video.nStride);
-  
+
   /** Set configs */
-  setHeader(&pPort->omxConfigCrop, sizeof(OMX_CONFIG_RECTTYPE));  
+  setHeader(&pPort->omxConfigCrop, sizeof(OMX_CONFIG_RECTTYPE));
   pPort->omxConfigCrop.nPortIndex = OMX_BASE_SINK_INPUTPORT_INDEX;
   pPort->omxConfigCrop.nLeft = pPort->omxConfigCrop.nTop = 0;
   pPort->omxConfigCrop.nWidth = pPort->omxConfigCrop.nHeight = 0;
 
-  setHeader(&pPort->omxConfigRotate, sizeof(OMX_CONFIG_ROTATIONTYPE));  
+  setHeader(&pPort->omxConfigRotate, sizeof(OMX_CONFIG_ROTATIONTYPE));
   pPort->omxConfigRotate.nPortIndex = OMX_BASE_SINK_INPUTPORT_INDEX;
   pPort->omxConfigRotate.nRotation = 0;  //Default: No rotation (0 degrees)
 
-  setHeader(&pPort->omxConfigMirror, sizeof(OMX_CONFIG_MIRRORTYPE));  
+  setHeader(&pPort->omxConfigMirror, sizeof(OMX_CONFIG_MIRRORTYPE));
   pPort->omxConfigMirror.nPortIndex = OMX_BASE_SINK_INPUTPORT_INDEX;
   pPort->omxConfigMirror.eMirror = OMX_MirrorNone;  //Default: No mirroring
 
-  setHeader(&pPort->omxConfigScale, sizeof(OMX_CONFIG_SCALEFACTORTYPE));  
+  setHeader(&pPort->omxConfigScale, sizeof(OMX_CONFIG_SCALEFACTORTYPE));
   pPort->omxConfigScale.nPortIndex = OMX_BASE_SINK_INPUTPORT_INDEX;
   pPort->omxConfigScale.xWidth = pPort->omxConfigScale.xHeight = 0x10000;  //Default: No scaling (scale factor = 1)
 
-  setHeader(&pPort->omxConfigOutputPosition, sizeof(OMX_CONFIG_POINTTYPE));  
+  setHeader(&pPort->omxConfigOutputPosition, sizeof(OMX_CONFIG_POINTTYPE));
   pPort->omxConfigOutputPosition.nPortIndex = OMX_BASE_SINK_INPUTPORT_INDEX;
   pPort->omxConfigOutputPosition.nX = pPort->omxConfigOutputPosition.nY = 0; //Default: No shift in output position (0,0)
 
@@ -169,7 +169,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Constructor(OMX_COMPONENTTYPE *openmaxSt
     }
     tsem_init(omx_xvideo_sink_component_Private->xvideoSyncSem, 0);
   }
-  
+
  /* testing the A/V sync */
 #ifdef AV_SYNC_LOG
  fd = fopen("video_timestamps.out","w");
@@ -184,12 +184,12 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Constructor(OMX_COMPONENTTYPE *openmaxSt
   return err;
 }
 
-/** The Destructor 
+/** The Destructor
  */
 OMX_ERRORTYPE omx_xvideo_sink_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp) {
   omx_xvideo_sink_component_PrivateType* omx_xvideo_sink_component_Private = openmaxStandComp->pComponentPrivate;
   OMX_U32 i;
- 
+
   /* frees port/s */
   if (omx_xvideo_sink_component_Private->ports) {
     for (i=0; i < (omx_xvideo_sink_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts); i++) {
@@ -201,7 +201,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Destructor(OMX_COMPONENTTYPE *openmaxSta
   }
 
   if(omx_xvideo_sink_component_Private->xvideoSyncSem) {
-    tsem_deinit(omx_xvideo_sink_component_Private->xvideoSyncSem); 
+    tsem_deinit(omx_xvideo_sink_component_Private->xvideoSyncSem);
     free(omx_xvideo_sink_component_Private->xvideoSyncSem);
     omx_xvideo_sink_component_Private->xvideoSyncSem = NULL;
   }
@@ -219,8 +219,8 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Destructor(OMX_COMPONENTTYPE *openmaxSta
   return OMX_ErrorNone;
 }
 
-/** The initialization function 
-  * This function opens the frame buffer device and allocates memory for display 
+/** The initialization function
+  * This function opens the frame buffer device and allocates memory for display
   * also it finds the frame buffer supported display formats
   */
 OMX_ERRORTYPE omx_xvideo_sink_component_Init(OMX_COMPONENTTYPE *openmaxStandComp) {
@@ -233,15 +233,15 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Init(OMX_COMPONENTTYPE *openmaxStandComp
   omx_xvideo_sink_component_Private->dpy = XOpenDisplay(NULL);
   omx_xvideo_sink_component_Private->screen = DefaultScreen(omx_xvideo_sink_component_Private->dpy);
 
-  XGetWindowAttributes(omx_xvideo_sink_component_Private->dpy, 
-    DefaultRootWindow(omx_xvideo_sink_component_Private->dpy), 
+  XGetWindowAttributes(omx_xvideo_sink_component_Private->dpy,
+    DefaultRootWindow(omx_xvideo_sink_component_Private->dpy),
     &omx_xvideo_sink_component_Private->attribs);
-  
-  XMatchVisualInfo(omx_xvideo_sink_component_Private->dpy, 
-    omx_xvideo_sink_component_Private->screen, 
+
+  XMatchVisualInfo(omx_xvideo_sink_component_Private->dpy,
+    omx_xvideo_sink_component_Private->screen,
     omx_xvideo_sink_component_Private->attribs.depth, TrueColor, &
     omx_xvideo_sink_component_Private->vinfo);
-  
+
   omx_xvideo_sink_component_Private->wmDeleteWindow = XInternAtom(omx_xvideo_sink_component_Private->dpy, "WM_DELETE_WINDOW", False);
 
   omx_xvideo_sink_component_Private->hint.x = 1;
@@ -250,27 +250,27 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Init(OMX_COMPONENTTYPE *openmaxStandComp
   omx_xvideo_sink_component_Private->hint.height = yuv_height;
   omx_xvideo_sink_component_Private->hint.flags = PPosition | PSize;
 
-  omx_xvideo_sink_component_Private->xswa.colormap = XCreateColormap(omx_xvideo_sink_component_Private->dpy, 
-                                                                     DefaultRootWindow(omx_xvideo_sink_component_Private->dpy), 
+  omx_xvideo_sink_component_Private->xswa.colormap = XCreateColormap(omx_xvideo_sink_component_Private->dpy,
+                                                                     DefaultRootWindow(omx_xvideo_sink_component_Private->dpy),
                                                                      omx_xvideo_sink_component_Private->vinfo.visual, AllocNone);
   omx_xvideo_sink_component_Private->xswa.event_mask = StructureNotifyMask | ExposureMask;
   omx_xvideo_sink_component_Private->xswa.background_pixel = 0;
   omx_xvideo_sink_component_Private->xswa.border_pixel = 0;
 
-  omx_xvideo_sink_component_Private->window = 
-                        XCreateWindow(omx_xvideo_sink_component_Private->dpy, 
-                                      DefaultRootWindow(omx_xvideo_sink_component_Private->dpy), 0, 0, yuv_width, 
-                                      yuv_height, 0, omx_xvideo_sink_component_Private->vinfo.depth, InputOutput, 
-                                      omx_xvideo_sink_component_Private->vinfo.visual, 
-                                      CWBackPixel | CWBorderPixel | CWColormap | 
+  omx_xvideo_sink_component_Private->window =
+                        XCreateWindow(omx_xvideo_sink_component_Private->dpy,
+                                      DefaultRootWindow(omx_xvideo_sink_component_Private->dpy), 0, 0, yuv_width,
+                                      yuv_height, 0, omx_xvideo_sink_component_Private->vinfo.depth, InputOutput,
+                                      omx_xvideo_sink_component_Private->vinfo.visual,
+                                      CWBackPixel | CWBorderPixel | CWColormap |
                                       CWEventMask, &omx_xvideo_sink_component_Private->xswa);
 
   XSelectInput(omx_xvideo_sink_component_Private->dpy, omx_xvideo_sink_component_Private->window, StructureNotifyMask);
   XSetStandardProperties(omx_xvideo_sink_component_Private->dpy, omx_xvideo_sink_component_Private->window, "xvcam", "xvcam", None, NULL, 0,
                         &omx_xvideo_sink_component_Private->hint);
 
-  XSetWMProtocols(omx_xvideo_sink_component_Private->dpy, 
-                  omx_xvideo_sink_component_Private->window, 
+  XSetWMProtocols(omx_xvideo_sink_component_Private->dpy,
+                  omx_xvideo_sink_component_Private->window,
                   &omx_xvideo_sink_component_Private->wmDeleteWindow, 1);
   XMapWindow(omx_xvideo_sink_component_Private->dpy, omx_xvideo_sink_component_Private->window);
 
@@ -280,17 +280,17 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Init(OMX_COMPONENTTYPE *openmaxStandComp
     return OMX_ErrorUndefined;
 
   if (Success !=
-     XvQueryExtension(omx_xvideo_sink_component_Private->dpy, 
-                      &omx_xvideo_sink_component_Private->ver, 
-                      &omx_xvideo_sink_component_Private->rel, 
-                      &omx_xvideo_sink_component_Private->req, 
+     XvQueryExtension(omx_xvideo_sink_component_Private->dpy,
+                      &omx_xvideo_sink_component_Private->ver,
+                      &omx_xvideo_sink_component_Private->rel,
+                      &omx_xvideo_sink_component_Private->req,
                       &omx_xvideo_sink_component_Private->ev, &err))
     fprintf(stderr, "Couldn't do Xv stuff\n");
 
   if (Success !=
-     XvQueryAdaptors(omx_xvideo_sink_component_Private->dpy, 
-                     DefaultRootWindow(omx_xvideo_sink_component_Private->dpy), 
-                     &omx_xvideo_sink_component_Private->adapt, 
+     XvQueryAdaptors(omx_xvideo_sink_component_Private->dpy,
+                     DefaultRootWindow(omx_xvideo_sink_component_Private->dpy),
+                     &omx_xvideo_sink_component_Private->adapt,
                      &omx_xvideo_sink_component_Private->ai))
     fprintf(stderr, "Couldn't do Xv stuff\n");
 
@@ -303,11 +303,11 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Init(OMX_COMPONENTTYPE *openmaxStandComp
 
   omx_xvideo_sink_component_Private->gc = XCreateGC(omx_xvideo_sink_component_Private->dpy, omx_xvideo_sink_component_Private->window, 0, 0);
 
-  omx_xvideo_sink_component_Private->yuv_image = XvShmCreateImage(omx_xvideo_sink_component_Private->dpy, 
-                                                                  omx_xvideo_sink_component_Private->xv_port, 
+  omx_xvideo_sink_component_Private->yuv_image = XvShmCreateImage(omx_xvideo_sink_component_Private->dpy,
+                                                                  omx_xvideo_sink_component_Private->xv_port,
                                                                   GUID_I420_PLANAR, 0, yuv_width,
                                                                   yuv_height, &omx_xvideo_sink_component_Private->yuv_shminfo);
-  
+
   omx_xvideo_sink_component_Private->yuv_shminfo.shmid    = shmget(IPC_PRIVATE, omx_xvideo_sink_component_Private->yuv_image->data_size, IPC_CREAT | 0777);
   omx_xvideo_sink_component_Private->yuv_shminfo.shmaddr  = (char *) shmat(omx_xvideo_sink_component_Private->yuv_shminfo.shmid, 0, 0);
   omx_xvideo_sink_component_Private->yuv_image->data      = omx_xvideo_sink_component_Private->yuv_shminfo.shmaddr;
@@ -328,14 +328,14 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Init(OMX_COMPONENTTYPE *openmaxStandComp
   return OMX_ErrorNone;
 }
 
-/** The deinitialization function 
+/** The deinitialization function
   * It deallocates the frame buffer memory, and closes frame buffer
   */
 OMX_ERRORTYPE omx_xvideo_sink_component_Deinit(OMX_COMPONENTTYPE *openmaxStandComp) {
   omx_xvideo_sink_component_PrivateType* omx_xvideo_sink_component_Private = openmaxStandComp->pComponentPrivate;
 
   omx_xvideo_sink_component_Private->bIsXVideoInit = OMX_FALSE;
-  
+
   XShmDetach(omx_xvideo_sink_component_Private->dpy,&omx_xvideo_sink_component_Private->yuv_shminfo);
 
   shmdt(omx_xvideo_sink_component_Private->yuv_shminfo.shmaddr);
@@ -350,8 +350,8 @@ OMX_ERRORTYPE omx_xvideo_sink_component_Deinit(OMX_COMPONENTTYPE *openmaxStandCo
 }
 
 
-/** buffer management callback function 
-  * takes one input buffer and displays its contents 
+/** buffer management callback function
+  * takes one input buffer and displays its contents
   */
 void omx_xvideo_sink_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandComp, OMX_BUFFERHEADERTYPE* pInputBuffer) {
   omx_xvideo_sink_component_PrivateType* omx_xvideo_sink_component_Private = openmaxStandComp->pComponentPrivate;
@@ -359,7 +359,7 @@ void omx_xvideo_sink_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStan
   int d;
   unsigned int ud, width, height;
   Window _dw;
-  
+
   if (omx_xvideo_sink_component_Private->bIsXVideoInit == OMX_FALSE) {
     DEBUG(DEB_LEV_FULL_SEQ, "In %s waiting for Xvideo Init\n",__func__);
     //tsem_down(omx_xvideo_sink_component_Private->xvideoSyncSem);
@@ -380,19 +380,19 @@ void omx_xvideo_sink_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStan
   }
 
   /**  Copy image data into in_buffer */
-  
+
   DEBUG(DEB_LEV_FULL_SEQ, "Copying data size=%d buffer size=%d\n",
     (int)omx_xvideo_sink_component_Private->yuv_image->data_size,
     (int)pInputBuffer->nFilledLen);
   memcpy(omx_xvideo_sink_component_Private->yuv_image->data, pInputBuffer->pBuffer, omx_xvideo_sink_component_Private->yuv_image->data_size);
 
   XGetGeometry(omx_xvideo_sink_component_Private->dpy, omx_xvideo_sink_component_Private->window, &_dw, &d, &d, &width, &height, &ud, &ud);
-  XvShmPutImage(omx_xvideo_sink_component_Private->dpy, 
-                omx_xvideo_sink_component_Private->xv_port, 
-                omx_xvideo_sink_component_Private->window, 
-                omx_xvideo_sink_component_Private->gc, 
+  XvShmPutImage(omx_xvideo_sink_component_Private->dpy,
+                omx_xvideo_sink_component_Private->xv_port,
+                omx_xvideo_sink_component_Private->window,
+                omx_xvideo_sink_component_Private->gc,
                 omx_xvideo_sink_component_Private->yuv_image, 0, 0,
-                omx_xvideo_sink_component_Private->yuv_image->width, 
+                omx_xvideo_sink_component_Private->yuv_image->width,
                 omx_xvideo_sink_component_Private->yuv_image->height, 0, 0, width, height,
                 True);
 
@@ -427,7 +427,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetConfig(
     case OMX_IndexConfigCommonInputCrop:
       omxConfigCrop = (OMX_CONFIG_RECTTYPE*)pComponentConfigStructure;
       portIndex = omxConfigCrop->nPortIndex;
-      if ((err = checkHeader(pComponentConfigStructure, sizeof(OMX_CONFIG_RECTTYPE))) != OMX_ErrorNone) { 
+      if ((err = checkHeader(pComponentConfigStructure, sizeof(OMX_CONFIG_RECTTYPE))) != OMX_ErrorNone) {
         break;
       }
       if (portIndex == OMX_BASE_SINK_INPUTPORT_INDEX) {
@@ -443,7 +443,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetConfig(
     case OMX_IndexConfigCommonRotate:
       omxConfigRotate = (OMX_CONFIG_ROTATIONTYPE*)pComponentConfigStructure;
       portIndex = omxConfigRotate->nPortIndex;
-      if ((err = checkHeader(pComponentConfigStructure, sizeof(OMX_CONFIG_ROTATIONTYPE))) != OMX_ErrorNone) { 
+      if ((err = checkHeader(pComponentConfigStructure, sizeof(OMX_CONFIG_ROTATIONTYPE))) != OMX_ErrorNone) {
         break;
       }
       if (portIndex == 0) {
@@ -460,7 +460,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetConfig(
     case OMX_IndexConfigCommonMirror:
       omxConfigMirror = (OMX_CONFIG_MIRRORTYPE*)pComponentConfigStructure;
       portIndex = omxConfigMirror->nPortIndex;
-      if ((err = checkHeader(pComponentConfigStructure, sizeof(OMX_CONFIG_MIRRORTYPE))) != OMX_ErrorNone) { 
+      if ((err = checkHeader(pComponentConfigStructure, sizeof(OMX_CONFIG_MIRRORTYPE))) != OMX_ErrorNone) {
         break;
       }
       if (portIndex == 0) {
@@ -477,7 +477,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetConfig(
     case OMX_IndexConfigCommonScale:
       omxConfigScale = (OMX_CONFIG_SCALEFACTORTYPE*)pComponentConfigStructure;
       portIndex = omxConfigScale->nPortIndex;
-      if ((err = checkHeader(pComponentConfigStructure, sizeof(OMX_CONFIG_SCALEFACTORTYPE))) != OMX_ErrorNone) { 
+      if ((err = checkHeader(pComponentConfigStructure, sizeof(OMX_CONFIG_SCALEFACTORTYPE))) != OMX_ErrorNone) {
         break;
       }
       if (portIndex == 0) {
@@ -495,7 +495,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetConfig(
     case OMX_IndexConfigCommonOutputPosition:
       omxConfigOutputPosition = (OMX_CONFIG_POINTTYPE*)pComponentConfigStructure;
       portIndex = omxConfigOutputPosition->nPortIndex;
-      if ((err = checkHeader(pComponentConfigStructure, sizeof(OMX_CONFIG_POINTTYPE))) != OMX_ErrorNone) { 
+      if ((err = checkHeader(pComponentConfigStructure, sizeof(OMX_CONFIG_POINTTYPE))) != OMX_ErrorNone) {
         break;
       }
       if (portIndex == 0) {
@@ -543,7 +543,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_GetConfig(
       } else {
         return OMX_ErrorBadPortIndex;
       }
-    break;    
+    break;
     case OMX_IndexConfigCommonRotate:
       omxConfigRotate = (OMX_CONFIG_ROTATIONTYPE*)pComponentConfigStructure;
       setHeader(omxConfigRotate, sizeof(OMX_CONFIG_ROTATIONTYPE));
@@ -553,7 +553,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_GetConfig(
       } else {
         return OMX_ErrorBadPortIndex;
       }
-      break;    
+      break;
     case OMX_IndexConfigCommonMirror:
       omxConfigMirror = (OMX_CONFIG_MIRRORTYPE*)pComponentConfigStructure;
       setHeader(omxConfigMirror, sizeof(OMX_CONFIG_MIRRORTYPE));
@@ -563,7 +563,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_GetConfig(
       } else {
         return OMX_ErrorBadPortIndex;
       }
-      break;      
+      break;
     case OMX_IndexConfigCommonScale:
       omxConfigScale = (OMX_CONFIG_SCALEFACTORTYPE*)pComponentConfigStructure;
       setHeader(omxConfigScale, sizeof(OMX_CONFIG_SCALEFACTORTYPE));
@@ -573,7 +573,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_GetConfig(
       } else {
         return OMX_ErrorBadPortIndex;
       }
-      break;    
+      break;
     case OMX_IndexConfigCommonOutputPosition:
       omxConfigOutputPosition = (OMX_CONFIG_POINTTYPE*)pComponentConfigStructure;
       setHeader(omxConfigOutputPosition, sizeof(OMX_CONFIG_POINTTYPE));
@@ -583,7 +583,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_GetConfig(
       } else {
         return OMX_ErrorBadPortIndex;
       }
-      break;    
+      break;
     default: // delegate to superclass
       return omx_base_component_GetConfig(hComponent, nIndex, pComponentConfigStructure);
   }
@@ -606,7 +606,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetParameter(
   OMX_COMPONENTTYPE *openmaxStandComp = (OMX_COMPONENTTYPE *)hComponent;
   omx_xvideo_sink_component_PrivateType* omx_xvideo_sink_component_Private = openmaxStandComp->pComponentPrivate;
   omx_xvideo_sink_component_PortType *pPort;
-  
+
   if (ComponentParameterStructure == NULL) {
     return OMX_ErrorBadParameter;
   }
@@ -617,11 +617,11 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetParameter(
       pPortDef = (OMX_PARAM_PORTDEFINITIONTYPE*) ComponentParameterStructure;
       portIndex = pPortDef->nPortIndex;
       err = omx_base_component_ParameterSanityCheck(hComponent, portIndex, pPortDef, sizeof(OMX_PARAM_PORTDEFINITIONTYPE));
-      if(err!=OMX_ErrorNone) { 
-        DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err); 
+      if(err!=OMX_ErrorNone) {
+        DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err);
         break;
       }
-      
+
       if(portIndex > (omx_xvideo_sink_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts)) {
         return OMX_ErrorBadPortIndex;
       }
@@ -629,7 +629,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetParameter(
       if(portIndex == 0) {
 
         pPort = (omx_xvideo_sink_component_PortType *) omx_xvideo_sink_component_Private->ports[portIndex];
-      
+
         pPort->sPortParam.nBufferCountActual = pPortDef->nBufferCountActual;
         //  Copy stuff from OMX_VIDEO_PORTDEFINITIONTYPE structure
         if(pPortDef->format.video.cMIMEType != NULL) {
@@ -639,7 +639,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetParameter(
         pPort->sPortParam.format.video.nFrameHeight = pPortDef->format.video.nFrameHeight;
         pPort->sPortParam.format.video.nBitrate     = pPortDef->format.video.nBitrate;
         pPort->sPortParam.format.video.xFramerate   = pPortDef->format.video.xFramerate;
-        pPort->sPortParam.format.video.bFlagErrorConcealment = pPortDef->format.video.bFlagErrorConcealment; 
+        pPort->sPortParam.format.video.bFlagErrorConcealment = pPortDef->format.video.bFlagErrorConcealment;
         pPort->sVideoParam.eColorFormat             = pPortDef->format.video.eColorFormat;;
         pPort->sPortParam.format.video.eColorFormat = pPortDef->format.video.eColorFormat;
 
@@ -651,7 +651,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetParameter(
         pPort->sPortParam.nBufferSize = (OMX_U32) abs(pPort->sPortParam.format.video.nStride) * pPort->sPortParam.format.video.nSliceHeight;
         pPort->omxConfigCrop.nWidth = pPort->sPortParam.format.video.nFrameWidth;
         pPort->omxConfigCrop.nHeight = pPort->sPortParam.format.video.nFrameHeight;
-      } 
+      }
       break;
 
     case OMX_IndexParamVideoPortFormat:
@@ -659,8 +659,8 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetParameter(
       pVideoPortFormat = (OMX_VIDEO_PARAM_PORTFORMATTYPE*)ComponentParameterStructure;
       portIndex = pVideoPortFormat->nPortIndex;
       err = omx_base_component_ParameterSanityCheck(hComponent, portIndex, pVideoPortFormat, sizeof(OMX_VIDEO_PARAM_PORTFORMATTYPE));
-      if(err!=OMX_ErrorNone) { 
-        DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err); 
+      if(err!=OMX_ErrorNone) {
+        DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n",__func__,err);
         break;
       }
       pPort = (omx_xvideo_sink_component_PortType *) omx_xvideo_sink_component_Private->ports[portIndex];
@@ -684,7 +684,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_SetParameter(
       pPort->sPortParam.format.video.nSliceHeight = pPort->sPortParam.format.video.nFrameHeight;  //  No support for slices yet
       pPort->sPortParam.nBufferSize               = (OMX_U32) abs(pPort->sPortParam.format.video.nStride) * pPort->sPortParam.format.video.nSliceHeight;
       break;
-    
+
     default: /*Call the base component function*/
       return omx_base_component_SetParameter(hComponent, nParamIndex, ComponentParameterStructure);
   }
@@ -697,12 +697,12 @@ OMX_ERRORTYPE omx_xvideo_sink_component_GetParameter(
   OMX_IN  OMX_INDEXTYPE nParamIndex,
   OMX_INOUT OMX_PTR ComponentParameterStructure) {
 
-  OMX_VIDEO_PARAM_PORTFORMATTYPE *pVideoPortFormat; 
+  OMX_VIDEO_PARAM_PORTFORMATTYPE *pVideoPortFormat;
   OMX_ERRORTYPE err = OMX_ErrorNone;
   OMX_COMPONENTTYPE *openmaxStandComp = (OMX_COMPONENTTYPE *)hComponent;
   omx_xvideo_sink_component_PrivateType* omx_xvideo_sink_component_Private = openmaxStandComp->pComponentPrivate;
-  omx_xvideo_sink_component_PortType *pPort = (omx_xvideo_sink_component_PortType *) omx_xvideo_sink_component_Private->ports[OMX_BASE_SINK_INPUTPORT_INDEX];  
-  
+  omx_xvideo_sink_component_PortType *pPort = (omx_xvideo_sink_component_PortType *) omx_xvideo_sink_component_Private->ports[OMX_BASE_SINK_INPUTPORT_INDEX];
+
   if (ComponentParameterStructure == NULL) {
     return OMX_ErrorBadParameter;
   }
@@ -710,15 +710,15 @@ OMX_ERRORTYPE omx_xvideo_sink_component_GetParameter(
   /* Check which structure we are being fed and fill its header */
   switch(nParamIndex) {
     case OMX_IndexParamVideoInit:
-      if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PORT_PARAM_TYPE))) != OMX_ErrorNone) { 
+      if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PORT_PARAM_TYPE))) != OMX_ErrorNone) {
         break;
       }
       memcpy(ComponentParameterStructure, &omx_xvideo_sink_component_Private->sPortTypesParam[OMX_PortDomainVideo], sizeof(OMX_PORT_PARAM_TYPE));
-      break;    
-    
+      break;
+
     case OMX_IndexParamVideoPortFormat:
       pVideoPortFormat = (OMX_VIDEO_PARAM_PORTFORMATTYPE*)ComponentParameterStructure;
-      if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_VIDEO_PARAM_PORTFORMATTYPE))) != OMX_ErrorNone) { 
+      if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_VIDEO_PARAM_PORTFORMATTYPE))) != OMX_ErrorNone) {
         break;
       }
       if (pVideoPortFormat->nPortIndex < 1) {
@@ -726,8 +726,8 @@ OMX_ERRORTYPE omx_xvideo_sink_component_GetParameter(
       } else {
         return OMX_ErrorBadPortIndex;
       }
-      break;  
-      
+      break;
+
     default: /*Call the base component function*/
       return omx_base_component_GetParameter(hComponent, nParamIndex, ComponentParameterStructure);
   }
@@ -748,11 +748,11 @@ OMX_ERRORTYPE omx_xvideo_sink_component_MessageHandler(OMX_COMPONENTTYPE* openma
     if ((message->messageParam == OMX_StateExecuting ) && (omx_xvideo_sink_component_Private->state == OMX_StateIdle)) {
       DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s sink component from loaded to idle \n", __func__);
       err = omx_xvideo_sink_component_Init(openmaxStandComp);
-      if(err!=OMX_ErrorNone) { 
-        DEBUG(DEB_LEV_ERR, "In %s Video Sink Init Failed Error=%x\n",__func__,err); 
+      if(err!=OMX_ErrorNone) {
+        DEBUG(DEB_LEV_ERR, "In %s Video Sink Init Failed Error=%x\n",__func__,err);
         return err;
       }
-    } 
+    }
   }
   // Execute the base message handling
   err = omx_base_component_MessageHandler(openmaxStandComp,message);
@@ -760,8 +760,8 @@ OMX_ERRORTYPE omx_xvideo_sink_component_MessageHandler(OMX_COMPONENTTYPE* openma
   if (message->messageType == OMX_CommandStateSet) {
     if ((message->messageParam == OMX_StateIdle ) && (omx_xvideo_sink_component_Private->state == OMX_StateIdle) && eState == OMX_StateExecuting) {
       err = omx_xvideo_sink_component_Deinit(openmaxStandComp);
-      if(err!=OMX_ErrorNone) { 
-        DEBUG(DEB_LEV_ERR, "In %s Video Sink Deinit Failed Error=%x\n",__func__,err); 
+      if(err!=OMX_ErrorNone) {
+        DEBUG(DEB_LEV_ERR, "In %s Video Sink Deinit Failed Error=%x\n",__func__,err);
         return err;
       }
     }
@@ -769,7 +769,7 @@ OMX_ERRORTYPE omx_xvideo_sink_component_MessageHandler(OMX_COMPONENTTYPE* openma
   return err;
 }
 
-/**  This function takes two inputs - 
+/**  This function takes two inputs -
   * @param width is the input picture width
   * @param omx_pxlfmt is the input openmax standard pixel format
   * It calculates the byte per pixel needed to display the picture with the input omx_pxlfmt
@@ -792,7 +792,7 @@ OMX_S32 calcStride(OMX_U32 width, OMX_COLOR_FORMATTYPE omx_pxlfmt) {
     case OMX_COLOR_Format8bitRGB332:
     case OMX_COLOR_FormatRawBayer8bit:
     case OMX_COLOR_FormatRawBayer8bitcompressed:
-      bpp = 8;  
+      bpp = 8;
       break;
     case OMX_COLOR_FormatRawBayer10bit:
       bpp = 10;

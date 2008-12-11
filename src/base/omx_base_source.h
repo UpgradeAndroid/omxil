@@ -36,8 +36,8 @@
 #include <OMX_Component.h>
 #include <OMX_Core.h>
 #include <pthread.h>
-#include "omx_base_component.h"
 #include <stdlib.h>
+#include "omx_base_component.h"
 
 
 /** OMX_BASE_SOURCE_OUTPUTPORT_INDEX is the index of any output port for the derived components

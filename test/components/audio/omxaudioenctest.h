@@ -1,8 +1,8 @@
 /**
   @file test/components/audio/omxaudioenctest.c
 
-  This test application can encode audio pcm stream into mp3/aac/amr format.  
-  
+  This test application can encode audio pcm stream into mp3/aac/amr format.
+
   Copyright (C) 2008  STMicroelectronics and Nokia
 
   This library is free software; you can redistribute it and/or modify it under
@@ -19,7 +19,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-  
+
   $Date: 2008-02-12 12:06:30 +0530 (Tue, 12 Feb 2008) $
   Revision $Rev: 1298 $
   Author $Author: pankaj_sen $
@@ -41,7 +41,7 @@
 #include <OMX_Types.h>
 #include <OMX_Audio.h>
 
-#include <tsemaphore.h>
+#include <bellagio/tsemaphore.h>
 #include <user_debug_levels.h>
 
 /** Specification version*/

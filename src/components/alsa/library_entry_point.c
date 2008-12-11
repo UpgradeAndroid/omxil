@@ -33,8 +33,8 @@
 */
 
 #include <st_static_component_loader.h>
-#include <omx_alsasink_component.h>
-#include <omx_alsasrc_component.h>
+#include "omx_alsasink_component.h"
+#include "omx_alsasrc_component.h"
 
 /** The library entry point. It must have the same name for each
  * library for the components loaded by the ST static component loader.

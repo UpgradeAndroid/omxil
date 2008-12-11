@@ -1,17 +1,17 @@
 /**
   @file test/components/parser/omxparsertest.h
-  Test application uses following OpenMAX components, 
+  Test application uses following OpenMAX components,
     parser3gp  -- 3gp file parser ,
     audio decoder pipeline  - audio decoder, volume component and alsa sink,
     video decoder pipeline  - video decoder, color converter and video sink.
-  The application receives a 3gp stream as the input, parses it and sends the audio and  
+  The application receives a 3gp stream as the input, parses it and sends the audio and
   video streams to their respective pipelines.
   The audio formats supported are:
     mp3 (ffmpeg)
     aac
     The video formats supported are:
     H.264
-    MPEG4        
+    MPEG4
 
   Copyright (C) 2007-2008 STMicroelectronics
   Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
@@ -30,7 +30,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-  
+
   $Date$
   Revision $Rev$
   Author $Author$
@@ -52,7 +52,7 @@
 #include <OMX_Video.h>
 #include <OMX_Audio.h>
 
-#include <tsemaphore.h>
+#include <bellagio/tsemaphore.h>
 #include <user_debug_levels.h>
 
 typedef struct appPrivateType{
@@ -77,8 +77,8 @@ typedef struct appPrivateType{
   OMX_HANDLETYPE videoschd_handle;
 }appPrivateType;
 
-#define BUFFER_IN_SIZE 4096    
-#define BUFFER_OUT_SIZE   640*480*3 // 1382400    //921600 -- the output buffer size is chosen to support upto VGA picture: 640*480*3 
+#define BUFFER_IN_SIZE 4096
+#define BUFFER_OUT_SIZE   640*480*3 // 1382400    //921600 -- the output buffer size is chosen to support upto VGA picture: 640*480*3
 
 /** Specification version*/
 #define VERSIONMAJOR    1
@@ -156,7 +156,7 @@ OMX_ERRORTYPE fb_sinkEmptyBufferDone(
   OMX_OUT OMX_HANDLETYPE hComponent,
   OMX_OUT OMX_PTR pAppData,
   OMX_OUT OMX_BUFFERHEADERTYPE* pBuffer);
-  
+
 /** callback prototypes for parser3gp */
 OMX_ERRORTYPE parser3gpEventHandler(
   OMX_OUT OMX_HANDLETYPE hComponent,
@@ -165,7 +165,7 @@ OMX_ERRORTYPE parser3gpEventHandler(
   OMX_OUT OMX_U32 Data1,
   OMX_OUT OMX_U32 Data2,
   OMX_OUT OMX_PTR pEventData);
-  
+
 OMX_ERRORTYPE parser3gpFillBufferDone(
   OMX_OUT OMX_HANDLETYPE hComponent,
   OMX_OUT OMX_PTR pAppData,
@@ -240,8 +240,8 @@ OMX_ERRORTYPE audiosinkEmptyBufferDone(
 /** display general help  */
 void display_help();
 
-/** this function sets the color converter and video sink port characteristics 
-  * based on the video decoder output port settings 
+/** this function sets the color converter and video sink port characteristics
+  * based on the video decoder output port settings
   */
 int setPortParameters();
 

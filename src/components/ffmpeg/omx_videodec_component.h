@@ -1,7 +1,7 @@
 /**
   @file src/components/ffmpeg/omx_videodec_component.h
-  
-  This component implements an H.264 / MPEG-4 AVC video decoder. 
+
+  This component implements an H.264 / MPEG-4 AVC video decoder.
   The H.264 / MPEG-4 AVC Video decoder is based on the FFmpeg software library.
 
   Copyright (C) 2007-2008 STMicroelectronics
