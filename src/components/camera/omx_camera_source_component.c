@@ -54,6 +54,12 @@
 
 #define CLEAR(x) memset (&(x), 0, sizeof (x))
 
+#define CAMERA_COMP_ROLE "v4l.camera_source"
+
+#define MAX_COMPONENT_CAMERASRC 1
+
+/** Maximum Number of Video Source Instance*/
+static OMX_U32 noCameraSrcInstance=0;
 
 
 /* V4L2 Mapping Queue Interface */
@@ -800,6 +806,11 @@ OMX_ERRORTYPE omx_camera_source_component_Constructor(OMX_COMPONENTTYPE *openmax
   openmaxStandComp->SetConfig = omx_camera_source_component_SetConfig;
   openmaxStandComp->GetConfig = omx_camera_source_component_GetConfig;
 
+  noCameraSrcInstance++;
+  if(noCameraSrcInstance > MAX_COMPONENT_CAMERASRC) {
+    return OMX_ErrorInsufficientResources;
+  }
+
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for camera component, return code: 0x%X\n",__func__, err);
   return err;
 }
@@ -831,6 +842,8 @@ OMX_ERRORTYPE omx_camera_source_component_Destructor(OMX_COMPONENTTYPE *openmaxS
   pthread_mutex_destroy(&omx_camera_source_component_Private->setconfig_mutex);
 
   camera_DeinitCameraDevice(omx_camera_source_component_Private);
+
+  noCameraSrcInstance--;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for camera component, return code: 0x%X\n",__func__, OMX_ErrorNone);
   return omx_base_source_Destructor(openmaxStandComp);;
@@ -926,6 +939,7 @@ static OMX_ERRORTYPE omx_camera_source_component_GetParameter(
   omx_camera_source_component_PortType *pPort;
   OMX_VIDEO_PARAM_PORTFORMATTYPE *pVideoPortFormat;
   OMX_PARAM_SENSORMODETYPE *pSensorMode;
+  OMX_PARAM_COMPONENTROLETYPE *pComponentRole;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for camera component\n",__func__);
 
@@ -974,6 +988,13 @@ static OMX_ERRORTYPE omx_camera_source_component_GetParameter(
       memcpy(pSensorMode, &omx_camera_source_component_Private->sSensorMode, sizeof(OMX_PARAM_SENSORMODETYPE));
       break;
 
+    case OMX_IndexParamStandardComponentRole:
+      pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
+      if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
+        break;
+      }
+      strcpy( (char*) pComponentRole->cRole, CAMERA_COMP_ROLE);
+      break;
     default: /*Call the base component function*/
       err = omx_base_component_GetParameter(hComponent, nParamIndex, ComponentParameterStructure);
       break;
@@ -1000,6 +1021,7 @@ static OMX_ERRORTYPE omx_camera_source_component_SetParameter(
   OMX_PARAM_PORTDEFINITIONTYPE *pPortDef;
   OMX_VIDEO_PARAM_PORTFORMATTYPE *pVideoPortFormat;
   OMX_PARAM_SENSORMODETYPE *pSensorMode;
+  OMX_PARAM_COMPONENTROLETYPE *pComponentRole;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for camera component\n",__func__);
 
@@ -1075,6 +1097,25 @@ static OMX_ERRORTYPE omx_camera_source_component_SetParameter(
       }
       memcpy(&omx_camera_source_component_Private->sSensorMode, pSensorMode, sizeof(OMX_PARAM_SENSORMODETYPE));
       omx_camera_source_component_Private->nFrameIntervalInMilliSec = 1000 / (pSensorMode->nFrameRate);
+      break;
+
+    case OMX_IndexParamStandardComponentRole:
+      pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
+
+      if (omx_camera_source_component_Private->state != OMX_StateLoaded && omx_camera_source_component_Private->state != OMX_StateWaitForResources) {
+        DEBUG(DEB_LEV_ERR, "In %s Incorrect State=%x lineno=%d\n",__func__,omx_camera_source_component_Private->state,__LINE__);
+        err = OMX_ErrorIncorrectStateOperation;
+        break;
+      }
+
+      if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
+        break;
+      }
+
+      if (strcmp((char*) pComponentRole->cRole, CAMERA_COMP_ROLE)) {
+        DEBUG(DEB_LEV_ERR, "In %s role=%s\n",__func__,pComponentRole->cRole);
+        err = OMX_ErrorBadParameter;
+      }
       break;
 
     default: /*Call the base component function*/
@@ -1292,8 +1333,10 @@ static void* omx_camera_source_component_BufferMgmtFunction (void* param) {
     omx_camera_source_component_Private->bWaitingOnIdle = OMX_FALSE;
     pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
 
-    /* After cemera does start, capture video data from camera */
-    camera_HandleThreadBufferCapture( omx_camera_source_component_Private );
+    if(omx_camera_source_component_Private->state == OMX_StateExecuting) {
+      /* After cemera does start, capture video data from camera */
+      camera_HandleThreadBufferCapture( omx_camera_source_component_Private );
+    }
 
   }
 
