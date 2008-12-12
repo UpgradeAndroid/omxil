@@ -322,9 +322,6 @@ OMX_ERRORTYPE jpegEncEmptyBufferDone(
   OMX_OUT OMX_BUFFERHEADERTYPE* pBuffer)
 {
 
-//  OMX_ERRORTYPE err;
-//  int data_read=0;
-//  static int iBufferDropped=0;
   DEBUG(DEB_LEV_ERR, "Hi there, I am in the %s callback.\n", __func__);
 
   /*

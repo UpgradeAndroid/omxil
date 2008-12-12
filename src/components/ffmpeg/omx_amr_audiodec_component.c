@@ -55,7 +55,7 @@ OMX_ERRORTYPE omx_amr_audiodec_component_Constructor(OMX_COMPONENTTYPE *openmaxS
 
   if (!openmaxStandComp->pComponentPrivate) {
     DEBUG(DEB_LEV_FUNCTION_NAME,"In %s, allocating component\n",__func__);
-    openmaxStandComp->pComponentPrivate = bellagioCalloc(1, sizeof(omx_amr_audiodec_component_PrivateType));
+    openmaxStandComp->pComponentPrivate = calloc(1, sizeof(omx_amr_audiodec_component_PrivateType));
     if(openmaxStandComp->pComponentPrivate==NULL)
       return OMX_ErrorInsufficientResources;
   }
@@ -73,12 +73,12 @@ OMX_ERRORTYPE omx_amr_audiodec_component_Constructor(OMX_COMPONENTTYPE *openmaxS
 
   /** Allocate Ports and call port constructor. */
   if (omx_amr_audiodec_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts && !omx_amr_audiodec_component_Private->ports) {
-    omx_amr_audiodec_component_Private->ports = bellagioCalloc(omx_amr_audiodec_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts, sizeof(omx_base_PortType *));
+    omx_amr_audiodec_component_Private->ports = calloc(omx_amr_audiodec_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts, sizeof(omx_base_PortType *));
     if (!omx_amr_audiodec_component_Private->ports) {
       return OMX_ErrorInsufficientResources;
     }
     for (i=0; i < omx_amr_audiodec_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts; i++) {
-      omx_amr_audiodec_component_Private->ports[i] = bellagioCalloc(1, sizeof(omx_base_audio_PortType));
+      omx_amr_audiodec_component_Private->ports[i] = calloc(1, sizeof(omx_base_audio_PortType));
       if (!omx_amr_audiodec_component_Private->ports[i]) {
         return OMX_ErrorInsufficientResources;
       }
@@ -108,7 +108,7 @@ OMX_ERRORTYPE omx_amr_audiodec_component_Constructor(OMX_COMPONENTTYPE *openmaxS
     return OMX_ErrorInvalidComponentName;
 
   if(!omx_amr_audiodec_component_Private->avCodecSyncSem) {
-    omx_amr_audiodec_component_Private->avCodecSyncSem = bellagioCalloc(1,sizeof(tsem_t));
+    omx_amr_audiodec_component_Private->avCodecSyncSem = calloc(1,sizeof(tsem_t));
     if(omx_amr_audiodec_component_Private->avCodecSyncSem == NULL) return OMX_ErrorInsufficientResources;
     tsem_init(omx_amr_audiodec_component_Private->avCodecSyncSem, 0);
   }
@@ -301,7 +301,7 @@ OMX_ERRORTYPE omx_amr_audiodec_component_Init(OMX_COMPONENTTYPE *openmaxStandCom
   omx_amr_audiodec_component_Private->inputCurrBuffer=NULL;
   omx_amr_audiodec_component_Private->inputCurrLength=0;
   nBufferSize=omx_amr_audiodec_component_Private->ports[OMX_BASE_FILTER_OUTPUTPORT_INDEX]->sPortParam.nBufferSize * 2;
-  omx_amr_audiodec_component_Private->internalOutputBuffer = bellagioCalloc(1,nBufferSize);
+  omx_amr_audiodec_component_Private->internalOutputBuffer = calloc(1,nBufferSize);
   omx_amr_audiodec_component_Private->positionInOutBuf = 0;
   omx_amr_audiodec_component_Private->isNewBuffer=1;
 
