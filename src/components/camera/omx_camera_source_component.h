@@ -102,9 +102,9 @@ DERIVEDCLASS(omx_camera_source_component_PrivateType, omx_base_source_PrivateTyp
   /** @param idle_state_mutex mutex for idle state related operations */ \
   pthread_mutex_t idle_state_mutex; \
   /** @param idle_wait_condition condition for waiting on idle state */ \
-  pthread_cond_t idle_wait_condition; \
+  tsem_t* idle_wait_condition; \
   /** @param idle_process_condition condition for processing for idle state */ \
-  pthread_cond_t idle_process_condition; \
+  tsem_t* idle_process_condition; \
   /** @param bWaitingOnIdle whether the buffer management thread is waiting on idle state */ \
   OMX_BOOL bWaitingOnIdle; \
   /** @param eLastState last state before the latest state transition */ \

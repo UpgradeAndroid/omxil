@@ -552,6 +552,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       omx_base_component_Private->state = OMX_StateInvalid;
 
       if(omx_base_component_Private->bufferMgmtThreadID == 0 ){
+        tsem_signal(omx_base_component_Private->bStateSem);
         /*Signal Buffer Management Thread to Exit*/
         tsem_up(omx_base_component_Private->bMgmtSem);
         pthread_join(omx_base_component_Private->bufferMgmtThread,NULL);

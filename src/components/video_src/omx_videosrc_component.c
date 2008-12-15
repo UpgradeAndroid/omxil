@@ -40,6 +40,8 @@ static OMX_U32 noViderSrcInstance=0;
 
 #define CLEAR(x) memset (&(x), 0, sizeof (x))
 
+#define VIDEOSRC_COMP_ROLE "video_src"
+
 static unsigned int n_buffers = 0;
 
 static int xioctl(int fd, int request, void *arg);
@@ -112,6 +114,9 @@ OMX_ERRORTYPE omx_videosrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
 
   pPort->sPortParam.nBufferSize = pPort->sPortParam.format.video.nFrameWidth*
                                   pPort->sPortParam.format.video.nFrameHeight*3; // RGB888
+  pPort->sPortParam.nBufferCountActual = 2;
+  pPort->sPortParam.nBufferCountMin    = 2;
+
   omx_videosrc_component_Private->iFrameSize = pPort->sPortParam.nBufferSize;
 
   omx_videosrc_component_Private->BufferMgmtCallback = omx_videosrc_component_BufferMgmtCallback;
@@ -287,7 +292,9 @@ OMX_ERRORTYPE omx_videosrc_component_Deinit(OMX_COMPONENTTYPE *openmaxStandComp)
 
   /** closing input file */
   omx_videosrc_component_Private->videoReady = OMX_FALSE;
-  tsem_reset(omx_videosrc_component_Private->videoSyncSem);
+  if(omx_videosrc_component_Private->videoSyncSem) {
+    tsem_reset(omx_videosrc_component_Private->videoSyncSem);
+  }
 
   return OMX_ErrorNone;
 }
@@ -329,7 +336,7 @@ void omx_videosrc_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandCo
 	    /* fall through */
 
 	  default:
-      DEBUG(DEB_LEV_ERR,"In %s error VIDIOC_DQBUF\n",__func__);
+      DEBUG(DEB_LEV_ERR,"In %s error(%d) VIDIOC_DQBUF\n",__func__,errno);
 	    return;
     }
   }
@@ -359,6 +366,7 @@ OMX_ERRORTYPE omx_videosrc_component_SetParameter(
 
   OMX_ERRORTYPE err = OMX_ErrorNone;
   OMX_VIDEO_PARAM_PORTFORMATTYPE *pVideoPortFormat;
+  OMX_PARAM_COMPONENTROLETYPE *pComponentRole;
   OMX_U32 portIndex;
 
   /* Check which structure we are being fed and make control its header */
@@ -385,7 +393,7 @@ OMX_ERRORTYPE omx_videosrc_component_SetParameter(
     if (portIndex < 1) {
       memcpy(&pPort->sVideoParam,pVideoPortFormat,sizeof(OMX_VIDEO_PARAM_PORTFORMATTYPE));
     } else {
-      return OMX_ErrorBadPortIndex;
+      err = OMX_ErrorBadPortIndex;
     }
     break;
   case OMX_IndexParamPortDefinition:
@@ -396,14 +404,33 @@ OMX_ERRORTYPE omx_videosrc_component_SetParameter(
         pPort->sPortParam.format.video.nFrameWidth = 160;
         pPort->sPortParam.format.video.nFrameHeight = 120;
         DEBUG(DEB_LEV_ERR, "In %s Frame Width Range[160..640] Frame Height Range[120..480]\n",__func__);
-        return OMX_ErrorBadParameter;
+        err = OMX_ErrorBadParameter;
       } else {
         pPort->sPortParam.nBufferSize = pPort->sPortParam.format.video.nFrameWidth*
                                   pPort->sPortParam.format.video.nFrameHeight*3/2; // YUV
       }
     }
+    break;
+  case OMX_IndexParamStandardComponentRole:
+    pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
+
+    if (omx_videosrc_component_Private->state != OMX_StateLoaded && omx_videosrc_component_Private->state != OMX_StateWaitForResources) {
+      DEBUG(DEB_LEV_ERR, "In %s Incorrect State=%x lineno=%d\n",__func__,omx_videosrc_component_Private->state,__LINE__);
+      err = OMX_ErrorIncorrectStateOperation;
+      break;
+    }
+
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
+      break;
+    }
+
+    if (strcmp((char*) pComponentRole->cRole, VIDEOSRC_COMP_ROLE)) {
+      DEBUG(DEB_LEV_ERR, "In %s role=%s\n",__func__,pComponentRole->cRole);
+      err = OMX_ErrorBadParameter;
+    }
+    break;
   default: /*Call the base component function*/
-    return omx_base_component_SetParameter(hComponent, nParamIndex, ComponentParameterStructure);
+    err = omx_base_component_SetParameter(hComponent, nParamIndex, ComponentParameterStructure);
   }
   return err;
 }
@@ -415,6 +442,7 @@ OMX_ERRORTYPE omx_videosrc_component_GetParameter(
 
   OMX_ERRORTYPE err = OMX_ErrorNone;
   OMX_VIDEO_PARAM_PORTFORMATTYPE *pVideoPortFormat;
+  OMX_PARAM_COMPONENTROLETYPE *pComponentRole;
   OMX_COMPONENTTYPE *openmaxStandComp = (OMX_COMPONENTTYPE*)hComponent;
   omx_videosrc_component_PrivateType* omx_videosrc_component_Private = openmaxStandComp->pComponentPrivate;
   omx_base_video_PortType *pPort = (omx_base_video_PortType *) omx_videosrc_component_Private->ports[OMX_BASE_SOURCE_OUTPUTPORT_INDEX];
@@ -440,11 +468,18 @@ OMX_ERRORTYPE omx_videosrc_component_GetParameter(
     if (pVideoPortFormat->nPortIndex < 1) {
       memcpy(pVideoPortFormat, &pPort->sVideoParam, sizeof(OMX_VIDEO_PARAM_PORTFORMATTYPE));
     } else {
-      return OMX_ErrorBadPortIndex;
+      err = OMX_ErrorBadPortIndex;
     }
     break;
+  case OMX_IndexParamStandardComponentRole:
+      pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
+      if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
+        break;
+      }
+      strcpy( (char*) pComponentRole->cRole, VIDEOSRC_COMP_ROLE);
+      break;
   default: /*Call the base component function*/
-    return omx_base_component_GetParameter(hComponent, nParamIndex, ComponentParameterStructure);
+    err = omx_base_component_GetParameter(hComponent, nParamIndex, ComponentParameterStructure);
   }
   return err;
 }
@@ -864,12 +899,15 @@ static int uninit_device(omx_videosrc_component_PrivateType* omx_videosrc_compon
 {
   unsigned int i;
 
-  for (i = 0; i < n_buffers; ++i) {
-    if (-1 == munmap(omx_videosrc_component_Private->buffers[i].start, omx_videosrc_component_Private->buffers[i].length))
-      return errno_return("munmap");
-  }
+  if(omx_videosrc_component_Private->buffers) {
+    for (i = 0; i < n_buffers; ++i) {
+      if (-1 == munmap(omx_videosrc_component_Private->buffers[i].start, omx_videosrc_component_Private->buffers[i].length))
+        return errno_return("munmap");
+    }
+    free(omx_videosrc_component_Private->buffers);
 
-  free(omx_videosrc_component_Private->buffers);
+    omx_videosrc_component_Private->buffers = NULL;
+  }
 
   return OMX_ErrorNone;
 }

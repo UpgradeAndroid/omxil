@@ -735,8 +735,14 @@ OMX_ERRORTYPE omx_camera_source_component_Constructor(OMX_COMPONENTTYPE *openmax
 
   /** Init camera private parameters by default values */
   pthread_mutex_init(&omx_camera_source_component_Private->idle_state_mutex, NULL);
-  pthread_cond_init(&omx_camera_source_component_Private->idle_wait_condition, NULL);
-  pthread_cond_init(&omx_camera_source_component_Private->idle_process_condition, NULL);
+  if(!omx_camera_source_component_Private->idle_wait_condition) {
+    omx_camera_source_component_Private->idle_wait_condition = calloc(1,sizeof(tsem_t));
+    tsem_init(omx_camera_source_component_Private->idle_wait_condition, 0);
+  }
+  if(!omx_camera_source_component_Private->idle_process_condition) {
+    omx_camera_source_component_Private->idle_process_condition = calloc(1,sizeof(tsem_t));
+    tsem_init(omx_camera_source_component_Private->idle_process_condition, 0);
+  }
   omx_camera_source_component_Private->bWaitingOnIdle = OMX_FALSE;
 
   pthread_mutex_init(&omx_camera_source_component_Private->setconfig_mutex, NULL);
@@ -836,8 +842,18 @@ OMX_ERRORTYPE omx_camera_source_component_Destructor(OMX_COMPONENTTYPE *openmaxS
   }
 
   pthread_mutex_destroy(&omx_camera_source_component_Private->idle_state_mutex);
-  pthread_cond_destroy(&omx_camera_source_component_Private->idle_wait_condition);
-  pthread_cond_destroy(&omx_camera_source_component_Private->idle_process_condition);
+  
+  if(omx_camera_source_component_Private->idle_wait_condition){
+    tsem_deinit(omx_camera_source_component_Private->idle_wait_condition);
+    free(omx_camera_source_component_Private->idle_wait_condition);
+    omx_camera_source_component_Private->idle_wait_condition=NULL;
+  }
+
+  if(omx_camera_source_component_Private->idle_process_condition){
+    tsem_deinit(omx_camera_source_component_Private->idle_process_condition);
+    free(omx_camera_source_component_Private->idle_process_condition);
+    omx_camera_source_component_Private->idle_process_condition=NULL;
+  }
 
   pthread_mutex_destroy(&omx_camera_source_component_Private->setconfig_mutex);
 
@@ -871,28 +887,41 @@ static OMX_ERRORTYPE omx_camera_source_component_DoStateSet(OMX_COMPONENTTYPE *o
     /* Idle --> Exec */
     pthread_mutex_lock(&omx_camera_source_component_Private->idle_state_mutex);
     if (!omx_camera_source_component_Private->bWaitingOnIdle) {
-      pthread_cond_wait(&omx_camera_source_component_Private->idle_process_condition,&omx_camera_source_component_Private->idle_state_mutex);
+      pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
+      tsem_down(omx_camera_source_component_Private->idle_process_condition);
+      pthread_mutex_lock(&omx_camera_source_component_Private->idle_state_mutex);
     }
     pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
   }
-  else if (omx_camera_source_component_Private->state == OMX_StateIdle && destinationState == OMX_StateLoaded) {
+  else if ((omx_camera_source_component_Private->state == OMX_StateIdle && destinationState == OMX_StateLoaded) ||
+           (omx_camera_source_component_Private->state == OMX_StateIdle && destinationState == OMX_StateInvalid)) {
     /* Idle --> Loaded*/
     pthread_mutex_lock(&omx_camera_source_component_Private->idle_state_mutex);
     if (!omx_camera_source_component_Private->bWaitingOnIdle) {
-      pthread_cond_wait(&omx_camera_source_component_Private->idle_process_condition,&omx_camera_source_component_Private->idle_state_mutex);
+      pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
+      tsem_down(omx_camera_source_component_Private->idle_process_condition);
+
+      pthread_mutex_lock(&omx_camera_source_component_Private->idle_state_mutex);
     }
     camera_DeinitCameraDevice(omx_camera_source_component_Private);
     if (omx_camera_source_component_Private->bWaitingOnIdle) {
-      pthread_cond_signal(&omx_camera_source_component_Private->idle_wait_condition);
+      tsem_up(omx_camera_source_component_Private->idle_wait_condition);
     }
     pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
+  } else if(omx_camera_source_component_Private->state == OMX_StatePause && destinationState == OMX_StateInvalid){
+    camera_DeinitCameraDevice(omx_camera_source_component_Private);
+    pthread_mutex_lock(&omx_camera_source_component_Private->idle_state_mutex);
+    if (omx_camera_source_component_Private->bWaitingOnIdle) {
+      tsem_up(omx_camera_source_component_Private->idle_wait_condition);
+    }
+    pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
+
   }
 
 
   omx_camera_source_component_Private->eLastState = omx_camera_source_component_Private->state;
   err = omx_base_component_DoStateSet(openmaxStandComp, destinationState);
   DEBUG(DEB_LEV_SIMPLE_SEQ, "%s: After base DoStateSet: destinationState=%ld,omx_camera_source_component_Private->state=%d,omx_camera_source_component_Private->transientState=%d\n", __func__,destinationState,omx_camera_source_component_Private->state,omx_camera_source_component_Private->transientState);
-
 
   if (omx_camera_source_component_Private->eLastState == OMX_StateIdle && omx_camera_source_component_Private->state == OMX_StateExecuting) {
     /* Idle --> Exec */
@@ -902,7 +931,7 @@ static OMX_ERRORTYPE omx_camera_source_component_DoStateSet(OMX_COMPONENTTYPE *o
         pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
         goto EXIT;
       }
-      pthread_cond_signal(&omx_camera_source_component_Private->idle_wait_condition);
+      tsem_up(omx_camera_source_component_Private->idle_wait_condition);
     }
     pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
   }
@@ -910,11 +939,13 @@ static OMX_ERRORTYPE omx_camera_source_component_DoStateSet(OMX_COMPONENTTYPE *o
     /* Exec --> Idle */
     pthread_mutex_lock(&omx_camera_source_component_Private->idle_state_mutex);
     if (!omx_camera_source_component_Private->bWaitingOnIdle) {
-      pthread_cond_wait(&omx_camera_source_component_Private->idle_process_condition,&omx_camera_source_component_Private->idle_state_mutex);
+      pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
+      tsem_down(omx_camera_source_component_Private->idle_process_condition);
+      pthread_mutex_lock(&omx_camera_source_component_Private->idle_state_mutex);
     }
     camera_StopCameraDevice(omx_camera_source_component_Private);
     pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
-  }
+  } 
 
 
 EXIT:
@@ -1309,11 +1340,16 @@ static void* omx_camera_source_component_BufferMgmtFunction (void* param) {
     omx_camera_source_component_Private->bCapturing = omx_camera_source_component_Private->bCapturingNext;
     pthread_mutex_unlock(&omx_camera_source_component_Private->setconfig_mutex);
 
-    if(omx_camera_source_component_Private->state==OMX_StatePause &&
+    if(omx_camera_source_component_Private->state==OMX_StatePause && 
+       omx_camera_source_component_Private->state != OMX_StateInvalid &&
         !(PORT_IS_BEING_FLUSHED(pPreviewPort) || PORT_IS_BEING_FLUSHED(pCapturePort) || PORT_IS_BEING_FLUSHED(pThumbnailPort))) {
       /*Waiting at paused state*/
       DEBUG(DEB_LEV_FULL_SEQ, "In %s: wait at State %d\n", __func__, omx_camera_source_component_Private->state);
       tsem_wait(omx_camera_source_component_Private->bStateSem);
+    }
+
+    if(omx_camera_source_component_Private->state == OMX_StateInvalid) {
+      break;
     }
 
     pthread_mutex_lock(&omx_camera_source_component_Private->idle_state_mutex);
@@ -1322,13 +1358,16 @@ static void* omx_camera_source_component_BufferMgmtFunction (void* param) {
       /*Waiting at idle state*/
       DEBUG(DEB_LEV_FULL_SEQ, "In %s: wait at State %d\n", __func__, omx_camera_source_component_Private->state);
       omx_camera_source_component_Private->bWaitingOnIdle = OMX_TRUE;
-      pthread_cond_signal(&omx_camera_source_component_Private->idle_process_condition);
-      pthread_cond_wait(&omx_camera_source_component_Private->idle_wait_condition,&omx_camera_source_component_Private->idle_state_mutex);
-      if(omx_camera_source_component_Private->transientState == OMX_TransStateIdleToLoaded) {
-        DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s Buffer Management Thread is exiting\n",__func__);
-        pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
+      pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
+      tsem_up(omx_camera_source_component_Private->idle_process_condition);
+
+      tsem_down(omx_camera_source_component_Private->idle_wait_condition);
+      if(omx_camera_source_component_Private->transientState == OMX_TransStateIdleToLoaded || 
+         omx_camera_source_component_Private->state == OMX_StateInvalid) {
+        DEBUG(DEB_LEV_FULL_SEQ, "In %s Buffer Management Thread is exiting\n",__func__);
         break;
       }
+      pthread_mutex_lock(&omx_camera_source_component_Private->idle_state_mutex);
     }
     omx_camera_source_component_Private->bWaitingOnIdle = OMX_FALSE;
     pthread_mutex_unlock(&omx_camera_source_component_Private->idle_state_mutex);
@@ -1666,6 +1705,13 @@ static OMX_ERRORTYPE camera_ProcessPortOneBuffer(OMX_IN omx_camera_source_compon
 
     if ( err != OMX_ErrorNone ) {
       goto EXIT;
+    }
+
+    if(omx_camera_source_component_Private->state==OMX_StatePause &&
+        !(PORT_IS_BEING_FLUSHED(port))) {
+      /*Waiting at paused state*/
+      DEBUG(DEB_LEV_ERR, "In %s: wait at State %d\n", __func__, omx_camera_source_component_Private->state);
+      tsem_wait(omx_camera_source_component_Private->bStateSem);
     }
 
     /* Return buffer */
