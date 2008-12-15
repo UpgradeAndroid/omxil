@@ -270,7 +270,10 @@ OMX_ERRORTYPE BOSA_ST_CreateComponent(
   //component name matches with general component name field
   DEBUG(DEB_LEV_PARAMS, "Found base requested template %s\n", cComponentName);
   /* Build ST component from template and fill fields */
-  templateList[componentPosition]->name_requested = strndup (cComponentName, OMX_MAX_STRINGNAME_SIZE);
+  if (NULL == templateList[componentPosition]->name_requested)
+  {    /* This check is to prevent memory leak in case two instances of the same component are loaded.*/
+      templateList[componentPosition]->name_requested = strndup (cComponentName, OMX_MAX_STRINGNAME_SIZE);
+  }
 
   openmaxStandComp = calloc(1,sizeof(OMX_COMPONENTTYPE));
   if (!openmaxStandComp) {
