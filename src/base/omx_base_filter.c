@@ -29,8 +29,8 @@
 
 */
 
-#include <asm/unistd.h>
 #include <unistd.h>
+#include <asm/unistd.h>
 #include <omxcore.h>
 
 #include "omx_base_filter.h"

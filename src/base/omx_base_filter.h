@@ -36,8 +36,6 @@
 #include <OMX_Types.h>
 #include <OMX_Component.h>
 #include <OMX_Core.h>
-#include <pthread.h>
-#include <stdlib.h>
 #include "omx_base_component.h"
 
 /** OMX_BASE_FILTER_INPUTPORT_INDEX is the index of any input port for the derived components

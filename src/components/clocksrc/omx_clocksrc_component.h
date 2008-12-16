@@ -35,7 +35,6 @@
 #include <OMX_Component.h>
 #include <OMX_Core.h>
 #include <OMX_Audio.h>
-#include <pthread.h>
 #include <omx_base_source.h>
 #include <string.h>
 #include <sys/time.h>
@@ -46,7 +45,7 @@
 
 /** Clock component private structure.
  * see the define above
- * @param sClockState This structure holds the state of the clock 
+ * @param sClockState This structure holds the state of the clock
  * @param startTimeSem the semaphore that coordinates the arrival of start times from all clients
  * @param clockEventSem the semaphore that coordinates clock event received from the client
  * @param clockEventCompleteSem the semaphore that coordinates clock event sent to the client
@@ -67,7 +66,7 @@ DERIVEDCLASS(omx_clocksrc_component_PrivateType, omx_base_source_PrivateType)
   OMX_TICKS                           MediaTimeBase; \
   OMX_TIME_UPDATETYPE                 eUpdateType; \
   OMX_TIME_CONFIG_TIMESTAMPTYPE       sMinStartTime; \
-  OMX_TIME_CONFIG_SCALETYPE           sConfigScale; 
+  OMX_TIME_CONFIG_SCALETYPE           sConfigScale;
 ENDCLASS(omx_clocksrc_component_PrivateType)
 
 /* Component private entry points declaration */

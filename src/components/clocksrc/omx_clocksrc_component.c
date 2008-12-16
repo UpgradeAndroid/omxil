@@ -43,7 +43,7 @@ static FILE *fd;
 /** Maximum Number of Clocksrc Instance*/
 static OMX_U32 noClocksrcInstance=0;
 
-/** The Constructor 
+/** The Constructor
  */
 OMX_ERRORTYPE omx_clocksrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OMX_STRING cComponentName) {
   int                                 omxErr;
@@ -59,7 +59,7 @@ OMX_ERRORTYPE omx_clocksrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
 
   omx_clocksrc_component_Private = openmaxStandComp->pComponentPrivate;
   omx_clocksrc_component_Private->ports = NULL;
-  
+
   omxErr = omx_base_source_Constructor(openmaxStandComp,cComponentName);
   if (omxErr != OMX_ErrorNone) {
     return OMX_ErrorInsufficientResources;
@@ -68,7 +68,7 @@ OMX_ERRORTYPE omx_clocksrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
   omx_clocksrc_component_Private->sPortTypesParam[OMX_PortDomainOther].nStartPortNumber = 0;
   omx_clocksrc_component_Private->sPortTypesParam[OMX_PortDomainOther].nPorts = 3;
 
-  /** Allocate Ports and call port constructor. */  
+  /** Allocate Ports and call port constructor. */
   if (omx_clocksrc_component_Private->sPortTypesParam[OMX_PortDomainOther].nPorts && !omx_clocksrc_component_Private->ports) {
     omx_clocksrc_component_Private->ports = calloc(omx_clocksrc_component_Private->sPortTypesParam[OMX_PortDomainOther].nPorts, sizeof(omx_base_PortType *));
     if (!omx_clocksrc_component_Private->ports) {
@@ -84,22 +84,22 @@ OMX_ERRORTYPE omx_clocksrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
     }
   }
 
-  
+
   /* initializing the OMX_TIME_CONFIG_CLOCKSTATETYPE */
-  setHeader(&omx_clocksrc_component_Private->sClockState, sizeof(OMX_TIME_CONFIG_CLOCKSTATETYPE));  
+  setHeader(&omx_clocksrc_component_Private->sClockState, sizeof(OMX_TIME_CONFIG_CLOCKSTATETYPE));
   omx_clocksrc_component_Private->sClockState.eState     = OMX_TIME_ClockStateStopped;
   omx_clocksrc_component_Private->sClockState.nStartTime = 0;
   omx_clocksrc_component_Private->sClockState.nOffset    = 0;
   omx_clocksrc_component_Private->sClockState.nWaitMask  = 0xFF;
 
-  setHeader(&omx_clocksrc_component_Private->sMinStartTime, sizeof(OMX_TIME_CONFIG_TIMESTAMPTYPE));  
+  setHeader(&omx_clocksrc_component_Private->sMinStartTime, sizeof(OMX_TIME_CONFIG_TIMESTAMPTYPE));
   omx_clocksrc_component_Private->sMinStartTime.nTimestamp = 0;
   omx_clocksrc_component_Private->sMinStartTime.nPortIndex = 0;
 
-  setHeader(&omx_clocksrc_component_Private->sConfigScale, sizeof(OMX_TIME_CONFIG_SCALETYPE));  
+  setHeader(&omx_clocksrc_component_Private->sConfigScale, sizeof(OMX_TIME_CONFIG_SCALETYPE));
   omx_clocksrc_component_Private->sConfigScale.xScale = 1<<16;  /* normal play mode */
 
-  setHeader(&omx_clocksrc_component_Private->sRefClock, sizeof(OMX_TIME_CONFIG_ACTIVEREFCLOCKTYPE));  
+  setHeader(&omx_clocksrc_component_Private->sRefClock, sizeof(OMX_TIME_CONFIG_ACTIVEREFCLOCKTYPE));
   omx_clocksrc_component_Private->sRefClock.eClock = OMX_TIME_RefClockNone;
   omx_clocksrc_component_Private->eUpdateType = OMX_TIME_UpdateMax;
 
@@ -125,7 +125,7 @@ OMX_ERRORTYPE omx_clocksrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
   if(noClocksrcInstance > MAX_COMPONENT_CLOCKSRC) {
     return OMX_ErrorInsufficientResources;
   }
-  
+
   openmaxStandComp->SetParameter  = omx_clocksrc_component_SetParameter;
   openmaxStandComp->GetParameter  = omx_clocksrc_component_GetParameter;
 
@@ -136,7 +136,7 @@ OMX_ERRORTYPE omx_clocksrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
   return OMX_ErrorNone;
 }
 
-/** The Destructor 
+/** The Destructor
  */
 OMX_ERRORTYPE omx_clocksrc_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp) {
   omx_clocksrc_component_PrivateType* omx_clocksrc_component_Private = openmaxStandComp->pComponentPrivate;
@@ -155,7 +155,7 @@ OMX_ERRORTYPE omx_clocksrc_component_Destructor(OMX_COMPONENTTYPE *openmaxStandC
     free(omx_clocksrc_component_Private->clockEventCompleteSem);
     omx_clocksrc_component_Private->clockEventCompleteSem=NULL;
   }
-  
+
   /* frees port/s */
   if (omx_clocksrc_component_Private->ports) {
     for (i=0; i < omx_clocksrc_component_Private->sPortTypesParam[OMX_PortDomainOther].nPorts; i++) {
@@ -169,7 +169,7 @@ OMX_ERRORTYPE omx_clocksrc_component_Destructor(OMX_COMPONENTTYPE *openmaxStandC
 #ifdef AV_SYNC_LOG
      fclose(fd);
 #endif
-  
+
   noClocksrcInstance--;
 
   return omx_base_source_Destructor(openmaxStandComp);
@@ -184,7 +184,7 @@ OMX_ERRORTYPE omx_clocksrc_component_GetParameter(
   OMX_OTHER_PARAM_PORTFORMATTYPE         *pOtherPortFormat;
   OMX_COMPONENTTYPE                      *openmaxStandComp = (OMX_COMPONENTTYPE*)hComponent;
   omx_clocksrc_component_PrivateType*    omx_clocksrc_component_Private = openmaxStandComp->pComponentPrivate;
-  omx_base_clock_PortType*               pPort; // = (omx_base_clock_PortType *) omx_clocksrc_component_Private->ports[OMX_BASE_SOURCE_OUTPUTPORT_INDEX];  
+  omx_base_clock_PortType*               pPort; // = (omx_base_clock_PortType *) omx_clocksrc_component_Private->ports[OMX_BASE_SOURCE_OUTPUTPORT_INDEX];
   if (ComponentParameterStructure == NULL) {
     return OMX_ErrorBadParameter;
   }
@@ -192,23 +192,23 @@ OMX_ERRORTYPE omx_clocksrc_component_GetParameter(
   /* Check which structure we are being fed and fill its header */
   switch(nParamIndex) {
   case OMX_IndexParamOtherInit:
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PORT_PARAM_TYPE))) != OMX_ErrorNone) { 
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PORT_PARAM_TYPE))) != OMX_ErrorNone) {
       break;
     }
     memcpy(ComponentParameterStructure, &omx_clocksrc_component_Private->sPortTypesParam[OMX_PortDomainOther], sizeof(OMX_PORT_PARAM_TYPE));
-    break; 
+    break;
   case OMX_IndexParamOtherPortFormat:
     pOtherPortFormat = (OMX_OTHER_PARAM_PORTFORMATTYPE*)ComponentParameterStructure;
-    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_OTHER_PARAM_PORTFORMATTYPE))) != OMX_ErrorNone) { 
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_OTHER_PARAM_PORTFORMATTYPE))) != OMX_ErrorNone) {
       break;
     }
     if (pOtherPortFormat->nPortIndex < omx_clocksrc_component_Private->sPortTypesParam[OMX_PortDomainOther].nPorts) {
-      pPort = (omx_base_clock_PortType *) omx_clocksrc_component_Private->ports[pOtherPortFormat->nPortIndex];  
+      pPort = (omx_base_clock_PortType *) omx_clocksrc_component_Private->ports[pOtherPortFormat->nPortIndex];
       memcpy(pOtherPortFormat, &pPort->sOtherParam, sizeof(OMX_OTHER_PARAM_PORTFORMATTYPE));
     } else {
       return OMX_ErrorBadPortIndex;
     }
-    break;    
+    break;
   default: /*Call the base component function*/
     return omx_base_component_GetParameter(hComponent, nParamIndex, ComponentParameterStructure);
   }
@@ -224,7 +224,7 @@ OMX_ERRORTYPE omx_clocksrc_component_SetParameter(
   OMX_OTHER_PARAM_PORTFORMATTYPE        *pOtherPortFormat;
   OMX_COMPONENTTYPE                     *openmaxStandComp = (OMX_COMPONENTTYPE*)hComponent;
   omx_clocksrc_component_PrivateType*   omx_clocksrc_component_Private = openmaxStandComp->pComponentPrivate;
-  omx_base_clock_PortType*              pPort; 
+  omx_base_clock_PortType*              pPort;
 
   if (ComponentParameterStructure == NULL) {
     return OMX_ErrorBadParameter;
@@ -237,12 +237,12 @@ OMX_ERRORTYPE omx_clocksrc_component_SetParameter(
     pOtherPortFormat = (OMX_OTHER_PARAM_PORTFORMATTYPE*)ComponentParameterStructure;
     /*Check Structure Header and verify component state*/
     err = omx_base_component_ParameterSanityCheck(hComponent, pOtherPortFormat->nPortIndex, pOtherPortFormat, sizeof(OMX_OTHER_PARAM_PORTFORMATTYPE));
-    if(err!=OMX_ErrorNone) { 
-      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n", __func__, err); 
+    if(err!=OMX_ErrorNone) {
+      DEBUG(DEB_LEV_ERR, "In %s Parameter Check Error=%x\n", __func__, err);
       break;
-    } 
+    }
     if (pOtherPortFormat->nPortIndex < omx_clocksrc_component_Private->sPortTypesParam[OMX_PortDomainOther].nPorts) {
-      pPort = (omx_base_clock_PortType *) omx_clocksrc_component_Private->ports[pOtherPortFormat->nPortIndex];  
+      pPort = (omx_base_clock_PortType *) omx_clocksrc_component_Private->ports[pOtherPortFormat->nPortIndex];
       memcpy(&pPort->sOtherParam,pOtherPortFormat,sizeof(OMX_OTHER_PARAM_PORTFORMATTYPE));
     } else {
       return OMX_ErrorBadPortIndex;
@@ -392,7 +392,7 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
         }
         DEBUG(DEB_LEV_SIMPLE_SEQ,"in  %s ...set to OMX_TIME_ClockStateRunning\n",__func__);
         memcpy(&omx_clocksrc_component_Private->sClockState, clockstate, sizeof(OMX_TIME_CONFIG_CLOCKSTATETYPE));
-        omx_clocksrc_component_Private->eUpdateType = OMX_TIME_UpdateClockStateChanged;  
+        omx_clocksrc_component_Private->eUpdateType = OMX_TIME_UpdateClockStateChanged;
         /* update the state change in all port */
         for(i=0;i<omx_clocksrc_component_Private->sPortTypesParam[OMX_PortDomainOther].nPorts;i++) {
           pPort = (omx_base_clock_PortType*)omx_clocksrc_component_Private->ports[i];
@@ -400,7 +400,7 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
           pPort->sMediaTime.eState                           = OMX_TIME_ClockStateRunning;
           pPort->sMediaTime.xScale                           = omx_clocksrc_component_Private->sConfigScale.xScale;
         }
-        /*Signal Buffer Management Thread*/ 
+        /*Signal Buffer Management Thread*/
         tsem_up(omx_clocksrc_component_Private->clockEventSem);
         DEBUG(DEB_LEV_SIMPLE_SEQ, "Waiting for Clock Running Event for all ports\n");
         tsem_down(omx_clocksrc_component_Private->clockEventCompleteSem);
@@ -428,7 +428,7 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
         /*Signal Buffer Management Thread*/
         tsem_up(omx_clocksrc_component_Private->clockEventSem);
         DEBUG(DEB_LEV_SIMPLE_SEQ, "Waiting for Clock Stop Event for all ports\n");
-        tsem_down(omx_clocksrc_component_Private->clockEventCompleteSem);  
+        tsem_down(omx_clocksrc_component_Private->clockEventCompleteSem);
       break;
       default:
       break;
@@ -447,7 +447,7 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
      DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s Port is disabled \n",__func__);
      return OMX_ErrorBadParameter;
     }
-    memcpy(&pPort->sTimeStamp, sRefTimeStamp, sizeof(OMX_TIME_CONFIG_TIMESTAMPTYPE));  
+    memcpy(&pPort->sTimeStamp, sRefTimeStamp, sizeof(OMX_TIME_CONFIG_TIMESTAMPTYPE));
 
     /* update the nWaitMask to clear the flag for the client which has sent its start time */
     if(omx_clocksrc_component_Private->sClockState.nWaitMask) {
@@ -457,16 +457,16 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
       if(omx_clocksrc_component_Private->sMinStartTime.nTimestamp >= pPort->sTimeStamp.nTimestamp){
          omx_clocksrc_component_Private->sMinStartTime.nTimestamp = pPort->sTimeStamp.nTimestamp;
          omx_clocksrc_component_Private->sMinStartTime.nPortIndex = pPort->sTimeStamp.nPortIndex;
-      } 
+      }
     }
-    if(!omx_clocksrc_component_Private->sClockState.nWaitMask && 
+    if(!omx_clocksrc_component_Private->sClockState.nWaitMask &&
        omx_clocksrc_component_Private->sClockState.eState == OMX_TIME_ClockStateWaitingForStartTime) {
        omx_clocksrc_component_Private->sClockState.eState = OMX_TIME_ClockStateRunning;
-      omx_clocksrc_component_Private->sClockState.nStartTime = omx_clocksrc_component_Private->sMinStartTime.nTimestamp; 
-      omx_clocksrc_component_Private->MediaTimeBase          = omx_clocksrc_component_Private->sMinStartTime.nTimestamp; 
+      omx_clocksrc_component_Private->sClockState.nStartTime = omx_clocksrc_component_Private->sMinStartTime.nTimestamp;
+      omx_clocksrc_component_Private->MediaTimeBase          = omx_clocksrc_component_Private->sMinStartTime.nTimestamp;
       gettimeofday(&tv,&zv);
       walltime = ((OMX_TICKS)tv.tv_sec)*1000000 + ((OMX_TICKS)tv.tv_usec);
-      omx_clocksrc_component_Private->WallTimeBase          = walltime; 
+      omx_clocksrc_component_Private->WallTimeBase          = walltime;
       DEBUG(DEB_LEV_SIMPLE_SEQ,"Mediatimebase=%llx walltimebase=%llx \n",omx_clocksrc_component_Private->MediaTimeBase,omx_clocksrc_component_Private->WallTimeBase);
       omx_clocksrc_component_Private->eUpdateType        = OMX_TIME_UpdateClockStateChanged;
       /* update the state change in all port */
@@ -478,7 +478,7 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
       }
       /*Signal Buffer Management Thread*/
       tsem_up(omx_clocksrc_component_Private->clockEventSem);
-      DEBUG(DEB_LEV_SIMPLE_SEQ,"setting the state to running from %s \n",__func__);  
+      DEBUG(DEB_LEV_SIMPLE_SEQ,"setting the state to running from %s \n",__func__);
       DEBUG(DEB_LEV_SIMPLE_SEQ,"Waiting for Clock Running Event for all ports in case OMX_IndexConfigTimeClientStartTime\n");
       tsem_down(omx_clocksrc_component_Private->clockEventCompleteSem);
     }
@@ -524,7 +524,7 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
     walltime = ((OMX_TICKS)tv.tv_sec)*1000000 + ((OMX_TICKS)tv.tv_usec);
     mediatime = omx_clocksrc_component_Private->MediaTimeBase + Scale*(walltime - omx_clocksrc_component_Private->WallTimeBase);
     omx_clocksrc_component_Private->WallTimeBase   = walltime; // suitable start time to be used here
-    omx_clocksrc_component_Private->MediaTimeBase  = mediatime;  // TODO - needs to be checked 
+    omx_clocksrc_component_Private->MediaTimeBase  = mediatime;  // TODO - needs to be checked
 
     /* update the new scale value */
     pConfigScale = (OMX_TIME_CONFIG_SCALETYPE*) pComponentConfigStructure;
@@ -551,9 +551,9 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
     if(omx_clocksrc_component_Private->sClockState.eState != OMX_TIME_ClockStateStopped && Scale != 0) {//TODO-  what happens if request comes in pause mode
 
       sMediaTimeRequest = (OMX_TIME_CONFIG_MEDIATIMEREQUESTTYPE*) pComponentConfigStructure;
-      portIndex = sMediaTimeRequest->nPortIndex; 
+      portIndex = sMediaTimeRequest->nPortIndex;
       pPort = (omx_base_clock_PortType*)omx_clocksrc_component_Private->ports[portIndex];
-      memcpy(&pPort->sMediaTimeRequest, sMediaTimeRequest, sizeof(OMX_TIME_CONFIG_MEDIATIMEREQUESTTYPE));  
+      memcpy(&pPort->sMediaTimeRequest, sMediaTimeRequest, sizeof(OMX_TIME_CONFIG_MEDIATIMEREQUESTTYPE));
 
       gettimeofday(&tv,&zv);
       walltime = ((OMX_TICKS)tv.tv_sec)*1000000 + ((OMX_TICKS)tv.tv_usec);
@@ -566,9 +566,9 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
         DEBUG(DEB_LEV_SIMPLE_SEQ," pI=%d RNF MTD<0 MB=%lld WB=%lld MT=%lld RT=%lld WT=%lld offset=%lld, Scale=%d\n",
                  (int)portIndex,omx_clocksrc_component_Private->MediaTimeBase,omx_clocksrc_component_Private->WallTimeBase,
                   mediatime,sMediaTimeRequest->nMediaTimestamp,walltime,sMediaTimeRequest->nOffset,(int)Scale);
-        pPort->sMediaTime.eUpdateType          =  OMX_TIME_UpdateRequestFulfillment; // TODO : to be checked 
+        pPort->sMediaTime.eUpdateType          =  OMX_TIME_UpdateRequestFulfillment; // TODO : to be checked
         pPort->sMediaTime.nMediaTimestamp      = sMediaTimeRequest->nMediaTimestamp;
-        pPort->sMediaTime.nOffset              = 0xFFFFFFFF;  
+        pPort->sMediaTime.nOffset              = 0xFFFFFFFF;
        }else{
          wallTimediff  = mediaTimediff/Scale;
          if(mediaTimediff){
@@ -592,7 +592,7 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
               fprintf(fd,"%d %lld %lld %lld %lld %lld\n",
                   (int)portIndex,sMediaTimeRequest->nMediaTimestamp,mediatime,pPort->sMediaTime.nWallTimeAtMediaTime,wallTimediff,mediaTimediff);
 #endif
-         } 
+         }
       }
       /*Signal Buffer Management Thread*/
       tsem_up(omx_clocksrc_component_Private->clockEventSem);
@@ -611,7 +611,7 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
   return OMX_ErrorNone;
 }
 
-/** 
+/**
  * This function plays the input buffer. When fully consumed it returns.
  */
 void omx_clocksrc_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandComp, OMX_BUFFERHEADERTYPE* outputbuffer) {
@@ -624,7 +624,7 @@ void omx_clocksrc_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandCo
 
 }
 /** This is the central function for buffer processing of a two port source component.
-  * It is executed in a separate thread, is synchronized with 
+  * It is executed in a separate thread, is synchronized with
   * semaphores at each port, those are released each time a new buffer
   * is available on the given port.
   */
@@ -633,7 +633,7 @@ void* omx_clocksrc_BufferMgmtFunction (void* param) {
   OMX_COMPONENTTYPE*                  openmaxStandComp = (OMX_COMPONENTTYPE*)param;
   omx_base_component_PrivateType*     omx_base_component_Private=(omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
   omx_clocksrc_component_PrivateType* omx_clocksrc_component_Private  = (omx_clocksrc_component_PrivateType*)omx_base_component_Private;
-  omx_base_clock_PortType             *pOutPort[MAX_CLOCK_PORTS];    
+  omx_base_clock_PortType             *pOutPort[MAX_CLOCK_PORTS];
   tsem_t*                             pOutputSem[MAX_CLOCK_PORTS];
   queue_t*                            pOutputQueue[MAX_CLOCK_PORTS];
   OMX_BUFFERHEADERTYPE*               pOutputBuffer[MAX_CLOCK_PORTS];
@@ -650,9 +650,9 @@ void* omx_clocksrc_BufferMgmtFunction (void* param) {
   }
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
-  while(omx_clocksrc_component_Private->state == OMX_StateIdle 
-         || omx_clocksrc_component_Private->state == OMX_StateExecuting 
-         || omx_clocksrc_component_Private->state == OMX_StatePause 
+  while(omx_clocksrc_component_Private->state == OMX_StateIdle
+         || omx_clocksrc_component_Private->state == OMX_StateExecuting
+         || omx_clocksrc_component_Private->state == OMX_StatePause
          || omx_clocksrc_component_Private->transientState == OMX_TransStateLoadedToIdle){
 
     /*Wait till the ports are being flushed*/
@@ -671,7 +671,7 @@ void* omx_clocksrc_BufferMgmtFunction (void* param) {
           DEBUG(DEB_LEV_FULL_SEQ, "Ports are flushing,so returning output buffer for port %i\n",i);
         }
       }
-      
+
       tsem_up(omx_clocksrc_component_Private->flush_all_condition);
       tsem_down(omx_clocksrc_component_Private->flush_condition);
       pthread_mutex_lock(&omx_clocksrc_component_Private->flush_mutex);
@@ -721,8 +721,8 @@ void* omx_clocksrc_BufferMgmtFunction (void* param) {
       }
       omx_clocksrc_component_Private->transientState = OMX_TransStateMax;
     }
-    
-    if(omx_clocksrc_component_Private->state == OMX_StateLoaded  || 
+
+    if(omx_clocksrc_component_Private->state == OMX_StateLoaded  ||
        omx_clocksrc_component_Private->state == OMX_StateInvalid ||
        omx_clocksrc_component_Private->transientState == OMX_TransStateIdleToLoaded ||
        omx_clocksrc_component_Private->transientState == OMX_TransStateInvalid) {
@@ -732,25 +732,25 @@ void* omx_clocksrc_BufferMgmtFunction (void* param) {
     }
 
     for(i=0;i<omx_clocksrc_component_Private->sPortTypesParam[OMX_PortDomainOther].nPorts;i++) {
-      if(pOutPort[i]->sMediaTime.eUpdateType == OMX_TIME_UpdateClockStateChanged || 
-         pOutPort[i]->sMediaTime.eUpdateType == OMX_TIME_UpdateScaleChanged      || 
-         pOutPort[i]->sMediaTime.eUpdateType == OMX_TIME_UpdateRequestFulfillment) {  
+      if(pOutPort[i]->sMediaTime.eUpdateType == OMX_TIME_UpdateClockStateChanged ||
+         pOutPort[i]->sMediaTime.eUpdateType == OMX_TIME_UpdateScaleChanged      ||
+         pOutPort[i]->sMediaTime.eUpdateType == OMX_TIME_UpdateRequestFulfillment) {
 
-        if((isOutputBufferNeeded[i]==OMX_TRUE && pOutputSem[i]->semval==0) && 
-          (omx_clocksrc_component_Private->state != OMX_StateLoaded && omx_clocksrc_component_Private->state != OMX_StateInvalid) 
+        if((isOutputBufferNeeded[i]==OMX_TRUE && pOutputSem[i]->semval==0) &&
+          (omx_clocksrc_component_Private->state != OMX_StateLoaded && omx_clocksrc_component_Private->state != OMX_StateInvalid)
           && PORT_IS_ENABLED(pOutPort[i])) {
           //Signalled from EmptyThisBuffer or FillThisBuffer or some where else
           DEBUG(DEB_LEV_FULL_SEQ, "Waiting for next output buffer %i\n",i);
           tsem_down(omx_clocksrc_component_Private->bMgmtSem);
         }
-        if(omx_clocksrc_component_Private->state == OMX_StateLoaded  || 
+        if(omx_clocksrc_component_Private->state == OMX_StateLoaded  ||
            omx_clocksrc_component_Private->state == OMX_StateInvalid ||
            omx_clocksrc_component_Private->transientState == OMX_TransStateIdleToLoaded ||
            omx_clocksrc_component_Private->transientState == OMX_TransStateInvalid) {
           DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s Buffer Management Thread is exiting (line %d)\n",__func__,__LINE__);
           break;
         }
-        
+
         if(pOutputSem[i]->semval>0 && isOutputBufferNeeded[i]==OMX_TRUE ) {
           tsem_down(pOutputSem[i]);
           if(pOutputQueue[i]->nelem>0){
@@ -785,7 +785,7 @@ void* omx_clocksrc_BufferMgmtFunction (void* param) {
             /*If no buffer management call back then don't produce any output buffer*/
             pOutputBuffer[i]->nFilledLen = 0;
           }
-      
+
            /*Output Buffer has been produced or EOS. So, return output buffer and get new buffer*/
           if(pOutputBuffer[i]->nFilledLen!=0) {
             pOutPort[i]->ReturnBufferFunction((omx_base_PortType*)pOutPort[i],pOutputBuffer[i]);
@@ -838,14 +838,14 @@ OMX_ERRORTYPE clocksrc_port_FlushProcessingBuffers(omx_base_PortType *openmaxSta
 
   /* Flush all the buffers not under processing */
   while (openmaxStandPort->pBufferSem->semval > 0) {
-    DEBUG(DEB_LEV_FULL_SEQ, "In %s TFlag=%x Flusing Port=%d,Semval=%d Qelem=%d\n", 
+    DEBUG(DEB_LEV_FULL_SEQ, "In %s TFlag=%x Flusing Port=%d,Semval=%d Qelem=%d\n",
     __func__,(int)openmaxStandPort->nTunnelFlags,(int)openmaxStandPort->sPortParam.nPortIndex,
     (int)openmaxStandPort->pBufferSem->semval,(int)openmaxStandPort->pBufferQueue->nelem);
 
     tsem_down(openmaxStandPort->pBufferSem);
     pBuffer = dequeue(openmaxStandPort->pBufferQueue);
     if (PORT_IS_TUNNELED(openmaxStandPort) && !PORT_IS_BUFFER_SUPPLIER(openmaxStandPort)) {
-      DEBUG(DEB_LEV_FULL_SEQ, "In %s: Comp %s is returning io:%d buffer\n", 
+      DEBUG(DEB_LEV_FULL_SEQ, "In %s: Comp %s is returning io:%d buffer\n",
         __func__,omx_clocksrc_component_Private->name,(int)openmaxStandPort->sPortParam.nPortIndex);
       if (openmaxStandPort->sPortParam.eDir == OMX_DirInput) {
         ((OMX_COMPONENTTYPE*)(openmaxStandPort->hTunneledComponent))->FillThisBuffer(openmaxStandPort->hTunneledComponent, pBuffer);

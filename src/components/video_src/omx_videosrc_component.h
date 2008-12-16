@@ -35,7 +35,6 @@
 #include <OMX_Component.h>
 #include <OMX_Core.h>
 #include <OMX_Video.h>
-#include <pthread.h>
 #include <omx_base_source.h>
 #include <string.h>
 #include <linux/videodev2.h>
@@ -86,7 +85,7 @@ DERIVEDCLASS(omx_videosrc_component_PrivateType, omx_base_source_PrivateType)
   struct v4l2_format fmt; \
   struct buffer *buffers; \
   /* can be V4L2_PIX_FMT_YUV420 or V4L2_PIX_FMT_PWC2 */ \
-  int pixel_format; 
+  int pixel_format;
 ENDCLASS(omx_videosrc_component_PrivateType)
 
 /* Component private entry points declaration */

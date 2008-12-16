@@ -36,8 +36,6 @@
 #include <OMX_Types.h>
 #include <OMX_Component.h>
 #include <OMX_Core.h>
-#include <pthread.h>
-#include <stdlib.h>
 #include <string.h>
 #include <omx_base_filter.h>
 
@@ -53,12 +51,12 @@
 #define AUDIO_ENC_BASE_NAME    "OMX.st.audio_encoder"
 
 #define AUDIO_ENC_MP3_NAME     "OMX.st.audio_encoder.mp3"
-#define AUDIO_ENC_AAC_NAME     "OMX.st.audio_encoder.aac" 
+#define AUDIO_ENC_AAC_NAME     "OMX.st.audio_encoder.aac"
 #define AUDIO_ENC_G726_NAME    "OMX.st.audio_encoder.g726"
 
 #define AUDIO_ENC_MP3_ROLE     "audio_encoder.mp3"
-#define AUDIO_ENC_AAC_ROLE     "audio_encoder.aac"   
-#define AUDIO_ENC_G726_ROLE    "audio_encoder.g726"   
+#define AUDIO_ENC_AAC_ROLE     "audio_encoder.aac"
+#define AUDIO_ENC_G726_ROLE    "audio_encoder.g726"
 
 /** AudioDec component private structure.
  */
@@ -115,7 +113,7 @@ void omx_audioenc_component_BufferMgmtCallback(
   OMX_COMPONENTTYPE *openmaxStandComp,
   OMX_BUFFERHEADERTYPE* inputbuffer,
   OMX_BUFFERHEADERTYPE* outputbuffer);
-  
+
 OMX_ERRORTYPE omx_audioenc_component_GetParameter(
   OMX_IN  OMX_HANDLETYPE hComponent,
   OMX_IN  OMX_INDEXTYPE nParamIndex,

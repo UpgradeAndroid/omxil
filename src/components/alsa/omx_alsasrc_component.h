@@ -34,7 +34,6 @@
 #include <OMX_Component.h>
 #include <OMX_Core.h>
 #include <OMX_Audio.h>
-#include <pthread.h>
 #include <omx_base_source.h>
 #include <alsa/asoundlib.h>
 

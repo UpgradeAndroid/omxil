@@ -34,7 +34,6 @@
 #include <OMX_Core.h>
 #include <OMX_Video.h>
 #include <OMX_IVCommon.h>
-#include <pthread.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <fcntl.h>

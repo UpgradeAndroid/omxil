@@ -36,8 +36,6 @@
 #include <OMX_Types.h>
 #include <OMX_Component.h>
 #include <OMX_Core.h>
-#include <pthread.h>
-#include <stdlib.h>
 #include <string.h>
 #include <omx_base_filter.h>
 
@@ -106,7 +104,7 @@ void omx_amr_audioenc_component_BufferMgmtCallback(
   OMX_COMPONENTTYPE *openmaxStandComp,
   OMX_BUFFERHEADERTYPE* inputbuffer,
   OMX_BUFFERHEADERTYPE* outputbuffer);
-  
+
 OMX_ERRORTYPE omx_amr_audioenc_component_GetParameter(
   OMX_IN  OMX_HANDLETYPE hComponent,
   OMX_IN  OMX_INDEXTYPE nParamIndex,

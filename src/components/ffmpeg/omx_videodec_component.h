@@ -37,11 +37,8 @@
 #include <OMX_Types.h>
 #include <OMX_Component.h>
 #include <OMX_Core.h>
-#include <pthread.h>
-#include <stdlib.h>
 #include <string.h>
 #include <omx_base_filter.h>
-#include <string.h>
 
 /* Specific include files */
 #if FFMPEG_LIBNAME_HEADERS
