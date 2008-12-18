@@ -340,12 +340,21 @@ OMX_ERRORTYPE omx_jpegenc_component_SetParameter(
 
   case OMX_IndexParamStandardComponentRole:
     pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
+
+    if (omx_jpegenc_component_Private->state != OMX_StateLoaded && omx_jpegenc_component_Private->state != OMX_StateWaitForResources) {
+      DEBUG(DEB_LEV_ERR, "In %s Incorrect State=%x lineno=%d\n",__func__,omx_jpegenc_component_Private->state,__LINE__);
+      return OMX_ErrorIncorrectStateOperation;
+    }
+
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
+      break;
+    }
+
     if (!strcmp( (char*) pComponentRole->cRole, IMAGE_ENC_JPEG_ROLE)) {
       omx_jpegenc_component_Private->image_coding_type = OMX_IMAGE_CodingJPEG;
     }  else {
       return OMX_ErrorBadParameter;
     }
-    //omx_jpegenc_component_SetInternalParameters(openmaxStandComp);
     break;
 
   default: /*Call the base component function*/
