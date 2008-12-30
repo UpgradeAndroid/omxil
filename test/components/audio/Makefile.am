@@ -1,7 +1,7 @@
 check_PROGRAMS = omxaudiodectest audio_use_case audio_use_case_tunnel omxaudiocapnplay omxvoicexchange omxaudioenctest
 
 bellagio_LDADD = -lomxil-bellagio
-common_CFLAGS = -I$(top_srcdir)/test/components/common
+common_CFLAGS = -I$(top_srcdir)/test/components/common -I$(includedir)
 
 omxaudiodectest_SOURCES = omxaudiodectest.c omxaudiodectest.h
 omxaudiodectest_LDADD = $(bellagio_LDADD) -lpthread

@@ -1,7 +1,7 @@
 check_PROGRAMS = omxvideodectest omxvideocapturetest omxvideocapnplay omxvideoenctest
 
 bellagio_LDADD = -lomxil-bellagio
-common_CFLAGS = -I$(srcdir)/../common
+common_CFLAGS = -I$(srcdir)/../common -I$(includedir)
 
 omxvideodectest_SOURCES = omxvideodectest.c omxvideodectest.h
 omxvideodectest_LDADD   = $(bellagio_LDADD) -lpthread
