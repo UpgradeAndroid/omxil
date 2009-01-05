@@ -34,7 +34,6 @@
 #include <OMX_Types.h>
 #include <OMX_Component.h>
 #include <OMX_Core.h>
-#include <string.h>
 #include <omx_base_filter.h>
 
 /* Specific include files for vorbis decoding */
