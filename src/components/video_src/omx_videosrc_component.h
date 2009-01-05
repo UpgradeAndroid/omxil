@@ -36,7 +36,6 @@
 #include <OMX_Core.h>
 #include <OMX_Video.h>
 #include <omx_base_source.h>
-#include <string.h>
 #include <linux/videodev2.h>
 #include <sys/types.h>
 #include <sys/stat.h>

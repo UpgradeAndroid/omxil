@@ -32,12 +32,6 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <errno.h>
-#include <asm/unistd.h>
-
 #include <OMX_Core.h>
 #include <OMX_Component.h>
 

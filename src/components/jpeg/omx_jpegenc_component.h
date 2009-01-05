@@ -38,9 +38,6 @@
 #include <OMX_Core.h>
 #include <OMX_Image.h>
 
-#include <pthread.h>
-#include <stdlib.h>
-#include <string.h>
 #include <omx_base_filter.h>
 
 #ifndef _CDJPEG_H_

@@ -39,7 +39,6 @@
 #include <OMX_Component.h>
 #include <OMX_Core.h>
 #include <omx_base_source.h>
-#include <string.h>
 
 /* Specific include files for FFmpeg library related decoding*/
 #if FFMPEG_LIBNAME_HEADERS

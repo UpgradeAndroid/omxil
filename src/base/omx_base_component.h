@@ -32,6 +32,11 @@
 
 #include <stdlib.h>
 #include <pthread.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+#include <asm/unistd.h>
 
 #include "tsemaphore.h"
 #include "queue.h"
