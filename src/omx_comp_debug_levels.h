@@ -62,6 +62,11 @@
  */
 #define DEB_LEV_FUNCTION_NAME 16
 
+/** Messages that are the default test application output. These message should be
+ * shown every time
+ */
+#define DEFAULT_MESSAGES 32
+
 /** All the messages - max value
  */
 #define DEB_ALL_MESS   255

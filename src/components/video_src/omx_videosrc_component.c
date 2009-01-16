@@ -114,8 +114,6 @@ OMX_ERRORTYPE omx_videosrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
 
   pPort->sPortParam.nBufferSize = pPort->sPortParam.format.video.nFrameWidth*
                                   pPort->sPortParam.format.video.nFrameHeight*3; // RGB888
-  pPort->sPortParam.nBufferCountActual = 2;
-  pPort->sPortParam.nBufferCountMin    = 2;
 
   omx_videosrc_component_Private->iFrameSize = pPort->sPortParam.nBufferSize;
 

@@ -39,4 +39,6 @@ include_extra_HEADERS = $(srcdir)/omxcore.h \
 			$(srcdir)/base/omx_base_filter.h \
 			$(srcdir)/base/omx_base_sink.h \
 			$(srcdir)/base/omx_base_source.h \
-			$(srcdir)/base/omx_classmagic.h
+			$(srcdir)/base/omx_classmagic.h \
+			$(srcdir)/base/omx_base_clock_port.h \
+			$(srcdir)/base/omx_base_image_port.h

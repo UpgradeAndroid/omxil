@@ -165,7 +165,7 @@ AC_ARG_ENABLE(
     [with_jpeg=$enableval],
     [with_jpeg=yes])
 
-#Check whether fbdev_videosink component has been requested
+#Check whether xvideosink component has been requested
 AC_ARG_ENABLE(
     [xvideosink],
     [AC_HELP_STRING(
