@@ -45,21 +45,9 @@ AC_CONFIG_FILES([
     src/Makefile
     src/base/Makefile
     src/components/Makefile
-    src/components/alsa/Makefile
-    src/components/ffmpeg/Makefile
-    src/components/mad/Makefile
-    src/components/vorbis/Makefile
-    src/components/filereader/Makefile
-    src/components/fbdev/Makefile
     src/components/audio_effects/Makefile
-    src/components/video_src/Makefile
-    src/components/parser3gp/Makefile
     src/components/clocksrc/Makefile
-    src/components/camera/Makefile
-    src/components/jpeg/Makefile
-    src/components/jpeg/libjpeg-6c/Makefile
-    src/components/muxer/Makefile
-    src/components/xvideo/Makefile
+    src/components/videoscheduler/Makefile
     m4/Makefile
     test/Makefile
     test/components/Makefile
@@ -75,34 +63,7 @@ AC_CONFIG_FILES([
 # Define the extra arguments the user can pass to the configure script         #
 ################################################################################
 
-# Check whether ffmpeg components have been requested
-AC_ARG_ENABLE(
-    [ffmpegcomponents],
-    [AC_HELP_STRING(
-        [--disable-ffmpegcomponents],
-        [whether to disable ffmpeg components compilation])],
-    [with_ffmpeg=$enableval],
-    [with_ffmpeg=yes])
-
-# Check whether mad components have been requested
-AC_ARG_ENABLE(
-    [madcomponents],
-    [AC_HELP_STRING(
-        [--disable-madcomponents],
-        [whether to disable mad components compilation])],
-    [with_mad=$enableval],
-    [with_mad=yes])
-
-# Check whether vorbis components have been requested
-AC_ARG_ENABLE(
-    [vorbiscomponents],
-    [AC_HELP_STRING(
-        [--disable-vorbiscomponents],
-        [whether to disable vorbis components compilation])],
-    [with_vorbis=$enableval],
-    [with_vorbis=yes])
-
-# Check whether volume component has been requested
+# Check whether volume/mixer components has been requested
 AC_ARG_ENABLE(
     [audioeffects],
     [AC_HELP_STRING(
@@ -110,33 +71,6 @@ AC_ARG_ENABLE(
         [whether to disable the audio effects components compilation])],
     [with_audioeffects=$enableval],
     [with_audioeffects=yes])
-
-#Check whether fbdev_videosink component has been requested
-AC_ARG_ENABLE(
-    [fbvideosink],
-    [AC_HELP_STRING(
-        [--disable-fbvideosink],
-        [whether to disable the fbdev video sink])],
-    [with_fbdev_videosink=$enableval],
-    [with_fbdev_videosink=yes])
-
-#Check whether ALSA components have been requested
-AC_ARG_ENABLE(
-    [alsa],
-    [AC_HELP_STRING(
-        [--disable-alsa],
-        [whether to disable the alsa components])],
-    [with_alsa=$enableval],
-    [with_alsa=yes])
-
-#Check whether video src/camera component has been requested
-AC_ARG_ENABLE(
-    [videosrc],
-    [AC_HELP_STRING(
-        [--disable-videosrc],
-        [whether to disable the video src/camera])],
-    [with_videosrc=$enableval],
-    [with_videosrc=yes])
 
 #Check whether clock component has been requested
 AC_ARG_ENABLE(
@@ -156,32 +90,14 @@ AC_ARG_ENABLE(
     [with_clocksrclog=$enableval],
     [with_clocksrclog=no])
 
-#Check whether to create documentation 
-AC_ARG_ENABLE(
-    [jpeg],
-    [AC_HELP_STRING(
-        [--disable-jpeg],
-        [whether to disable jpeg decoder component])],
-    [with_jpeg=$enableval],
-    [with_jpeg=yes])
-
 #Check whether xvideosink component has been requested
 AC_ARG_ENABLE(
-    [xvideosink],
+    [videoscheduler],
     [AC_HELP_STRING(
-        [--disable-xvideosink],
-        [whether to disable the X video sink])],
-    [with_xvideosink=$enableval],
-    [with_xvideosink=yes])
-
-#Check whether amr components have been requested
-AC_ARG_ENABLE(
-    [amr],
-    [AC_HELP_STRING(
-        [--enable-amr],
-        [whether to enable AMR components compilation : FFMpeg library should be compiled with --enable-libamr-nb])],
-    [with_amr=$enableval],
-    [with_amr=no])
+        [--disable-videoscheduler],
+        [whether to disable the video scheduler component])],
+    [with_videoscheduler=$enableval],
+    [with_videoscheduler=yes])
 
 #Check whether to disable all components
 AC_ARG_ENABLE(
@@ -200,7 +116,6 @@ AC_ARG_ENABLE(
         [whether to enable documentation generation])],
     [with_doc=$enableval],
     [with_doc=yes])
-
 
 ################################################################################
 # Check for programs                                                           #
@@ -239,16 +154,9 @@ ACX_PTHREAD([
 AC_SEARCH_LIBS([dlopen], [dl], [], [AC_MSG_ERROR([libdl is required])])
 
 if test "x$with_components" = "xno"; then
-	with_alsa=no
-	with_vorbis=no
-	with_mad=no
-	with_ffmpeg=no
-	with_fbdev_videosink=no
 	with_audioeffects=no
-	with_videosrc=no
 	with_clocksrc=no
-	with_jpeg=no
-	with_xvideosink=no
+	with_videoscheduler=no
 fi
 
 # Define components default ldflags (man ld)
@@ -261,96 +169,13 @@ AX_SET_PLUGINDIR
 # Check for header files                                                       #
 ################################################################################
 
-# Check if V4L header file is present
-if test "x$with_videosrc" = "xyes"; then
-	AC_CHECK_HEADER([linux/videodev2.h], [with_videosrc=yes], [with_videosrc=no])
-fi
-
-# Check if Video Frame buffer header file is present
-if test "x$with_fbdev_videosink" = "xyes"; then
-	AC_CHECK_HEADER([linux/fb.h], [with_fbdev_videosink=yes], [with_fbdev_videosink=no])
-fi
-
-# Check if X-Video header file is present
-if test "x$with_xvideosink" = "xyes"; then
-	AC_CHECK_HEADER([X11/Xlib.h], [with_xvideosink=yes], [with_xvideosink=no])
-        X11_LIBS="-lX11 -lXext -lXv" 
-        AC_SUBST(X11_LIBS) 
-fi
-
 ################################################################################
 # Check for pkg-config modules                                                 #
 ################################################################################
 
-# Check for vorbis component dependencies
-if test "x$with_alsa" = "xyes"; then
-	PKG_CHECK_MODULES([ALSA], [alsa], [with_alsa=yes], [with_alsa=no])
-fi
-
-# Check for vorbis component dependencies
-if test "x$with_vorbis" = "xyes"; then
-	PKG_CHECK_MODULES([VORBIS], [vorbis], [with_vorbis=yes], [with_vorbis=no])
-fi
-
-# Check for mad component dependencies
-if test "x$with_mad" = "xyes"; then
-	PKG_CHECK_MODULES([MAD], [mad id3tag], [with_mad=yes], [with_mad=no])
-fi
-
-# Check for FFmpeg component dependencies
-if test "x$with_ffmpeg" = "xyes"; then
-	PKG_CHECK_MODULES([FFMPEG], [libavcodec libavformat libavutil libswscale], [with_ffmpeg=yes], [with_ffmpeg=no])
-fi
-
-# Check if X-Video sink component dependencies 
-if test "x$with_xvideosink" = "xyes"; then
-	PKG_CHECK_MODULES([X11], [x11,xv,xext],[with_xvideosink=yes], [with_xvideosink=no])
-fi
-
-# Check for FFmpeg API version
-if test "x$with_ffmpeg" = "xyes"; then
-	old_CPPFLAGS="${CPPFLAGS}"
-	old_LDFLAGS="${LDFLAGS}"
-	CPPFLAGS="${CPPFLAGS} ${FFMPEG_CFLAGS}"
-	LDFLAGS="${LDFLAGS} ${FFMPEG_LIBS}"
-
-        # Check for FFmpeg audio decoder API version
-	AC_CHECK_LIB([avcodec], [avcodec_decode_audio2],
-		     [AC_DEFINE([FFMPEG_DECODER_VERSION], [2], [FFmpeg audio2 decoder API])],
-                     [AC_DEFINE([FFMPEG_DECODER_VERSION], [1], [FFmpeg audio deocder API ])],
-	             [-lavutil -lm])
-
-	# Check for location of FFmpeg library headers. These were moved
-	# in FFmpeg r12194 (2008-02-25). For example, instead of
- 	# including <ffmpeg/avformat.h>, now include <libavformat/avformat.h>.
-        AC_CHECK_HEADER([libavformat/avformat.h],
-                        [AC_DEFINE([FFMPEG_LIBNAME_HEADERS], [1],
-                         [FFmpeg has separate named include directories for each of its libraries])])
-
-	# Restore flags
-	CPPFLAGS="${old_CPPFLAGS}"
-	LDFLAGS="${old_LDFLAGS}"
-fi
-
-# Check for vorbis library existence
-if test "x$with_vorbis" = "xyes"; then
-	old_CPPFLAGS="${CPPFLAGS}"
-	old_LDFLAGS="${LDFLAGS}"
-	CPPFLAGS="${CPPFLAGS} ${VORBIS_CFLAGS}"
-	LDFLAGS="${LDFLAGS} ${VORBIS_LIBS}"
-	AC_CHECK_HEADER([vorbis/codec.h], [with_vorbis=yes], [with_vorbis=no])
-	CPPFLAGS="${old_CPPFLAGS}"
-	LDFLAGS="${old_LDFLAGS}"
-fi
-
 # Check for clock component log
 if test "x$with_clocksrclog" = "xyes"; then
         AC_DEFINE([AV_SYNC_LOG], [1], [Clock Component Log])
-fi
-
-# Check for amr flag 
-if test "x$with_amr" = "xyes"; then
-        AC_DEFINE([DE_AMR_SUPPORT], [1], [Enable AMR Components])
 fi
 
 ################################################################################
@@ -386,17 +211,8 @@ fi
 ################################################################################
 # Conditionals and file output                                                 #
 ################################################################################
-AM_CONDITIONAL([WITH_V4L2_VIDEOSOURCE], [test x$with_videosrc = xyes])
-AM_CONDITIONAL([WITH_FBDEV_VIDEOSINK], [test x$with_fbdev_videosink = xyes])
-AM_CONDITIONAL([WITH_XVIDEOSINK], [test x$with_xvideosink = xyes])
-AM_CONDITIONAL([WITH_ALSA], [test x$with_alsa = xyes])
-AM_CONDITIONAL([WITH_FFMPEGCOMPONENTS], [test x$with_ffmpeg = xyes])
-AM_CONDITIONAL([WITH_MADCOMPONENTS], [test x$with_mad = xyes])
-AM_CONDITIONAL([WITH_VORBISCOMPONENTS], [test x$with_vorbis = xyes])
 AM_CONDITIONAL([WITH_AUDIOEFFECTS], [test x$with_audioeffects = xyes])
-AM_CONDITIONAL([WITH_VIDEOSRC], [test x$with_videosrc = xyes])
 AM_CONDITIONAL([WITH_CLOCKSRC], [test x$with_clocksrc = xyes])
-AM_CONDITIONAL([WITH_AMR_SUPPORT], [test x$with_amr = xyes])
-AM_CONDITIONAL([WITH_JPEG],[test x$with_jpeg = xyes])
+AM_CONDITIONAL([WITH_VIDEOSCHEDULER],[test x$with_videoscheduler = xyes])
 
 AC_OUTPUT

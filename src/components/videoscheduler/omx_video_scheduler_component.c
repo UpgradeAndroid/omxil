@@ -1,10 +1,9 @@
 /**
-  @file src/components/ffmpeg/omx_video_scheduler_component.c
+  @file src/components/videoscheduler/omx_video_scheduler_component.c
 
   This component implements a video scheduler
 
-  Originally developed by Peter Littlefield
-  Copyright (C) 2007-2008  STMicroelectronics and Agere Systems
+  Copyright (C) 2008-2009  STMicroelectronics
 
   This library is free software; you can redistribute it and/or modify it under
   the terms of the GNU Lesser General Public License as published by the Free
@@ -348,8 +347,6 @@ OMX_BOOL omx_video_scheduler_component_ClockPortHandleFunction(
         SendFrame = OMX_TRUE;
      }
      SendFrame = OMX_FALSE;
-//     pInputBuffer->nFilledLen=0;
-//      return;
   }
 
   /* frame is not to be dropped so send the request for the timestamp for the data delivery */
@@ -504,10 +501,6 @@ OMX_ERRORTYPE  omx_video_scheduler_component_port_FlushProcessingBuffers(omx_bas
   */
 void omx_video_scheduler_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandComp, OMX_BUFFERHEADERTYPE* pInputBuffer, OMX_BUFFERHEADERTYPE* pOutputBuffer) {
 
-//  omx_video_scheduler_component_PrivateType*   omx_video_scheduler_component_Private = openmaxStandComp->pComponentPrivate;
-//  omx_base_video_PortType       *inPort = (omx_base_video_PortType *)omx_video_scheduler_component_Private->ports[OMX_BASE_FILTER_INPUTPORT_INDEX];
-//  omx_base_video_PortType       *outPort = (omx_base_video_PortType *)omx_video_scheduler_component_Private->ports[OMX_BASE_FILTER_OUTPUTPORT_INDEX];
-
   if(pInputBuffer->pBuffer != pOutputBuffer->pBuffer){
     memcpy(pOutputBuffer->pBuffer,pInputBuffer->pBuffer,pInputBuffer->nFilledLen);
     pOutputBuffer->nOffset = pInputBuffer->nOffset;
@@ -638,7 +631,6 @@ OMX_ERRORTYPE omx_video_scheduler_component_GetParameter(
   omx_video_scheduler_component_PrivateType* omx_video_scheduler_component_Private = openmaxStandComp->pComponentPrivate;
   omx_base_video_PortType                    *pPort;
   omx_base_clock_PortType                    *pClockPort = (omx_base_clock_PortType *) omx_video_scheduler_component_Private->ports[CLOCKPORT_INDEX];
-//  OMX_U32                                    portIndex;
 
   if (ComponentParameterStructure == NULL) {
     return OMX_ErrorBadParameter;

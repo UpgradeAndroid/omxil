@@ -1,11 +1,9 @@
 /**
-  @file src/components/ffmpeg/omx_ffmpeg_video_scheduler_component.h
+  @file src/components/videoscheduler/omx_video_scheduler_component.h
 
-  This component implements a video scheduler using the FFmpeg
-  software library.
+  This component implements a video scheduler
 
-  Originally developed by Peter Littlefield
-  Copyright (C) 2007-2008  STMicroelectronics and Agere Systems
+  Copyright (C) 2008-2009  STMicroelectronics
 
   This library is free software; you can redistribute it and/or modify it under
   the terms of the GNU Lesser General Public License as published by the Free
@@ -27,8 +25,8 @@
   Author $Author$
 */
 
-#ifndef _OMX_FFMPEG_VIDEO_SCHEDULER_H_
-#define _OMX_FFMPEG_VIDEO_SCHEDULER_H_
+#ifndef _OMX_VIDEO_SCHEDULER_H_
+#define _OMX_VIDEO_SCHEDULER_H_
 
 #include <OMX_Types.h>
 #include <OMX_Component.h>
@@ -37,11 +35,11 @@
 #include <omx_base_video_port.h>
 #include <omx_base_clock_port.h>
 
-/** ffmpeg color converter component private structure.
+/** video scheduler component private structure.
   * @param xScale the scale of the media clock
   * @param eState the state of the media clock
-  * @param frameDropFlag the flag active on scale change indicates that frames are to be dropped 
-  * @param dropFrameCount counts the number of frames dropped 
+  * @param frameDropFlag the flag active on scale change indicates that frames are to be dropped
+  * @param dropFrameCount counts the number of frames dropped
   */
 DERIVEDCLASS(omx_video_scheduler_component_PrivateType, omx_base_filter_PrivateType)
 #define omx_video_scheduler_component_PrivateType_FIELDS omx_base_filter_PrivateType_FIELDS \
@@ -64,14 +62,14 @@ void omx_video_scheduler_component_BufferMgmtCallback(
   OMX_BUFFERHEADERTYPE* outputbuffer);
 
 OMX_ERRORTYPE omx_video_scheduler_component_GetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_INOUT OMX_PTR ComponentParameterStructure);
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure);
 
 OMX_ERRORTYPE omx_video_scheduler_component_SetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_IN  OMX_PTR ComponentParameterStructure);
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure);
 
 /* to handle the communication at the clock port */
 OMX_BOOL omx_video_scheduler_component_ClockPortHandleFunction(
@@ -82,5 +80,5 @@ OMX_ERRORTYPE omx_video_scheduler_component_port_SendBufferFunction(
   omx_base_PortType *openmaxStandPort,
   OMX_BUFFERHEADERTYPE* pBuffer);
 
-OMX_ERRORTYPE omx_video_scheduler_component_port_FlushProcessingBuffers(omx_base_PortType *openmaxStandPort);  
+OMX_ERRORTYPE omx_video_scheduler_component_port_FlushProcessingBuffers(omx_base_PortType *openmaxStandPort);
 #endif
