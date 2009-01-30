@@ -51,13 +51,7 @@ AC_CONFIG_FILES([
     m4/Makefile
     test/Makefile
     test/components/Makefile
-    test/components/audio/Makefile
-    test/components/video/Makefile
     test/components/audio_effects/Makefile
-    test/components/parser/Makefile
-    test/components/camera/Makefile
-    test/components/jpeg/Makefile
-    test/components/muxer/Makefile
 ])
 ################################################################################
 # Define the extra arguments the user can pass to the configure script         #
