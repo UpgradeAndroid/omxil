@@ -34,6 +34,7 @@
 /** Counter of Video Scheduler Instance*/
 static OMX_U32 noVideoScheduler = 0;
 
+#define VIDEO_SCHEDULER_COMP_ROLE "video.schduler"
 #define DEFAULT_WIDTH   352
 #define DEFAULT_HEIGHT  288
 #define CLOCKPORT_INDEX 2
@@ -123,7 +124,6 @@ OMX_ERRORTYPE omx_video_scheduler_component_Constructor(OMX_COMPONENTTYPE *openm
   omx_video_scheduler_component_Private->destructor         = omx_video_scheduler_component_Destructor;
   omx_video_scheduler_component_Private->BufferMgmtCallback = omx_video_scheduler_component_BufferMgmtCallback;
 
-  inPort->Port_SendBufferFunction =  omx_video_scheduler_component_port_SendBufferFunction;
   inPort->FlushProcessingBuffers  = omx_video_scheduler_component_port_FlushProcessingBuffers;
   openmaxStandComp->SetParameter  = omx_video_scheduler_component_SetParameter;
   openmaxStandComp->GetParameter  = omx_video_scheduler_component_GetParameter;
@@ -424,8 +424,8 @@ OMX_ERRORTYPE  omx_video_scheduler_component_port_FlushProcessingBuffers(omx_bas
       tsem_up(omx_base_component_Private->bMgmtSem);
     }
 
-    if(omx_base_component_Private->state==OMX_StatePause ) {
-      /*Waiting at paused state*/
+    if(omx_base_component_Private->state != OMX_StateExecuting ) {
+      /*signal at non-executing state*/
       tsem_signal(omx_base_component_Private->bStateSem);
     }
     DEBUG(DEB_LEV_FULL_SEQ, "In %s waiting for flush all condition port index =%d\n", __func__,(int)openmaxStandPort->sPortParam.nPortIndex);
@@ -501,7 +501,20 @@ OMX_ERRORTYPE  omx_video_scheduler_component_port_FlushProcessingBuffers(omx_bas
   */
 void omx_video_scheduler_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmaxStandComp, OMX_BUFFERHEADERTYPE* pInputBuffer, OMX_BUFFERHEADERTYPE* pOutputBuffer) {
 
-  if(pInputBuffer->pBuffer != pOutputBuffer->pBuffer){
+  omx_video_scheduler_component_PrivateType*   omx_video_scheduler_component_Private = openmaxStandComp->pComponentPrivate;
+  omx_base_video_PortType       *inPort = (omx_base_video_PortType *)omx_video_scheduler_component_Private->ports[OMX_BASE_FILTER_INPUTPORT_INDEX];
+  omx_base_clock_PortType*        pClockPort;
+  OMX_BOOL                        SendFrame;
+
+  pClockPort  = (omx_base_clock_PortType*)omx_video_scheduler_component_Private->ports[CLOCKPORT_INDEX];
+  if(PORT_IS_TUNNELED(pClockPort) && !PORT_IS_BEING_FLUSHED(inPort) &&
+      (omx_video_scheduler_component_Private->transientState != OMX_TransStateExecutingToIdle) &&
+      (pInputBuffer->nFlags != OMX_BUFFERFLAG_EOS)){
+    SendFrame = omx_video_scheduler_component_ClockPortHandleFunction(omx_video_scheduler_component_Private, pInputBuffer);
+    if(!SendFrame) pInputBuffer->nFilledLen = 0;
+  }
+
+  if((pInputBuffer->pBuffer != pOutputBuffer->pBuffer) && (pInputBuffer->nFilledLen > 0)){
     memcpy(pOutputBuffer->pBuffer,pInputBuffer->pBuffer,pInputBuffer->nFilledLen);
     pOutputBuffer->nOffset = pInputBuffer->nOffset;
   }
@@ -521,6 +534,7 @@ OMX_ERRORTYPE omx_video_scheduler_component_SetParameter(
   OMX_VIDEO_PARAM_PORTFORMATTYPE    *pVideoPortFormat;
   OMX_OTHER_PARAM_PORTFORMATTYPE    *pOtherPortFormat;
   OMX_U32                           portIndex;
+  OMX_PARAM_COMPONENTROLETYPE       *pComponentRole;
 
   /* Check which structure we are being fed and make control its header */
   OMX_COMPONENTTYPE                           *openmaxStandComp = (OMX_COMPONENTTYPE *)hComponent;
@@ -585,7 +599,7 @@ OMX_ERRORTYPE omx_video_scheduler_component_SetParameter(
         break;
       }
       pPort = (omx_base_video_PortType *) omx_video_scheduler_component_Private->ports[portIndex];
-      if(portIndex != 0) {
+      if(portIndex > 1) {
         return OMX_ErrorBadPortIndex;
       }
       if (pVideoPortFormat->eCompressionFormat != OMX_VIDEO_CodingUnused)  {
@@ -613,6 +627,23 @@ OMX_ERRORTYPE omx_video_scheduler_component_SetParameter(
       pClockPort->sOtherParam.eFormat = pOtherPortFormat->eFormat;
       break;
 
+    case OMX_IndexParamStandardComponentRole:
+      pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
+
+      if (omx_video_scheduler_component_Private->state != OMX_StateLoaded && omx_video_scheduler_component_Private->state != OMX_StateWaitForResources) {
+        DEBUG(DEB_LEV_ERR, "In %s Incorrect State=%x lineno=%d\n",__func__,omx_video_scheduler_component_Private->state,__LINE__);
+        return OMX_ErrorIncorrectStateOperation;
+      }
+
+      if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
+        break;
+      }
+
+      if (strcmp( (char*) pComponentRole->cRole, VIDEO_SCHEDULER_COMP_ROLE)) {
+        return OMX_ErrorBadParameter;
+      }
+      break;
+
     default: /*Call the base component function*/
       return omx_base_component_SetParameter(hComponent, nParamIndex, ComponentParameterStructure);
   }
@@ -631,6 +662,7 @@ OMX_ERRORTYPE omx_video_scheduler_component_GetParameter(
   omx_video_scheduler_component_PrivateType* omx_video_scheduler_component_Private = openmaxStandComp->pComponentPrivate;
   omx_base_video_PortType                    *pPort;
   omx_base_clock_PortType                    *pClockPort = (omx_base_clock_PortType *) omx_video_scheduler_component_Private->ports[CLOCKPORT_INDEX];
+  OMX_PARAM_COMPONENTROLETYPE                *pComponentRole;
 
   if (ComponentParameterStructure == NULL) {
     return OMX_ErrorBadParameter;
@@ -672,6 +704,14 @@ OMX_ERRORTYPE omx_video_scheduler_component_GetParameter(
       } else {
         return OMX_ErrorBadPortIndex;
       }
+      break;
+
+    case OMX_IndexParamStandardComponentRole:
+      pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
+      if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
+        break;
+      }
+      strcpy( (char*) pComponentRole->cRole, VIDEO_SCHEDULER_COMP_ROLE);
       break;
 
     default: /*Call the base component function*/
