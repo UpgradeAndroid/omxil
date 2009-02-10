@@ -65,6 +65,7 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 	struct dirent *dp;
 	void *handle;
 	int i, num_of_comp;
+	int num_of_libraries = 0;
 	unsigned int j;
 	char *buffer = NULL;
 	int (*fptr)(void *);
@@ -137,6 +138,7 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 						if (verbose) {
 							printf("\n Scanning openMAX libary %s\n", lib_absolute_path);
 						}
+						num_of_libraries++;
 						num_of_comp = fptr(NULL);
 						stComponents = malloc(num_of_comp * sizeof(stLoaderComponentType*));
 						for (i = 0; i<num_of_comp; i++) {
@@ -225,9 +227,9 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 	}
 	free(buffer);
 	if (verbose) {
-		printf("\n %i OpenMAX IL ST static components with %i roles succesfully scanned\n", ncomponents, nroles);
+		printf("\n %i OpenMAX IL ST static components in %i libraries succesfully scanned\n", ncomponents, num_of_libraries);
 	} else {
-		DEBUG(DEB_LEV_SIMPLE_SEQ, "\n %i OpenMAX IL ST static components with %i roles succesfully scanned\n", ncomponents, nroles);
+		DEBUG(DEB_LEV_SIMPLE_SEQ, "\n %i OpenMAX IL ST static components with %i roles in %i libraries succesfully scanned\n", ncomponents, nroles, num_of_libraries);
 	}
 
 	return 0;
