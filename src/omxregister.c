@@ -215,6 +215,23 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 							ncomponents++;
 						}
 						for (i = 0; i < num_of_comp; i++) {
+							free(stComponents[i]->name);
+							for (k=0; k<stComponents[i]->name_specific_length; k++) {
+								free(stComponents[i]->name_specific[k]);
+								free(stComponents[i]->role_specific[k]);
+							}
+							if (stComponents[i]->name_specific_length > 0) {
+								free(stComponents[i]->name_specific);
+								free(stComponents[i]->role_specific);
+							}
+/* This part should be added when the support
+ * for quality levels will be available */
+/*							for (k=0; k<stComponents[i]->nqualitylevels; k++) {
+								free(stComponents[i]->multiResourceLevel[k]);
+							}
+							if (stComponents[i]->multiResourceLevel) {
+								free(stComponents[i]->multiResourceLevel);
+							}*/
 							free(stComponents[i]);
 						}
 						free(stComponents);
