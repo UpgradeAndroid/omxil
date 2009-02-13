@@ -1,12 +1,12 @@
 /**
-  @file test/components/audio_effects/omxaudiomixertest.c
+  @file test/components/audio_effects/omxaudiomixertest.h
 
   This simple test application take one or more input stream/s. passes
   these streams to an audio mixer component and stores the mixed output in another
   output file.
 
-  Copyright (C) 2008  STMicroelectronics
-  Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+  Copyright (C) 2008-2009  STMicroelectronics
+  Copyright (C) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
   the terms of the GNU Lesser General Public License as published by the Free
@@ -61,9 +61,7 @@ typedef struct appPrivateType{
   OMX_BUFFERHEADERTYPE* currentInputBuffer;
   tsem_t* eventSem;
   tsem_t* eofSem;
-  tsem_t* sinkEventSem;
   OMX_HANDLETYPE handle;
-  OMX_HANDLETYPE audiosinkhandle;
 }appPrivateType;
 
 /* Size of the buffers requested to the component */
@@ -71,35 +69,35 @@ typedef struct appPrivateType{
 
 /* Callback prototypes */
 OMX_ERRORTYPE audiomixerEventHandler(
-  OMX_OUT OMX_HANDLETYPE hComponent,
-  OMX_OUT OMX_PTR pAppData,
-  OMX_OUT OMX_EVENTTYPE eEvent,
-  OMX_OUT OMX_U32 Data1,
-  OMX_OUT OMX_U32 Data2,
-  OMX_IN OMX_PTR pEventData);
+  OMX_HANDLETYPE hComponent,
+  OMX_PTR pAppData,
+  OMX_EVENTTYPE eEvent,
+  OMX_U32 Data1,
+  OMX_U32 Data2,
+  OMX_PTR pEventData);
 
 OMX_ERRORTYPE audiomixerEmptyBufferDone(
-  OMX_OUT OMX_HANDLETYPE hComponent,
-  OMX_OUT OMX_PTR pAppData,
-  OMX_OUT OMX_BUFFERHEADERTYPE* pBuffer);
+  OMX_HANDLETYPE hComponent,
+  OMX_PTR pAppData,
+  OMX_BUFFERHEADERTYPE* pBuffer);
 
 OMX_ERRORTYPE audiomixerFillBufferDone(
-  OMX_OUT OMX_HANDLETYPE hComponent,
-  OMX_OUT OMX_PTR pAppData,
-  OMX_OUT OMX_BUFFERHEADERTYPE* pBuffer);
+  OMX_HANDLETYPE hComponent,
+  OMX_PTR pAppData,
+  OMX_BUFFERHEADERTYPE* pBuffer);
 
 OMX_ERRORTYPE audiosinkEventHandler(
-  OMX_OUT OMX_HANDLETYPE hComponent,
-  OMX_OUT OMX_PTR pAppData,
-  OMX_OUT OMX_EVENTTYPE eEvent,
-  OMX_OUT OMX_U32 Data1,
-  OMX_OUT OMX_U32 Data2,
-  OMX_OUT OMX_PTR pEventData);
+  OMX_HANDLETYPE hComponent,
+  OMX_PTR pAppData,
+  OMX_EVENTTYPE eEvent,
+  OMX_U32 Data1,
+  OMX_U32 Data2,
+  OMX_PTR pEventData);
 
 OMX_ERRORTYPE audiosinkEmptyBufferDone(
-  OMX_OUT OMX_HANDLETYPE hComponent,
-  OMX_OUT OMX_PTR pAppData,
-  OMX_OUT OMX_BUFFERHEADERTYPE* pBuffer);
+  OMX_HANDLETYPE hComponent,
+  OMX_PTR pAppData,
+  OMX_BUFFERHEADERTYPE* pBuffer);
 
 /** Helper functions */
 static int getFileSize(int fd);

@@ -32,10 +32,6 @@
 #include <omx_audiomixer_component.h>
 #include<OMX_Audio.h>
 
-#define OMX_AUDIO_MIXER_INPUTPORT_INDEX      0
-#define OMX_AUDIO_MIXER_INPUTPORT_INDEX_1    1
-#define OMX_AUDIO_MIXER_OUTPUTPORT_INDEX     2
-
 /* Gain value */
 #define GAIN_VALUE 100.0f
 
@@ -526,7 +522,7 @@ void* omx_audio_mixer_BufferMgmtFunction (void* param) {
           }
 
           if(pBuffer[i]->nFlags==OMX_BUFFERFLAG_EOS && pBuffer[i]->nFilledLen==0) {
-            DEBUG(DEB_LEV_FULL_SEQ, "Detected EOS flags in input buffer filled len=%d\n", (int)pBuffer[i]->nFilledLen);
+            DEBUG(DEB_LEV_FULL_SEQ, "Detected EOS flags in input buffer %x of %i filled len=%d\n", (int)pBuffer[i], (int)i, (int)pBuffer[i]->nFilledLen);
             pBuffer[nOutputPortIndex]->nFlags = pBuffer[i]->nFlags;
             pBuffer[i]->nFlags=0;
             (*(omx_audio_mixer_component_Private->callbacks->EventHandler))
@@ -538,7 +534,7 @@ void* omx_audio_mixer_BufferMgmtFunction (void* param) {
               NULL);
           }
 
-          //TBD: Tobe verified
+          //TBD: To be verified
           if(omx_audio_mixer_component_Private->state == OMX_StateExecuting)  {
             if (omx_audio_mixer_component_Private->BufferMgmtCallback && pBuffer[i]->nFilledLen != 0) {
               (*(omx_audio_mixer_component_Private->BufferMgmtCallback))(openmaxStandComp, pBuffer[i], pBuffer[nOutputPortIndex]);

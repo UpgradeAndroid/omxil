@@ -1,11 +1,11 @@
 /**
   @file test/components/audio_effects/omxvolcontroltest.c
-  
-  This simple test application provides a testing stream for the volume control component. 
+
+  This simple test application provides a testing stream for the volume control component.
   It will be added in the more complex audio test application in the next release.
-  
-  Copyright (C) 2007-2008 STMicroelectronics
-  Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
+
+  Copyright (C) 2007-2009 STMicroelectronics
+  Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
   the terms of the GNU Lesser General Public License as published by the Free
@@ -21,7 +21,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-  
+
   $Date$
   Revision $Rev$
   Author $Author$
@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
           flagIsGain = 0;
           if(gain > 100) {
             DEBUG(DEFAULT_MESSAGES, "Gain should be between [0..100]\n");
-            gain = 100; 
+            gain = 100;
           }
         } else if (flagIsOutputExpected) {
           output_file = malloc(strlen(argv[argn_dec]) + 1);
@@ -141,7 +141,7 @@ int main(int argc, char** argv) {
     }
   }
 
- 
+
   fd = open(input_file, O_RDONLY);
   if(fd < 0){
     perror("Error opening input file\n");
@@ -153,9 +153,9 @@ int main(int argc, char** argv) {
     if(outfile == NULL) {
       DEBUG(DEB_LEV_ERR, "Error at opening the output file");
       exit(1);
-    } 
+    }
   }
-   
+
   filesize = getFileSize(fd);
   /* Initialize application private data */
   appPriv = malloc(sizeof(appPrivateType));
@@ -251,7 +251,7 @@ int main(int argc, char** argv) {
   /* Wait for commands to complete */
   tsem_down(appPriv->eventSem);
 
-  DEBUG(DEB_LEV_PARAMS, "Had buffers at:\n0x%08x\n0x%08x\n0x%08x\n0x%08x\n", 
+  DEBUG(DEB_LEV_PARAMS, "Had buffers at:\n0x%08x\n0x%08x\n0x%08x\n0x%08x\n",
                 (int)inBuffer1->pBuffer, (int)inBuffer2->pBuffer, (int)outBuffer1->pBuffer, (int)outBuffer2->pBuffer);
   DEBUG(DEB_LEV_PARAMS, "After switch to executing\n");
 
@@ -267,7 +267,7 @@ int main(int argc, char** argv) {
   err = OMX_EmptyThisBuffer(handle, inBuffer1);
   DEBUG(DEB_LEV_PARAMS, "Empty second buffer %x\n", (int)inBuffer2);
   err = OMX_EmptyThisBuffer(handle, inBuffer2);
-  
+
   /** Schedule a couple of buffers to be filled on the output port
     * The callback itself will re-schedule them.
     */
@@ -346,7 +346,7 @@ OMX_ERRORTYPE volcEventHandler(
       tsem_up(appPriv->eventSem);
     } else if (Data1 == OMX_CommandPortDisable){
       tsem_up(appPriv->eventSem);
-    } 
+    }
   } else if(eEvent == OMX_EventBufferFlag) {
     if((int)Data2 == OMX_BUFFERFLAG_EOS) {
       tsem_up(appPriv->eofSem);
@@ -401,7 +401,7 @@ OMX_ERRORTYPE volcFillBufferDone(
   OMX_OUT OMX_BUFFERHEADERTYPE* pBuffer) {
 
   OMX_ERRORTYPE err;
-  int i;  
+  int i;
 
   DEBUG(DEB_LEV_FULL_SEQ, "Hi there, I am in the %s callback. Got buflen %i for buffer at 0x%08x\n",
                           __func__, (int)pBuffer->nFilledLen, (int)pBuffer);
