@@ -64,7 +64,7 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
   DIR *dirp;
 	struct dirent *dp;
 	void *handle;
-	int i, num_of_comp;
+	int i, k, num_of_comp;
 	int num_of_libraries = 0;
 	unsigned int j;
 	char *buffer = NULL;
