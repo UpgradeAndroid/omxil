@@ -1,5 +1,5 @@
 /**
-  @file src/tsemaphore.h
+  src/tsemaphore.h
 
   Implements a simple inter-thread semaphore so not to have to deal with IPC
   creation and the like.

@@ -1,5 +1,5 @@
 /**
-  @file src/omxcore.c
+  src/omxcore.c
 
   OpenMAX Integration Layer Core. This library implements the OpenMAX core
   responsible for environment setup, components tunneling and communication.

@@ -1,5 +1,5 @@
 /**
-  @file src/omx_create_loaders_symbian.cpp
+  src/omx_create_loaders_symbian.cpp
     
   Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 

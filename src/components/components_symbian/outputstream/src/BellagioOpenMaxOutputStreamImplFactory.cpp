@@ -1,5 +1,5 @@
 /**
-  @file src/components/components_symbian/outputstream/src/BellagioOpenMaxOutputStreamImplFactory.cpp
+  src/components/components_symbian/outputstream/src/BellagioOpenMaxOutputStreamImplFactory.cpp
     
   Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 

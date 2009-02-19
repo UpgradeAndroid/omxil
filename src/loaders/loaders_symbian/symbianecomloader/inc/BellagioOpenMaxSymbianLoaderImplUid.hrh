@@ -1,5 +1,5 @@
 /**
-  @file src/loaders/symbianloader/inc/BellagioOpenMaxSymbianLoaderImplUid.hrh
+  src/loaders/symbianloader/inc/BellagioOpenMaxSymbianLoaderImplUid.hrh
     
   Component loader header for symbian. 
     

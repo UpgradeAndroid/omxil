@@ -1,5 +1,5 @@
 /**
-  @file src/components/videoscheduler/library_entry_point.c
+  src/components/videoscheduler/library_entry_point.c
 
   The library entry point. It must have the same name for each
   library of the components loaded by the ST static component loader.

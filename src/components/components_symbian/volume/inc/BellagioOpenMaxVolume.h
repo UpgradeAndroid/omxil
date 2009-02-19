@@ -1,5 +1,5 @@
 /**
-  @file src/components/components_symbian/volume/inc/BellagioOpenMaxVolume.h
+  src/components/components_symbian/volume/inc/BellagioOpenMaxVolume.h
     
   Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 

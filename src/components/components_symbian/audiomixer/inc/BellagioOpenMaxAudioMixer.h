@@ -1,5 +1,5 @@
 /**
-  @file src/components/components_symbian/audiomixer/inc/BellagioOpenMaxAudioMixer.h
+  src/components/components_symbian/audiomixer/inc/BellagioOpenMaxAudioMixer.h
     
   Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 

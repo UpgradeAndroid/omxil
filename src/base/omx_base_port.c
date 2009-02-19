@@ -1,5 +1,5 @@
 /**
-  @file src/base/omx_base_port.c
+  src/base/omx_base_port.c
 
   Base class for OpenMAX ports to be used in derived components.
 

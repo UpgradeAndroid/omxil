@@ -1,5 +1,5 @@
 /**
-  @file src/content_pipe_inet.h
+  src/content_pipe_inet.h
 
   This file implements the support for content pipes related to inet resources.
 

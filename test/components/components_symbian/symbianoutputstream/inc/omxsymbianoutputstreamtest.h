@@ -1,5 +1,5 @@
 /**
-	@file test/components/components_symbian/symbianoutputstream/inc/omxsymbianoutputstreamtest.h
+	test/components/components_symbian/symbianoutputstream/inc/omxsymbianoutputstreamtest.h
 
 	Simple application that uses an OpenMAX Symbian output stream component. The application receives
 	a pcm stream from a file or, if not specified, from standard input.

@@ -1,5 +1,5 @@
 /**
-  @file src/base/omx_base_clock_port.c
+  src/base/omx_base_clock_port.c
 
   Base Clock Port class for OpenMAX clock ports to be used in derived components.
 

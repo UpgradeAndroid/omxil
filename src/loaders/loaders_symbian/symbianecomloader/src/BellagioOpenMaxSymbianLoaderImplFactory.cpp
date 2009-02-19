@@ -1,5 +1,5 @@
 /**
-  @file src/loaders/symbianloader/src/BellagioOpenMaxSymbianLoaderImplFactory.h
+  src/loaders/symbianloader/src/BellagioOpenMaxSymbianLoaderImplFactory.h
       
   Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 

@@ -1,5 +1,5 @@
 /**
-  @file src/common.h
+  src/common.h
 
   OpenMAX Integration Layer Core. This library implements the OpenMAX core
   responsible for environment setup, component tunneling and communication.

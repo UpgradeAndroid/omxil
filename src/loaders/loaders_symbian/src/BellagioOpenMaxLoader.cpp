@@ -1,5 +1,5 @@
 /**
-  @file src/loaders/BellagioOpenMaxLoader.ccp
+  src/loaders/BellagioOpenMaxLoader.ccp
     
   Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 

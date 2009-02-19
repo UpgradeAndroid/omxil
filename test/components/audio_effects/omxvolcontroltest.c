@@ -1,5 +1,5 @@
 /**
-  @file test/components/audio_effects/omxvolcontroltest.c
+  test/components/audio_effects/omxvolcontroltest.c
 
   This simple test application provides a testing stream for the volume control component.
   It will be added in the more complex audio test application in the next release.

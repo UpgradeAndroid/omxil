@@ -1,5 +1,5 @@
 /**
-  @file src/omx_create_loaders_linux.c
+  src/omx_create_loaders_linux.c
 
   In this file is implemented the entry point for the construction
   of every component loader in linux. In the current implementation

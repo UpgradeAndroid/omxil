@@ -1,5 +1,5 @@
 /**
-  @file src/content_pipe_file.h
+  src/content_pipe_file.h
 
   This file implements the support for content pipes related to local files.
 

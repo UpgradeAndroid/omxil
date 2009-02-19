@@ -1,5 +1,5 @@
 /**
-  @file test/components/audio_effects/omxaudiomixertest.c
+  test/components/audio_effects/omxaudiomixertest.c
 
   This simple test application take one or more input stream/s. passes
   these streams to an audio mixer component and stores the mixed output in another

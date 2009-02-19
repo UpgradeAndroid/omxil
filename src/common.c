@@ -1,5 +1,5 @@
 /**
-  @file src/common.c
+  src/common.c
 
   This file implements some useful common functionalities for handlign the register files used in Bellagio
 

@@ -1,5 +1,5 @@
 /**
-  @file src/components/clocksrc/omx_clocksrc_component.h
+  src/components/clocksrc/omx_clocksrc_component.h
 
   OpenMAX clocksrc_component component. This component does not perform any multimedia
   processing.  It is provides the media and the reference clock for all the clients connected to it.

@@ -1,5 +1,5 @@
 /**
-  @file src/base/omx_base_filter.c
+  src/base/omx_base_filter.c
 
   OpenMAX Base Filter component. This component does not perform any multimedia
   processing. It derives from base component and contains two ports. It can be used

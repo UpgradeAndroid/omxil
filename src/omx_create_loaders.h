@@ -1,5 +1,5 @@
 /**
-  @file src/omx_create_loaders.h
+  src/omx_create_loaders.h
 
   Define a generic entry point for component loaders creation.
   Each component loader should provide an implementation of the 

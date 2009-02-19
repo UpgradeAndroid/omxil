@@ -1,5 +1,5 @@
 /**
-	@file src/omxregister.c
+	src/omxregister.c
 
 	Register OpenMAX components. This application registers the installed OpenMAX
 	components and stores the list in the file:

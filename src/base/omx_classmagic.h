@@ -1,5 +1,5 @@
 /**
-  @file src/base/omx_classmagic.h
+  src/base/omx_classmagic.h
 	  
   This file contains class handling helper macros
   It is left as an exercise to the reader how they do the magic (FIXME)

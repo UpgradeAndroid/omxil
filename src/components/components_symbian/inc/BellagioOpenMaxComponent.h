@@ -1,5 +1,5 @@
 /**
-  @file src/components/components_symbian/inc/BellagioOpenMaxComponent.h
+  src/components/components_symbian/inc/BellagioOpenMaxComponent.h
 
   Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 

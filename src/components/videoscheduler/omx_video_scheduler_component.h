@@ -1,5 +1,5 @@
 /**
-  @file src/components/videoscheduler/omx_video_scheduler_component.h
+  src/components/videoscheduler/omx_video_scheduler_component.h
 
   This component implements a video scheduler
 

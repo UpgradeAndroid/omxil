@@ -1,5 +1,5 @@
 /**
-  @file src/base/omx_base_video_port.c
+  src/base/omx_base_video_port.c
 
   Base Video Port class for OpenMAX ports to be used in derived components.
 

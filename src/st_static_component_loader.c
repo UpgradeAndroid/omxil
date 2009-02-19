@@ -1,5 +1,5 @@
 /**
-  @file src/st_static_component_loader.c
+  src/st_static_component_loader.c
 
   ST specific component loader for local components.
 

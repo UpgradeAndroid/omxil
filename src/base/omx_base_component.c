@@ -1,5 +1,5 @@
 /**
-  @file src/base/omx_base_component.c
+  src/base/omx_base_component.c
 
   OpenMAX base_component component. This component does not perform any multimedia
   processing.  It is used as a base_component for new components development.

@@ -1,5 +1,5 @@
 /**
-  @file src/base/omx_base_audio_port.h
+  src/base/omx_base_audio_port.h
     
   Base Audio Port class for OpenMAX ports to be used in derived components.
 

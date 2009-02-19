@@ -1,5 +1,5 @@
 /**
-  @file src/base/omx_base_source.h
+  src/base/omx_base_source.h
 
   OpenMAX base source component. This component does not perform any multimedia
   processing. It derives from base component and contains a single port. It can be used

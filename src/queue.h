@@ -1,5 +1,5 @@
 /**
-  @file src/queue.h
+  src/queue.h
 
   Implements a simple LIFO structure used for queueing OMX buffers.
 

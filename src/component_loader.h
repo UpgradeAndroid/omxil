@@ -1,5 +1,5 @@
 /**
-  @file src/component_loader.h
+  src/component_loader.h
 
   OpenMAX Component loader APIs. This header file specifies the entry point
   that a component loader must provide.
