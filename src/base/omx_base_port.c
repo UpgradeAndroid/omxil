@@ -330,26 +330,7 @@ OMX_ERRORTYPE base_port_EnablePort(omx_base_PortType *openmaxStandPort) {
       openmaxStandPort->sPortParam.bPopulated = OMX_TRUE;
     }
   } else { //Port Tunneled and supplier. Then allocate tunnel buffers
-	  int thistsize, othersize, max_size;
-	  OMX_COMPONENTTYPE *tunneledComponent;
-	  OMX_PARAM_PORTDEFINITIONTYPE paramporttunneled;
-	  thistsize = openmaxStandPort->sPortParam.nBufferSize;
-	  tunneledComponent = (OMX_COMPONENTTYPE *)openmaxStandPort->hTunneledComponent;
-	  setHeader(&paramporttunneled, sizeof(OMX_PARAM_PORTDEFINITIONTYPE));
-	  paramporttunneled.nPortIndex = openmaxStandPort->nTunneledPort;
-	  err = OMX_GetParameter(tunneledComponent, OMX_IndexParamPortDefinition, &paramporttunneled);
-	  if(err != OMX_ErrorNone){
-	    DEBUG(DEB_LEV_ERR, "Error in getting OMX_PARAM_PORTDEFINITIONTYPE parameter %i\n", (int) err);
-	    return err;
-	  }
-	  othersize = paramporttunneled.nBufferSize;
-	  if (thistsize > othersize) {
-		  max_size = thistsize;
-	  } else {
-		  max_size = othersize;
-	  }
-
-    err= openmaxStandPort->Port_AllocateTunnelBuffer(openmaxStandPort, openmaxStandPort->sPortParam.nPortIndex, max_size);
+    err= openmaxStandPort->Port_AllocateTunnelBuffer(openmaxStandPort, openmaxStandPort->sPortParam.nPortIndex);
     if(err!=OMX_ErrorNone) {
       DEBUG(DEB_LEV_ERR, "In %s Allocating Tunnel Buffer Error=%x\n",__func__,err);
       return err;
@@ -607,15 +588,14 @@ OMX_ERRORTYPE base_port_FreeBuffer(
 
 OMX_ERRORTYPE base_port_AllocateTunnelBuffer(
 		omx_base_PortType *openmaxStandPort,
-		OMX_U32 nPortIndex,
-		OMX_U32 nSizeBytes)
+		OMX_U32 nPortIndex)
 {
   unsigned int i;
   OMX_COMPONENTTYPE* omxComponent = openmaxStandPort->standCompContainer;
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)omxComponent->pComponentPrivate;
   OMX_U8* pBuffer=NULL;
   OMX_ERRORTYPE eError=OMX_ErrorNone,err;
-  OMX_U32 numRetry=0,nBufferSize = nSizeBytes;
+  OMX_U32 numRetry=0,nBufferSize;
   OMX_PARAM_PORTDEFINITIONTYPE sPortDef;
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 
@@ -634,13 +614,12 @@ OMX_ERRORTYPE base_port_AllocateTunnelBuffer(
       return OMX_ErrorIncorrectStateTransition;
     }
   }
-
   /*Get nBufferSize of the peer port and allocate which one is bigger*/
   setHeader(&sPortDef, sizeof(OMX_PARAM_PORTDEFINITIONTYPE));
   sPortDef.nPortIndex = openmaxStandPort->nTunneledPort;
   err = OMX_GetParameter(openmaxStandPort->hTunneledComponent, OMX_IndexParamPortDefinition, &sPortDef);
   if(err == OMX_ErrorNone) {
-    nBufferSize = (sPortDef.nBufferSize > nSizeBytes) ? sPortDef.nBufferSize: nSizeBytes;
+    nBufferSize = (sPortDef.nBufferSize > openmaxStandPort->sPortParam.nBufferSize) ? sPortDef.nBufferSize: openmaxStandPort->sPortParam.nBufferSize;
   }
 
   for(i=0; i < openmaxStandPort->sPortParam.nBufferCountActual; i++){

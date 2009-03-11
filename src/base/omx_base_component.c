@@ -390,24 +390,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
         if (PORT_IS_TUNNELED(pPort) && PORT_IS_BUFFER_SUPPLIER(pPort)) {
           if(PORT_IS_ENABLED(pPort)) {
         	  /** Allocate here the buffers needed for the tunneling */
-        	  int thistsize, othersize, max_size;
-        	  OMX_COMPONENTTYPE *tunneledComponent;
-        	  OMX_PARAM_PORTDEFINITIONTYPE paramporttunneled;
-        	  thistsize = omx_base_component_Private->ports[i]->sPortParam.nBufferSize;
-        	  tunneledComponent = (OMX_COMPONENTTYPE *)omx_base_component_Private->ports[i]->hTunneledComponent;
-        	  setHeader(&paramporttunneled, sizeof(OMX_PARAM_PORTDEFINITIONTYPE));
-        	  err = OMX_GetParameter(tunneledComponent, OMX_IndexParamPortDefinition, &paramporttunneled);
-        	  if(err != OMX_ErrorNone){
-        	    DEBUG(DEB_LEV_ERR, "Error in getting OMX_PARAM_PORTDEFINITIONTYPE parameter\n");
-        	    return err;
-        	  }
-        	  othersize = paramporttunneled.nBufferSize;
-        	  if (thistsize > othersize) {
-        		  max_size = thistsize;
-        	  } else {
-        		  max_size = othersize;
-        	  }
-        	  err= pPort->Port_AllocateTunnelBuffer(pPort, i, max_size);
+        	  err= pPort->Port_AllocateTunnelBuffer(pPort, i);
         	  if(err!=OMX_ErrorNone) {
         		  DEBUG(DEB_LEV_ERR, "In %s Allocating Tunnel Buffer Error=%x\n",__func__,err);
         		  return err;
