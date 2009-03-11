@@ -521,7 +521,7 @@ void* omx_audio_mixer_BufferMgmtFunction (void* param) {
             pBuffer[nOutputPortIndex]->nTimeStamp = pBuffer[i]->nTimeStamp;
           }
 
-          if(pBuffer[i]->nFlags==OMX_BUFFERFLAG_EOS && pBuffer[i]->nFilledLen==0) {
+          if((pBuffer[i]->nFlags & OMX_BUFFERFLAG_EOS) == OMX_BUFFERFLAG_EOS && pBuffer[i]->nFilledLen==0) {
             DEBUG(DEB_LEV_FULL_SEQ, "Detected EOS flags in input buffer %x of %i filled len=%d\n", (int)pBuffer[i], (int)i, (int)pBuffer[i]->nFilledLen);
             pBuffer[nOutputPortIndex]->nFlags = pBuffer[i]->nFlags;
             pBuffer[i]->nFlags=0;
@@ -563,7 +563,7 @@ void* omx_audio_mixer_BufferMgmtFunction (void* param) {
       }
 
       /*If EOS and Input buffer Filled Len Zero then Return output buffer immediately*/
-      if(pBuffer[nOutputPortIndex]->nFilledLen!=0 || pBuffer[nOutputPortIndex]->nFlags==OMX_BUFFERFLAG_EOS){
+      if(pBuffer[nOutputPortIndex]->nFilledLen!=0 || (pBuffer[nOutputPortIndex]->nFlags & OMX_BUFFERFLAG_EOS) == OMX_BUFFERFLAG_EOS){
         DEBUG(DEB_LEV_SIMPLE_SEQ, "Returning output buffer \n");
         pPort[nOutputPortIndex]->ReturnBufferFunction(pPort[nOutputPortIndex],pBuffer[nOutputPortIndex]);
         pBuffer[nOutputPortIndex]=NULL;

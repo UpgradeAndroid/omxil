@@ -208,7 +208,7 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
       }
 
       pOutputBuffer->nTimeStamp = pInputBuffer->nTimeStamp;
-      if(pInputBuffer->nFlags == OMX_BUFFERFLAG_STARTTIME) {
+      if((pInputBuffer->nFlags & OMX_BUFFERFLAG_STARTTIME) == OMX_BUFFERFLAG_STARTTIME) {
          DEBUG(DEB_LEV_FULL_SEQ, "Detected  START TIME flag in the input buffer filled len=%d\n", (int)pInputBuffer->nFilledLen);
          pOutputBuffer->nFlags = pInputBuffer->nFlags;
          pInputBuffer->nFlags = 0;
@@ -227,7 +227,7 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
           pInputBuffer->nFilledLen = 0;
       }
 
-      if(pInputBuffer->nFlags==OMX_BUFFERFLAG_EOS && pInputBuffer->nFilledLen==0) {
+      if((pInputBuffer->nFlags & OMX_BUFFERFLAG_EOS) == OMX_BUFFERFLAG_EOS && pInputBuffer->nFilledLen==0) {
         DEBUG(DEB_LEV_FULL_SEQ, "Detected EOS flags in input buffer filled len=%d\n", (int)pInputBuffer->nFilledLen);
         pOutputBuffer->nFlags=pInputBuffer->nFlags;
         pInputBuffer->nFlags=0;
@@ -246,7 +246,7 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
       }
 
       /*If EOS and Input buffer Filled Len Zero then Return output buffer immediately*/
-      if((pOutputBuffer->nFilledLen != 0) || (pOutputBuffer->nFlags==OMX_BUFFERFLAG_EOS) || (omx_base_filter_Private->bIsEOSReached == OMX_TRUE)) {
+      if((pOutputBuffer->nFilledLen != 0) || ((pOutputBuffer->nFlags & OMX_BUFFERFLAG_EOS) == OMX_BUFFERFLAG_EOS) || (omx_base_filter_Private->bIsEOSReached == OMX_TRUE)) {
         pOutPort->ReturnBufferFunction(pOutPort,pOutputBuffer);
         outBufExchanged--;
         pOutputBuffer=NULL;

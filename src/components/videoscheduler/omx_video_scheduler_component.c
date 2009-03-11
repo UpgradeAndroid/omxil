@@ -232,7 +232,7 @@ OMX_ERRORTYPE omx_video_scheduler_component_port_SendBufferFunction(omx_base_Por
   pClockPort  = (omx_base_clock_PortType*)omx_base_component_Private->ports[CLOCKPORT_INDEX];
   if(PORT_IS_TUNNELED(pClockPort) && !PORT_IS_BEING_FLUSHED(openmaxStandPort) &&
       (omx_base_component_Private->transientState != OMX_TransStateExecutingToIdle) &&
-      (pBuffer->nFlags != OMX_BUFFERFLAG_EOS)){
+      ((pBuffer->nFlags & OMX_BUFFERFLAG_EOS) != OMX_BUFFERFLAG_EOS)){
     SendFrame = omx_video_scheduler_component_ClockPortHandleFunction((omx_video_scheduler_component_PrivateType*)omx_base_component_Private, pBuffer);
     if(!SendFrame) pBuffer->nFilledLen=0;
   }
@@ -276,7 +276,7 @@ OMX_BOOL omx_video_scheduler_component_ClockPortHandleFunction(
 
   DEBUG(DEB_LEV_FULL_SEQ, "In %s Clock Port is Tunneled. Sending Request\n", __func__);
   /* if first time stamp is received then notify the clock component */
-  if(pInputBuffer->nFlags == OMX_BUFFERFLAG_STARTTIME) {
+  if((pInputBuffer->nFlags & OMX_BUFFERFLAG_STARTTIME) == OMX_BUFFERFLAG_STARTTIME) {
     DEBUG(DEB_LEV_FULL_SEQ," In %s  first time stamp = %llx \n", __func__,pInputBuffer->nTimeStamp);
     pInputBuffer->nFlags = 0;
     hclkComponent = pClockPort->hTunneledComponent;
@@ -509,7 +509,7 @@ void omx_video_scheduler_component_BufferMgmtCallback(OMX_COMPONENTTYPE *openmax
   pClockPort  = (omx_base_clock_PortType*)omx_video_scheduler_component_Private->ports[CLOCKPORT_INDEX];
   if(PORT_IS_TUNNELED(pClockPort) && !PORT_IS_BEING_FLUSHED(inPort) &&
       (omx_video_scheduler_component_Private->transientState != OMX_TransStateExecutingToIdle) &&
-      (pInputBuffer->nFlags != OMX_BUFFERFLAG_EOS)){
+      ((pInputBuffer->nFlags & OMX_BUFFERFLAG_EOS) != OMX_BUFFERFLAG_EOS)){
     SendFrame = omx_video_scheduler_component_ClockPortHandleFunction(omx_video_scheduler_component_Private, pInputBuffer);
     if(!SendFrame) pInputBuffer->nFilledLen = 0;
   }
