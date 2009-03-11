@@ -167,7 +167,7 @@ void* omx_base_sink_BufferMgmtFunction (void* param) {
           pInputBuffer->nFilledLen = 0;
         }
       } else {
-        DEBUG(DEB_LEV_ERR, "In %s Received Buffer in non-Executing State(%x) TrState (%x)\n",
+        DEBUG(DEB_LEV_FULL_SEQ, "In %s Received Buffer in non-Executing State(%x) TrState (%x)\n",
           __func__, (int)omx_base_sink_Private->state,
           (int)omx_base_component_Private->transientState);
         if(OMX_TransStateExecutingToIdle == omx_base_component_Private->transientState) {

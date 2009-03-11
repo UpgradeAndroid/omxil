@@ -330,7 +330,26 @@ OMX_ERRORTYPE base_port_EnablePort(omx_base_PortType *openmaxStandPort) {
       openmaxStandPort->sPortParam.bPopulated = OMX_TRUE;
     }
   } else { //Port Tunneled and supplier. Then allocate tunnel buffers
-    err= openmaxStandPort->Port_AllocateTunnelBuffer(openmaxStandPort, openmaxStandPort->sPortParam.nPortIndex, openmaxStandPort->sPortParam.nBufferSize);
+	  int thistsize, othersize, max_size;
+	  OMX_COMPONENTTYPE *tunneledComponent;
+	  OMX_PARAM_PORTDEFINITIONTYPE paramporttunneled;
+	  thistsize = openmaxStandPort->sPortParam.nBufferSize;
+	  tunneledComponent = (OMX_COMPONENTTYPE *)openmaxStandPort->hTunneledComponent;
+	  setHeader(&paramporttunneled, sizeof(OMX_PARAM_PORTDEFINITIONTYPE));
+	  paramporttunneled.nPortIndex = openmaxStandPort->nTunneledPort;
+	  err = OMX_GetParameter(tunneledComponent, OMX_IndexParamPortDefinition, &paramporttunneled);
+	  if(err != OMX_ErrorNone){
+	    DEBUG(DEB_LEV_ERR, "Error in getting OMX_PARAM_PORTDEFINITIONTYPE parameter %i\n", (int) err);
+	    return err;
+	  }
+	  othersize = paramporttunneled.nBufferSize;
+	  if (thistsize > othersize) {
+		  max_size = thistsize;
+	  } else {
+		  max_size = othersize;
+	  }
+
+    err= openmaxStandPort->Port_AllocateTunnelBuffer(openmaxStandPort, openmaxStandPort->sPortParam.nPortIndex, max_size);
     if(err!=OMX_ErrorNone) {
       DEBUG(DEB_LEV_ERR, "In %s Allocating Tunnel Buffer Error=%x\n",__func__,err);
       return err;
