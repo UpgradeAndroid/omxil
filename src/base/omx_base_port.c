@@ -631,7 +631,7 @@ OMX_ERRORTYPE base_port_AllocateTunnelBuffer(
   if (nLocalBufferCountActual < sPortDef.nBufferCountActual) {
 	  nLocalBufferCountActual = sPortDef.nBufferCountActual;
 	  openmaxStandPort->sPortParam.nBufferCountActual = nLocalBufferCountActual;
-  } else {
+  } else if (sPortDef.nBufferCountActual < nLocalBufferCountActual){
 	  sPortDef.nBufferCountActual = nLocalBufferCountActual;
 	  err = OMX_SetParameter(openmaxStandPort->hTunneledComponent, OMX_IndexParamPortDefinition, &sPortDef);
 	  if(err != OMX_ErrorNone) {

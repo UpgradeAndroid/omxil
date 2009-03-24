@@ -634,7 +634,7 @@ OMX_ERRORTYPE omx_base_component_ParameterSanityCheck(OMX_IN  OMX_HANDLETYPE hCo
   pPort = omx_base_component_Private->ports[nPortIndex];
 
   if (omx_base_component_Private->state != OMX_StateLoaded && omx_base_component_Private->state != OMX_StateWaitForResources) {
-    if(PORT_IS_ENABLED(pPort)) {
+    if(PORT_IS_ENABLED(pPort) && !pPort->bIsTransientToEnabled) {
       DEBUG(DEB_LEV_ERR, "In %s Incorrect State=%x lineno=%d\n",__func__,omx_base_component_Private->state,__LINE__);
       return OMX_ErrorIncorrectStateOperation;
     }
