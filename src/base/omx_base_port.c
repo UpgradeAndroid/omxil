@@ -665,7 +665,14 @@ OMX_ERRORTYPE base_port_AllocateTunnelBuffer(
           return eError;
         }
         else {
-          break;
+        	if(openmaxStandPort->sPortParam.eDir == OMX_DirInput) {
+        		openmaxStandPort->pInternalBufferStorage[i]->nInputPortIndex  = openmaxStandPort->sPortParam.nPortIndex;
+        		openmaxStandPort->pInternalBufferStorage[i]->nOutputPortIndex = openmaxStandPort->nTunneledPort;
+        	} else {
+        		openmaxStandPort->pInternalBufferStorage[i]->nInputPortIndex  = openmaxStandPort->nTunneledPort;
+        		openmaxStandPort->pInternalBufferStorage[i]->nOutputPortIndex = openmaxStandPort->sPortParam.nPortIndex;
+        	}
+        	break;
         }
       }
       if(eError!=OMX_ErrorNone) {
