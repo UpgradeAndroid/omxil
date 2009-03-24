@@ -4,8 +4,8 @@
   This simple test application provides a testing stream for the volume control component.
   It will be added in the more complex audio test application in the next release.
 
-  Copyright (C) 2007-2008 STMicroelectronics
-  Copyright (C) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
+  Copyright (C) 2007-2009 STMicroelectronics
+  Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
   the terms of the GNU Lesser General Public License as published by the Free
