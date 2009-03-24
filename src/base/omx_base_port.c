@@ -597,6 +597,7 @@ OMX_ERRORTYPE base_port_AllocateTunnelBuffer(
   OMX_ERRORTYPE eError=OMX_ErrorNone,err;
   OMX_U32 numRetry=0,nBufferSize;
   OMX_PARAM_PORTDEFINITIONTYPE sPortDef;
+  OMX_U32 nLocalBufferCountActual;
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 
   if (nPortIndex != openmaxStandPort->sPortParam.nPortIndex) {
@@ -622,6 +623,23 @@ OMX_ERRORTYPE base_port_AllocateTunnelBuffer(
     nBufferSize = (sPortDef.nBufferSize > openmaxStandPort->sPortParam.nBufferSize) ? sPortDef.nBufferSize: openmaxStandPort->sPortParam.nBufferSize;
   }
 
+  /* set the number of buffer needed getting the max nBufferCountActual of the two components
+   * On the one with the minor nBufferCountActual a setParam should be called to normalize the value,
+   * if possible.
+   */
+  nLocalBufferCountActual = openmaxStandPort->sPortParam.nBufferCountActual;
+  if (nLocalBufferCountActual < sPortDef.nBufferCountActual) {
+	  nLocalBufferCountActual = sPortDef.nBufferCountActual;
+	  openmaxStandPort->sPortParam.nBufferCountActual = nLocalBufferCountActual;
+  } else {
+	  sPortDef.nBufferCountActual = nLocalBufferCountActual;
+	  err = OMX_SetParameter(openmaxStandPort->hTunneledComponent, OMX_IndexParamPortDefinition, &sPortDef);
+	  if(err != OMX_ErrorNone) {
+		  /* for some reasons undetected during negotiation the tunnel cannot be established.
+		   */
+		  return OMX_ErrorPortsNotCompatible;
+	  }
+  }
   for(i=0; i < openmaxStandPort->sPortParam.nBufferCountActual; i++){
     if (openmaxStandPort->bBufferStateAllocated[i] == BUFFER_FREE) {
       pBuffer = calloc(1,nBufferSize);
