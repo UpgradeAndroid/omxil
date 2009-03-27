@@ -3,7 +3,7 @@
 
   This file implements the support for content pipes related to inet resources.
 
-  Copyright (C) 2007, 2009  STMicroelectronics
+  Copyright (C) 2007-2009  STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
@@ -21,9 +21,9 @@
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
 
-  $Date: 2008-09-18 13:24:20 +0200 (Thu, 18 Sep 2008) $
-  Revision $Rev: 633 $
-  Author $Author: gsent $
+  $Date$
+  Revision $Rev$
+  Author $Author$
 */
 
 #ifndef __CONTENT_PIPE_INET_H__

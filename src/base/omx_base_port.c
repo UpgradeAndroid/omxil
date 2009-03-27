@@ -616,13 +616,15 @@ OMX_ERRORTYPE base_port_AllocateTunnelBuffer(
     }
   }
   /*Get nBufferSize of the peer port and allocate which one is bigger*/
+  nBufferSize = openmaxStandPort->sPortParam.nBufferSize;
   setHeader(&sPortDef, sizeof(OMX_PARAM_PORTDEFINITIONTYPE));
   sPortDef.nPortIndex = openmaxStandPort->nTunneledPort;
   err = OMX_GetParameter(openmaxStandPort->hTunneledComponent, OMX_IndexParamPortDefinition, &sPortDef);
   if(err == OMX_ErrorNone) {
-    nBufferSize = (sPortDef.nBufferSize > openmaxStandPort->sPortParam.nBufferSize) ? sPortDef.nBufferSize: openmaxStandPort->sPortParam.nBufferSize;
+	  nBufferSize = (sPortDef.nBufferSize > openmaxStandPort->sPortParam.nBufferSize) ? sPortDef.nBufferSize: openmaxStandPort->sPortParam.nBufferSize;
+  } else {
+	  return OMX_ErrorPortsNotCompatible;
   }
-
   /* set the number of buffer needed getting the max nBufferCountActual of the two components
    * On the one with the minor nBufferCountActual a setParam should be called to normalize the value,
    * if possible.
@@ -639,6 +641,13 @@ OMX_ERRORTYPE base_port_AllocateTunnelBuffer(
 		   */
 		  return OMX_ErrorPortsNotCompatible;
 	  }
+  }
+  if (openmaxStandPort->sPortParam.nBufferCountActual == 0) {
+      DEBUG(DEB_LEV_ERR, "------------------------1111---------------------\n");
+      openmaxStandPort->sPortParam.bPopulated = OMX_TRUE;
+      openmaxStandPort->bIsFullOfBuffers = OMX_TRUE;
+      DEBUG(DEB_LEV_ERR, "In %s Allocated nothing\n",__func__);
+      return OMX_ErrorNone;
   }
   for(i=0; i < openmaxStandPort->sPortParam.nBufferCountActual; i++){
     if (openmaxStandPort->bBufferStateAllocated[i] == BUFFER_FREE) {
@@ -693,7 +702,7 @@ OMX_ERRORTYPE base_port_AllocateTunnelBuffer(
       queue(openmaxStandPort->pBufferQueue, openmaxStandPort->pInternalBufferStorage[i]);
     }
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s Allocated all buffers\n",__func__);
+  DEBUG(DEB_LEV_ERR, "In %s Allocated all buffers\n",__func__);
   return OMX_ErrorNone;
 }
 

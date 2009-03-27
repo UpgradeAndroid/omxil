@@ -135,7 +135,7 @@ CLASS(omx_base_PortType)
   OMX_ERRORTYPE (*Port_AllocateBuffer)(omx_base_PortType *openmaxStandPort,OMX_INOUT OMX_BUFFERHEADERTYPE** pBuffer,OMX_IN OMX_U32 nPortIndex,OMX_IN OMX_PTR pAppPrivate,OMX_IN OMX_U32 nSizeBytes);/**< Replaces the AllocateBuffer call for the base port. */   \
   OMX_ERRORTYPE (*Port_UseBuffer)(omx_base_PortType *openmaxStandPort,OMX_BUFFERHEADERTYPE** ppBufferHdr,OMX_U32 nPortIndex,OMX_PTR pAppPrivate,OMX_U32 nSizeBytes,OMX_U8* pBuffer);/**< The standard use buffer function applied to the port class */ \
   OMX_ERRORTYPE (*Port_FreeBuffer)(omx_base_PortType *openmaxStandPort,OMX_U32 nPortIndex,OMX_BUFFERHEADERTYPE* pBuffer); /**< The standard free buffer function applied to the port class */ \
-  OMX_ERRORTYPE (*Port_AllocateTunnelBuffer)(omx_base_PortType *openmaxStandPort,OMX_IN OMX_U32 nPortIndex);/**< AllocateTunnelBuffer call for the base port. */   \
+  OMX_ERRORTYPE (*Port_AllocateTunnelBuffer)(omx_base_PortType *openmaxStandPort,OMX_U32 nPortIndex);/**< AllocateTunnelBuffer call for the base port. */   \
   OMX_ERRORTYPE (*Port_FreeTunnelBuffer)(omx_base_PortType *openmaxStandPort,OMX_U32 nPortIndex); /**< The free buffer function used to free tunnelled buffers */ \
   OMX_ERRORTYPE (*BufferProcessedCallback)(OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBuffer);/**< Holds the EmptyBufferDone or FillBufferDone callback, if the port is input or output port */ \
   OMX_ERRORTYPE (*FlushProcessingBuffers)(omx_base_PortType *openmaxStandPort); /**< release all the buffers currently under processing */ \

@@ -38,6 +38,7 @@
 #include <errno.h>
 #include <asm/unistd.h>
 
+#include "omxcore.h"
 #include "tsemaphore.h"
 #include "queue.h"
 #include "omx_classmagic.h"

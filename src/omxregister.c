@@ -12,7 +12,7 @@
 
 	omxregister-bellagio installation_path
 
-        Copyright (C) 2007, 2009  STMicroelectronics
+        Copyright (C) 2007-2009  STMicroelectronics
         Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
 	This library is free software; you can redistribute it and/or modify it under
@@ -63,8 +63,8 @@ static const char arrow[] =  " ==> ";
 static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int verbose) {
   DIR *dirp;
 	struct dirent *dp;
-	void *handle;
-	int i, k, num_of_comp;
+	void *handle = NULL;
+	int i, num_of_comp, k;
 	int num_of_libraries = 0;
 	unsigned int j;
 	char *buffer = NULL;

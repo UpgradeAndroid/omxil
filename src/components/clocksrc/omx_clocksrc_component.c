@@ -34,7 +34,7 @@
 #include <config.h>
 #include <unistd.h>
 
-#define MAX_COMPONENT_CLOCKSRC 1
+#define MAX_COMPONENT_CLOCKSRC 10
 
 #ifdef AV_SYNC_LOG
 static FILE *fd;
@@ -359,9 +359,9 @@ OMX_ERRORTYPE omx_clocksrc_component_GetConfig(
 }
 
 OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nIndex,
-  OMX_IN  OMX_PTR pComponentConfigStructure) {
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nIndex,
+  OMX_PTR pComponentConfigStructure) {
 
   OMX_COMPONENTTYPE*                  omxComponent = (OMX_COMPONENTTYPE*)hComponent;
   omx_clocksrc_component_PrivateType* omx_clocksrc_component_Private = (omx_clocksrc_component_PrivateType*)omxComponent->pComponentPrivate;

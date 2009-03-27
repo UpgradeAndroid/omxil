@@ -35,7 +35,6 @@ extern "C" {
 #include <OMX_Core.h>
 #include <OMX_Component.h>
 
-#include "omxcore.h"
 #include "omx_base_component.h"
 
 #include "tsemaphore.h"
@@ -400,7 +399,9 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
           if(PORT_IS_ENABLED(pPort)) {
             DEBUG(DEB_LEV_FULL_SEQ, "In %s: wait for buffers. port enabled %i,  port populated %i\n",
               __func__, pPort->sPortParam.bEnabled,pPort->sPortParam.bPopulated);
-            tsem_down(pPort->pAllocSem);
+            if (pPort->sPortParam.nBufferCountActual > 0) {
+                tsem_down(pPort->pAllocSem);
+            }
             pPort->sPortParam.bPopulated = OMX_TRUE;
           }
           else
@@ -1309,7 +1310,7 @@ void* compMessageHandlerFunction(void* param) {
 }
 
 /** This is called by the component message entry point.
- * In thea base version this function is named compMessageHandlerFunction
+ * In this base version this function is named compMessageHandlerFunction
  *
  * A request is made by the component when some asynchronous services are needed:
  * 1) A SendCommand() is to be processed
@@ -1325,7 +1326,7 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
   OMX_ERRORTYPE                   err = OMX_ErrorNone;
   omx_base_PortType*              pPort;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s with message %i\n", __func__, message->messageType);
 
   /* Dealing with a SendCommand call.
   * -messageType contains the command to execute
@@ -1346,7 +1347,7 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
       NULL);
     } else {
       /* And run the callback */
-      DEBUG(DEB_LEV_FULL_SEQ,"running callback in %s\n",__func__);
+      DEBUG(DEB_LEV_SIMPLE_SEQ, "running callback in %s\n",__func__);
       (*(omx_base_component_Private->callbacks->EventHandler))
       (openmaxStandComp,
       omx_base_component_Private->callbackData,

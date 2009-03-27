@@ -115,7 +115,7 @@ void* omx_base_sink_BufferMgmtFunction (void* param) {
       break;
     }
 
-    DEBUG(DEB_LEV_SIMPLE_SEQ, "Waiting for input buffer semval=%d \n",pInputSem->semval);
+    DEBUG(DEB_LEV_FULL_SEQ, "Waiting for input buffer semval=%d \n",pInputSem->semval);
     if(pInputSem->semval>0 && isInputBufferNeeded==OMX_TRUE ) {
       tsem_down(pInputSem);
       if(pInputQueue->nelem>0){
@@ -130,7 +130,7 @@ void* omx_base_sink_BufferMgmtFunction (void* param) {
     }
 
     if(isInputBufferNeeded==OMX_FALSE) {
-      if((pInputBuffer->nFlags & OMX_BUFFERFLAG_EOS) ==OMX_BUFFERFLAG_EOS) {
+    	if((pInputBuffer->nFlags & OMX_BUFFERFLAG_EOS) ==OMX_BUFFERFLAG_EOS) {
         DEBUG(DEB_LEV_SIMPLE_SEQ, "Detected EOS flags in input buffer\n");
 
         (*(omx_base_component_Private->callbacks->EventHandler))
@@ -167,7 +167,7 @@ void* omx_base_sink_BufferMgmtFunction (void* param) {
           pInputBuffer->nFilledLen = 0;
         }
       } else {
-        DEBUG(DEB_LEV_FULL_SEQ, "In %s Received Buffer in non-Executing State(%x) TrState (%x)\n",
+        DEBUG(DEB_LEV_ERR, "In %s Received Buffer in non-Executing State(%x) TrState (%x)\n",
           __func__, (int)omx_base_sink_Private->state,
           (int)omx_base_component_Private->transientState);
         if(OMX_TransStateExecutingToIdle == omx_base_component_Private->transientState) {
@@ -361,7 +361,7 @@ void* omx_base_sink_twoport_BufferMgmtFunction (void* param) {
             }
           }
 
-          if((pInputBuffer[i]->nFlags & OMX_BUFFERFLAG_EOS)==OMX_BUFFERFLAG_EOS && pInputBuffer[i]->nFilledLen==0) {
+          if((pInputBuffer[i]->nFlags & OMX_BUFFERFLAG_EOS) == OMX_BUFFERFLAG_EOS && pInputBuffer[i]->nFilledLen==0) {
             DEBUG(DEB_LEV_FULL_SEQ, "Detected EOS flags in input buffer filled len=%d\n", (int)pInputBuffer[i]->nFilledLen);
             (*(omx_base_sink_Private->callbacks->EventHandler))
               (openmaxStandComp,

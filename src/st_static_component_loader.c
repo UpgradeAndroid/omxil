@@ -3,7 +3,7 @@
 
   ST specific component loader for local components.
 
-  Copyright (C) 2007, 2009  STMicroelectronics
+  Copyright (C) 2007-2009  STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
@@ -270,8 +270,8 @@ OMX_ERRORTYPE BOSA_ST_CreateComponent(
   //component name matches with general component name field
   DEBUG(DEB_LEV_PARAMS, "Found base requested template %s\n", cComponentName);
   /* Build ST component from template and fill fields */
-  if (NULL == templateList[componentPosition]->name_requested)
-  {    /* This check is to prevent memory leak in case two instances of the same component are loaded.*/
+  if (templateList[componentPosition]->name_requested == NULL)
+  {    /* This check is to prevent memory leak in case two instances of the same component are loaded */
       templateList[componentPosition]->name_requested = strndup (cComponentName, OMX_MAX_STRINGNAME_SIZE);
   }
 
@@ -300,7 +300,7 @@ OMX_ERRORTYPE BOSA_ST_CreateComponent(
   ((OMX_COMPONENTTYPE*)*pHandle)->SetCallbacks(*pHandle, pCallBacks, pAppData);
   DEBUG(DEB_LEV_FULL_SEQ, "Template %s found returning from OMX_GetHandle\n", cComponentName);
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
-  return eError;
+  return OMX_ErrorNone;
 }
 
 OMX_ERRORTYPE BOSA_ST_DestroyComponent(

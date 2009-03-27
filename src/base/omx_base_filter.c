@@ -151,7 +151,7 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
       break;
     }
 
-    DEBUG(DEB_LEV_SIMPLE_SEQ, "Waiting for input buffer semval=%d \n",pInputSem->semval);
+    DEBUG(DEB_LEV_FULL_SEQ, "Waiting for input buffer semval=%d \n",pInputSem->semval);
     if(pInputSem->semval>0 && isInputBufferNeeded==OMX_TRUE ) {
       tsem_down(pInputSem);
       if(pInputQueue->nelem>0){

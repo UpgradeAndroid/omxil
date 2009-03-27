@@ -36,7 +36,7 @@
 #define GAIN_VALUE 100.0f
 
 /* Max allowable volume component instance */
-#define MAX_COMPONENT_VOLUME 1
+#define MAX_COMPONENT_VOLUME 10
 
 /** Maximum Number of Volume Component Instance*/
 static OMX_U32 noVolumeCompInstance = 0;
