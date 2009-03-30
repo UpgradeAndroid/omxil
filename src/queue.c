@@ -82,19 +82,22 @@ void queue_deinit(queue_t* queue) {
 
 /** Enqueue an element to the given queue descriptor
  *
- * @param queue the queue descritpor where to queue data
+ * @param queue the queue descriptor where to queue data
  *
  * @param data the data to be enqueued
+ *
+ * @return -1 if the queue is full
  */
-void queue(queue_t* queue, void* data) {
+int queue(queue_t* queue, void* data) {
   if (queue->last->data != NULL) {
-    return;
+    return -1;
   }
   pthread_mutex_lock(&queue->mutex);
   queue->last->data = data;
   queue->last = queue->last->q_forw;
   queue->nelem++;
   pthread_mutex_unlock(&queue->mutex);
+  return 0;
 }
 
 /** Dequeue an element from the given queue descriptor

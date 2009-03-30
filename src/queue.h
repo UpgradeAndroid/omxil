@@ -69,8 +69,10 @@ void queue_deinit(queue_t* queue);
  * @param queue the queue descritpor where to queue data
  *
  * @param data the data to be enqueued
+ *
+ * @return -1 if the queue is full
  */
-void queue(queue_t* queue, void* data);
+int queue(queue_t* queue, void* data);
 
 /** Dequeue an element from the given queue descriptor
  *
