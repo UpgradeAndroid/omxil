@@ -28,6 +28,7 @@
 */
 
 #include "omxvolcontroltest.h"
+#include <bellagio/extension_struct.h>
 
 /* Application private date: should go in the component field (segs...) */
 appPrivateType* appPriv;
@@ -81,6 +82,8 @@ int main(int argc, char** argv) {
   OMX_AUDIO_CONFIG_VOLUMETYPE sVolume;
   int gain=100;
   int argn_dec;
+  OMX_PARAM_BELLAGIOTHREADS_ID threadsID;
+  OMX_INDEXTYPE custom_index;
 
   /* Obtain file descriptor */
   if(argc < 2){
@@ -179,6 +182,22 @@ int main(int argc, char** argv) {
     exit(1);
   }
 
+  /* test the new feature of thread ID detection
+   */
+  err = OMX_GetExtensionIndex(handle, "OMX.st.index.param.BellagioThreadsID", &custom_index);
+  if(err != OMX_ErrorNone) {
+    DEBUG(DEB_LEV_ERR, "OMX_GetExtensionIndex failed\n");
+    exit(1);
+  }
+
+  setHeader(&threadsID, sizeof(OMX_PARAM_BELLAGIOTHREADS_ID));
+  err = OMX_GetParameter(handle, custom_index, &threadsID);
+  if(err != OMX_ErrorNone) {
+    DEBUG(DEB_LEV_ERR, "OMX_GetParameter of extended index failed\n");
+  } else {
+	  DEBUG(DEFAULT_MESSAGES, "threadsID messages %i buffers %i\n", (int)threadsID.nThreadMessageID, (int)threadsID.nThreadBufferMngtID);
+  }
+
   if((gain >= 0) && (gain <100)) {
     err = OMX_GetConfig(handle, OMX_IndexConfigAudioVolume, &sVolume);
     if(err!=OMX_ErrorNone) {
@@ -246,6 +265,16 @@ int main(int argc, char** argv) {
   }
 
   tsem_down(appPriv->eventSem);
+  /* in Idle the second thread has bee created, and the second thread ID
+   * should be available
+   */
+  err = OMX_GetParameter(handle, custom_index, &threadsID);
+  if(err != OMX_ErrorNone) {
+    DEBUG(DEB_LEV_ERR, "OMX_GetParameter of extended index failed\n");
+  } else {
+	  DEBUG(DEFAULT_MESSAGES, "threadsID messages %i buffers %i\n", (int)threadsID.nThreadMessageID, (int)threadsID.nThreadBufferMngtID);
+  }
+
   err = OMX_SendCommand(handle, OMX_CommandStateSet, OMX_StateExecuting, NULL);
 
   /* Wait for commands to complete */

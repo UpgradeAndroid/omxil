@@ -927,7 +927,7 @@ OMX_ERRORTYPE base_port_ReturnBufferFunction(omx_base_PortType* openmaxStandPort
 }
 
 
-OMX_ERRORTYPE base_port_ComponentTunnelRequest(omx_base_PortType* openmaxStandPort,OMX_IN  OMX_HANDLETYPE hTunneledComp,OMX_IN  OMX_U32 nTunneledPort,OMX_INOUT  OMX_TUNNELSETUPTYPE* pTunnelSetup) {
+OMX_ERRORTYPE base_port_ComponentTunnelRequest(omx_base_PortType* openmaxStandPort, OMX_HANDLETYPE hTunneledComp, OMX_U32 nTunneledPort, OMX_TUNNELSETUPTYPE* pTunnelSetup) {
   OMX_ERRORTYPE err = OMX_ErrorNone;
   OMX_PARAM_PORTDEFINITIONTYPE param;
   OMX_PARAM_BUFFERSUPPLIERTYPE pSupplier;
@@ -970,7 +970,7 @@ OMX_ERRORTYPE base_port_ComponentTunnelRequest(omx_base_PortType* openmaxStandPo
       }
     }
 
-    /* Get Buffer Supplier type of the Tunnelled Component*/
+    /* Get Buffer Supplier type of the Tunneled Component*/
     pSupplier.nPortIndex=nTunneledPort;
     setHeader(&pSupplier, sizeof(OMX_PARAM_BUFFERSUPPLIERTYPE));
     err = OMX_GetParameter(hTunneledComp, OMX_IndexParamCompBufferSupplier, &pSupplier);

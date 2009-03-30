@@ -43,6 +43,7 @@
 #include "queue.h"
 #include "omx_classmagic.h"
 #include "omx_base_port.h"
+#include "extension_struct.h"
 
 /** Default size of the internal input buffer */
 #define DEFAULT_IN_BUFFER_SIZE  4 * 1024
@@ -65,13 +66,6 @@ typedef struct OMX_VENDOR_PROP_TUNNELSETUPTYPE  {
   OMX_U32 nPortIndex;
   OMX_TUNNELSETUPTYPE nTunnelSetup;   // Tunnel setup flags
 } OMX_VENDOR_PROP_TUNNELSETUPTYPE;
-
-typedef struct OMX_PARAM_BELLAGIOTHREADS_ID {
-    OMX_U32 nSize;                 /**< Size of the structure in bytes */
-    OMX_VERSIONTYPE nVersion;      /**< OMX specification version information */
-	long int nThreadBufferMngtID; /**< @param nThreadBufferMngtID the linux thread ID of the buffer management thread*/\
-	long int nThreadMessageID; /**< @param nThreadMessageID the linux thread ID of the message handler thread*/\
-} OMX_PARAM_BELLAGIOTHREADS_ID;
 
 /** this is the list of custom vendor index */
 typedef enum OMX_INDEXVENDORTYPE {

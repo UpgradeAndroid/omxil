@@ -13,6 +13,7 @@ libomxil_bellagio_la_SOURCES = component_loader.h \
 			       omxcore.c omxcore.h \
 			       omx_create_loaders_linux.c omx_create_loaders.h \
 			       omx_comp_debug_levels.h \
+			       extension_struct.h \
 			       tsemaphore.c tsemaphore.h \
 			       queue.c queue.h \
 			       common.c common.h \
@@ -41,4 +42,6 @@ include_extra_HEADERS = $(srcdir)/omxcore.h \
 			$(srcdir)/base/omx_base_source.h \
 			$(srcdir)/base/omx_classmagic.h \
 			$(srcdir)/base/omx_base_clock_port.h \
-			$(srcdir)/base/omx_base_image_port.h
+			$(srcdir)/base/omx_base_image_port.h \
+			$(srcdir)/extension_struct.h
+			
