@@ -1143,6 +1143,7 @@ OMX_ERRORTYPE omx_base_component_SendCommand(
   OMX_U32 i,j,k;
   omx_base_PortType *pPort;
   OMX_ERRORTYPE err = OMX_ErrorNone;
+  int errQue;
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 
   messageQueue = omx_base_component_Private->messageQueue;
@@ -1255,14 +1256,18 @@ OMX_ERRORTYPE omx_base_component_SendCommand(
     break;
   }
 
-  if (err == OMX_ErrorNone)
-  {
-    queue(messageQueue, message);
-    tsem_up(messageSem);
+  if (err == OMX_ErrorNone) {
+      errQue = queue(messageQueue, message);
+      if (errQue) {
+    	  /* /TODO the queue is full. This can be handled in a fine way with
+    	   * some retrials, or other checking. For the moment this is a critical error
+    	   * and simply causes the failure of this call
+    	   */
+    	  return OMX_ErrorInsufficientResources;
+      }
+      tsem_up(messageSem);
   }
-
   DEBUG(DEB_LEV_FULL_SEQ, "In %s messageSem up param=%d\n", __func__,message->messageParam);
-
   return err;
 }
 

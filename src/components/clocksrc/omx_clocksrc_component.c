@@ -811,6 +811,7 @@ void* omx_clocksrc_BufferMgmtFunction (void* param) {
 OMX_ERRORTYPE clocksrc_port_FlushProcessingBuffers(omx_base_PortType *openmaxStandPort) {
   omx_clocksrc_component_PrivateType* omx_clocksrc_component_Private;
   OMX_BUFFERHEADERTYPE* pBuffer;
+  int errQue;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
   omx_clocksrc_component_Private = (omx_clocksrc_component_PrivateType*)openmaxStandPort->standCompContainer->pComponentPrivate;
@@ -853,7 +854,14 @@ OMX_ERRORTYPE clocksrc_port_FlushProcessingBuffers(omx_base_PortType *openmaxSta
         ((OMX_COMPONENTTYPE*)(openmaxStandPort->hTunneledComponent))->EmptyThisBuffer(openmaxStandPort->hTunneledComponent, pBuffer);
       }
     } else if (PORT_IS_TUNNELED_N_BUFFER_SUPPLIER(openmaxStandPort)) {
-      queue(openmaxStandPort->pBufferQueue,pBuffer);
+        errQue = queue(openmaxStandPort->pBufferQueue,pBuffer);
+        if (errQue) {
+      	  /* /TODO the queue is full. This can be handled in a fine way with
+      	   * some retrials, or other checking. For the moment this is a critical error
+      	   * and simply causes the failure of this call
+      	   */
+      	  return OMX_ErrorInsufficientResources;
+        }
     } else {
       (*(openmaxStandPort->BufferProcessedCallback))(
         openmaxStandPort->standCompContainer,
