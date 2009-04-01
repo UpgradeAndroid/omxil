@@ -1,0 +1,6 @@
+debian/tmp/usr/include/bellagio/*.h
+debian/tmp/usr/include/OMX_*.h
+debian/tmp/usr/lib/pkgconfig/*.pc
+debian/tmp/usr/share/man/man*/*
+debian/tmp/usr/lib/*omx*.so
+
