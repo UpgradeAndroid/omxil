@@ -176,9 +176,9 @@ OMX_ERRORTYPE omx_clocksrc_component_Destructor(OMX_COMPONENTTYPE *openmaxStandC
 }
 
 OMX_ERRORTYPE omx_clocksrc_component_GetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_INOUT OMX_PTR ComponentParameterStructure)
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure)
 {
   OMX_ERRORTYPE                          err = OMX_ErrorNone;
   OMX_OTHER_PARAM_PORTFORMATTYPE         *pOtherPortFormat;
@@ -216,9 +216,9 @@ OMX_ERRORTYPE omx_clocksrc_component_GetParameter(
 }
 
 OMX_ERRORTYPE omx_clocksrc_component_SetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_INOUT OMX_PTR ComponentParameterStructure)
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure)
 {
   OMX_ERRORTYPE                         err = OMX_ErrorNone;
   OMX_OTHER_PARAM_PORTFORMATTYPE        *pOtherPortFormat;
@@ -255,10 +255,10 @@ OMX_ERRORTYPE omx_clocksrc_component_SetParameter(
 }
 
 OMX_ERRORTYPE omx_clocksrc_component_SendCommand(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_COMMANDTYPE Cmd,
-  OMX_IN  OMX_U32 nParam,
-  OMX_IN  OMX_PTR pCmdData) {
+  OMX_HANDLETYPE hComponent,
+  OMX_COMMANDTYPE Cmd,
+  OMX_U32 nParam,
+  OMX_PTR pCmdData) {
   OMX_COMPONENTTYPE*                  omxComponent = (OMX_COMPONENTTYPE*)hComponent;
   omx_clocksrc_component_PrivateType* omx_clocksrc_component_Private = (omx_clocksrc_component_PrivateType*)omxComponent->pComponentPrivate;
   OMX_U32 nMask;
@@ -316,9 +316,9 @@ OMX_ERRORTYPE omx_clocksrc_component_SendCommand(
 }
 
 OMX_ERRORTYPE omx_clocksrc_component_GetConfig(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nIndex,
-  OMX_INOUT OMX_PTR pComponentConfigStructure) {
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nIndex,
+  OMX_PTR pComponentConfigStructure) {
 
   OMX_COMPONENTTYPE*                  omxComponent = (OMX_COMPONENTTYPE*)hComponent;
   omx_clocksrc_component_PrivateType* omx_clocksrc_component_Private = (omx_clocksrc_component_PrivateType*)omxComponent->pComponentPrivate;

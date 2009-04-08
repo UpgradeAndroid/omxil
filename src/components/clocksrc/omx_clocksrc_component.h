@@ -78,32 +78,32 @@ void omx_clocksrc_component_BufferMgmtCallback(
   OMX_BUFFERHEADERTYPE* inputbuffer);
 
 OMX_ERRORTYPE omx_clocksrc_component_GetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_INOUT OMX_PTR ComponentParameterStructure);
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure);
 
 OMX_ERRORTYPE omx_clocksrc_component_SetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_IN  OMX_PTR ComponentParameterStructure);
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure);
 
 OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nIndex,
-  OMX_IN  OMX_PTR pComponentConfigStructure);
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nIndex,
+  OMX_PTR pComponentConfigStructure);
 
 OMX_ERRORTYPE omx_clocksrc_component_GetConfig(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nIndex,
-  OMX_INOUT OMX_PTR pComponentConfigStructure);
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nIndex,
+  OMX_PTR pComponentConfigStructure);
 
 void* omx_clocksrc_BufferMgmtFunction (void* param);
 
 OMX_ERRORTYPE omx_clocksrc_component_SendCommand(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_COMMANDTYPE Cmd,
-  OMX_IN  OMX_U32 nParam,
-  OMX_IN  OMX_PTR pCmdData);
+  OMX_HANDLETYPE hComponent,
+  OMX_COMMANDTYPE Cmd,
+  OMX_U32 nParam,
+  OMX_PTR pCmdData);
 
 OMX_ERRORTYPE clocksrc_port_FlushProcessingBuffers(omx_base_PortType *openmaxStandPort);
 

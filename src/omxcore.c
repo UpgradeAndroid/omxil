@@ -155,14 +155,14 @@ OMX_ERRORTYPE OMX_Deinit() {
  *         OMX_ErrorComponentNotFound if the requested component has not been found
  *                                    in any loader
  */
-OMX_ERRORTYPE OMX_GetHandle(OMX_OUT OMX_HANDLETYPE* pHandle,
-  OMX_IN  OMX_STRING cComponentName,
-  OMX_IN  OMX_PTR pAppData,
-  OMX_IN  OMX_CALLBACKTYPE* pCallBacks) {
+OMX_ERRORTYPE OMX_GetHandle(OMX_HANDLETYPE* pHandle,
+  OMX_STRING cComponentName,
+  OMX_PTR pAppData,
+  OMX_CALLBACKTYPE* pCallBacks) {
 
   OMX_ERRORTYPE err = OMX_ErrorNone;
   int i;
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  DEBUG(DEB_LEV_ERR, "In %s for %s\n", __func__, cComponentName);
 
   for (i = 0; i < bosa_loaders; i++) {
     err = loadersList[i]->BOSA_CreateComponent(
@@ -192,7 +192,7 @@ OMX_ERRORTYPE OMX_GetHandle(OMX_OUT OMX_HANDLETYPE* pHandle,
  *
  * @return The error of the BOSA_DestroyComponent function or OMX_ErrorNone
  */
-OMX_ERRORTYPE OMX_FreeHandle(OMX_IN OMX_HANDLETYPE hComponent)
+OMX_ERRORTYPE OMX_FreeHandle(OMX_HANDLETYPE hComponent)
 {
   int i;
     OMX_ERRORTYPE err;

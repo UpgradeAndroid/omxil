@@ -220,11 +220,12 @@ void setHeader(OMX_PTR header, OMX_U32 size);
  *
  * it returns the version of the component. See OMX_Core.h
  */
-OMX_ERRORTYPE omx_base_component_GetComponentVersion(OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_OUT OMX_STRING pComponentName,
-  OMX_OUT OMX_VERSIONTYPE* pComponentVersion,
-  OMX_OUT OMX_VERSIONTYPE* pSpecVersion,
-  OMX_OUT OMX_UUIDTYPE* pComponentUUID);
+OMX_ERRORTYPE omx_base_component_GetComponentVersion(
+		OMX_HANDLETYPE hComponent,
+		OMX_STRING pComponentName,
+		OMX_VERSIONTYPE* pComponentVersion,
+		OMX_VERSIONTYPE* pSpecVersion,
+		OMX_UUIDTYPE* pComponentUUID);
 
 /** @brief Enumerates all the role of the component.
  *
@@ -239,9 +240,9 @@ OMX_ERRORTYPE omx_base_component_GetComponentVersion(OMX_IN  OMX_HANDLETYPE hCom
  * @param nIndex the index of the role requested
  */
 OMX_ERRORTYPE omx_base_component_ComponentRoleEnum(
-  OMX_IN OMX_HANDLETYPE hComponent,
-  OMX_OUT OMX_U8 *cRole,
-  OMX_IN OMX_U32 nIndex);
+  OMX_HANDLETYPE hComponent,
+  OMX_U8 *cRole,
+  OMX_U32 nIndex);
 
 /** @brief standard OpenMAX function
  *
@@ -249,9 +250,9 @@ OMX_ERRORTYPE omx_base_component_ComponentRoleEnum(
  * See OMX_Component.h
  */
 OMX_ERRORTYPE omx_base_component_SetCallbacks(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_CALLBACKTYPE* pCallbacks,
-  OMX_IN  OMX_PTR pAppData);
+  OMX_HANDLETYPE hComponent,
+  OMX_CALLBACKTYPE* pCallbacks,
+  OMX_PTR pAppData);
 
 /** @brief Part of the standard OpenMAX function
  *
@@ -260,9 +261,9 @@ OMX_ERRORTYPE omx_base_component_SetCallbacks(
  * See OMX_Core.h for standard reference.
  */
 OMX_ERRORTYPE omx_base_component_GetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_INOUT OMX_PTR ComponentParameterStructure);
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure);
 
 /** @brief part of the standard openmax function
  *
@@ -273,9 +274,9 @@ OMX_ERRORTYPE omx_base_component_GetParameter(
  * @return OMX_ErrorUnsupportedIndex if the index is not supported or not handled here
  */
 OMX_ERRORTYPE omx_base_component_SetParameter(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nParamIndex,
-  OMX_IN  OMX_PTR ComponentParameterStructure);
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nParamIndex,
+  OMX_PTR ComponentParameterStructure);
 
 /** @brief base GetConfig function
  *
@@ -285,9 +286,9 @@ OMX_ERRORTYPE omx_base_component_SetParameter(
  * in the private component descriptor.
  */
 OMX_ERRORTYPE omx_base_component_GetConfig(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nIndex,
-  OMX_INOUT OMX_PTR pComponentConfigStructure);
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nIndex,
+  OMX_PTR pComponentConfigStructure);
 
 /** @brief base SetConfig function
  *
@@ -297,9 +298,9 @@ OMX_ERRORTYPE omx_base_component_GetConfig(
  * in the private component descriptor.
  */
 OMX_ERRORTYPE omx_base_component_SetConfig(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_INDEXTYPE nIndex,
-  OMX_IN  OMX_PTR pComponentConfigStructure);
+  OMX_HANDLETYPE hComponent,
+  OMX_INDEXTYPE nIndex,
+  OMX_PTR pComponentConfigStructure);
 
 /** @brief base function not implemented
  *
@@ -307,17 +308,17 @@ OMX_ERRORTYPE omx_base_component_SetConfig(
  * derived component if needed.
  */
 OMX_ERRORTYPE omx_base_component_GetExtensionIndex(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_STRING cParameterName,
-  OMX_OUT OMX_INDEXTYPE* pIndexType);
+  OMX_HANDLETYPE hComponent,
+  OMX_STRING cParameterName,
+  OMX_INDEXTYPE* pIndexType);
 
 /** @returns the state of the component
  *
  * This function does not need any override by derived components.
  */
 OMX_ERRORTYPE omx_base_component_GetState(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_OUT OMX_STATETYPE* pState);
+  OMX_HANDLETYPE hComponent,
+  OMX_STATETYPE* pState);
 
 /** @brief standard SendCommand function
  *
@@ -325,10 +326,10 @@ OMX_ERRORTYPE omx_base_component_GetState(
  * a special derived component could do it.
  */
 OMX_ERRORTYPE omx_base_component_SendCommand(
-  OMX_IN  OMX_HANDLETYPE hComponent,
-  OMX_IN  OMX_COMMANDTYPE Cmd,
-  OMX_IN  OMX_U32 nParam,
-  OMX_IN  OMX_PTR pCmdData);
+  OMX_HANDLETYPE hComponent,
+  OMX_COMMANDTYPE Cmd,
+  OMX_U32 nParam,
+  OMX_PTR pCmdData);
 
 /** @brief This standard functionality is called when the component is
  * destroyed in the FreeHandle standard call.
@@ -339,7 +340,7 @@ OMX_ERRORTYPE omx_base_component_SendCommand(
  * implementation specific part of the destroying phase.
  */
 OMX_ERRORTYPE omx_base_component_ComponentDeInit(
-  OMX_IN  OMX_HANDLETYPE hComponent);
+  OMX_HANDLETYPE hComponent);
 
 /** @brief Component's message handler thread function
  *
@@ -366,51 +367,51 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
  * This function verify Component State and Structure header
  */
 OMX_ERRORTYPE omx_base_component_ParameterSanityCheck(
-            OMX_IN  OMX_HANDLETYPE hComponent,
-            OMX_IN  OMX_U32 nPortIndex,
-            OMX_IN  OMX_PTR pStructure,
-            OMX_IN  size_t size);
+		OMX_HANDLETYPE hComponent,
+		OMX_U32 nPortIndex,
+		OMX_PTR pStructure,
+		size_t size);
 
 OMX_ERRORTYPE omx_base_component_AllocateBuffer(
-            OMX_IN OMX_HANDLETYPE hComponent,
-            OMX_INOUT OMX_BUFFERHEADERTYPE** ppBuffer,
-            OMX_IN OMX_U32 nPortIndex,
-            OMX_IN OMX_PTR pAppPrivate,
-            OMX_IN OMX_U32 nSizeBytes);
+		OMX_HANDLETYPE hComponent,
+		OMX_BUFFERHEADERTYPE** ppBuffer,
+		OMX_U32 nPortIndex,
+		OMX_PTR pAppPrivate,
+		OMX_U32 nSizeBytes);
 
 OMX_ERRORTYPE omx_base_component_UseBuffer(
-            OMX_IN OMX_HANDLETYPE hComponent,
-            OMX_INOUT OMX_BUFFERHEADERTYPE** ppBufferHdr,
-            OMX_IN OMX_U32 nPortIndex,
-            OMX_IN OMX_PTR pAppPrivate,
-            OMX_IN OMX_U32 nSizeBytes,
-            OMX_IN OMX_U8* pBuffer);
+		OMX_HANDLETYPE hComponent,
+		OMX_BUFFERHEADERTYPE** ppBufferHdr,
+		OMX_U32 nPortIndex,
+		OMX_PTR pAppPrivate,
+		OMX_U32 nSizeBytes,
+		OMX_U8* pBuffer);
 
 OMX_ERRORTYPE omx_base_component_UseEGLImage (
-        OMX_IN OMX_HANDLETYPE hComponent,
-        OMX_INOUT OMX_BUFFERHEADERTYPE** ppBufferHdr,
-        OMX_IN OMX_U32 nPortIndex,
-        OMX_IN OMX_PTR pAppPrivate,
-        OMX_IN void* eglImage);
+        OMX_HANDLETYPE hComponent,
+        OMX_BUFFERHEADERTYPE** ppBufferHdr,
+        OMX_U32 nPortIndex,
+        OMX_PTR pAppPrivate,
+        void* eglImage);
 
 OMX_ERRORTYPE omx_base_component_FreeBuffer(
-            OMX_IN  OMX_HANDLETYPE hComponent,
-            OMX_IN  OMX_U32 nPortIndex,
-            OMX_IN  OMX_BUFFERHEADERTYPE* pBuffer);
+        OMX_HANDLETYPE hComponent,
+        OMX_U32 nPortIndex,
+        OMX_BUFFERHEADERTYPE* pBuffer);
 
 OMX_ERRORTYPE omx_base_component_EmptyThisBuffer(
-            OMX_IN  OMX_HANDLETYPE hComponent,
-            OMX_IN  OMX_BUFFERHEADERTYPE* pBuffer);
+        OMX_HANDLETYPE hComponent,
+        OMX_BUFFERHEADERTYPE* pBuffer);
 
 OMX_ERRORTYPE omx_base_component_FillThisBuffer(
-            OMX_IN  OMX_HANDLETYPE hComponent,
-            OMX_IN  OMX_BUFFERHEADERTYPE* pBuffer);
+        OMX_HANDLETYPE hComponent,
+        OMX_BUFFERHEADERTYPE* pBuffer);
 
 OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
-            OMX_IN  OMX_HANDLETYPE hComp,
-            OMX_IN  OMX_U32 nPort,
-            OMX_IN  OMX_HANDLETYPE hTunneledComp,
-            OMX_IN  OMX_U32 nTunneledPort,
-            OMX_INOUT  OMX_TUNNELSETUPTYPE* pTunnelSetup);
+        OMX_HANDLETYPE hComp,
+        OMX_U32 nPort,
+        OMX_HANDLETYPE hTunneledComp,
+        OMX_U32 nTunneledPort,
+        OMX_TUNNELSETUPTYPE* pTunnelSetup);
 
 #endif
