@@ -46,8 +46,11 @@ char* allRegistryGetFilename(char* registry_name) {
 
   buffer=getenv("OMX_BELLAGIO_REGISTRY");
   if(buffer!=NULL&&*buffer!='\0') {
-    omxregistryfile = strdup(buffer);
-    return omxregistryfile;
+	  omxregistryfile = malloc(strlen(buffer) + strlen(registry_name) + 2);
+	  strcpy(omxregistryfile, buffer);
+	  strcat(omxregistryfile, "/");
+	  strcat(omxregistryfile, registry_name);
+	  return omxregistryfile;
   }
 
   buffer=getenv("XDG_DATA_HOME");
