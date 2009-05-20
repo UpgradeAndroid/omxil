@@ -1,0 +1,12 @@
+Source: libomxil-bellagio
+Priority: optional
+Section: Libraries
+Build-Depends: debhelper (>= 4.1.0), doxygen
+Maintainer: Giulio Urlini <giulio.urlini@st.com>
+Standards-Version: 3.6.1
+Package: libomxil-bellagio0
+Architecture: any
+Depends:
+Description: Bellagio OpenMAX Integration Layer 1.1.2 project
+
+

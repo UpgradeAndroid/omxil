@@ -6,7 +6,7 @@ License: GNU LGPL
 Group: System Environment/Libraries
 Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-Summary: OpenMAX Integration Layer 1.1.1 library and components.
+Summary: OpenMAX Integration Layer 1.1.2 library and components.
 Vendor: STMicroelectronics
 
 %description

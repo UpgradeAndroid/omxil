@@ -136,7 +136,7 @@ fi
 # Check for POSIX thread support
 ACX_PTHREAD([
                 LIBS="$LIBS $PTHREAD_LIBS"
-                CFLAGS="$CFLAGS $PTHREAD_CFLAGS -g -Wall"
+	            CFLAGS="$CFLAGS $PTHREAD_CFLAGS -g -Wall"
                 CC="$PTHREAD_CC"
                 AC_SUBST([LIBS])
                 AC_SUBST([CFLAGS])
