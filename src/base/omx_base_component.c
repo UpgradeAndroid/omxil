@@ -1352,14 +1352,16 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
       NULL);
     } else {
       /* And run the callback */
-      DEBUG(DEB_LEV_SIMPLE_SEQ, "running callback in %s\n",__func__);
-      (*(omx_base_component_Private->callbacks->EventHandler))
-      (openmaxStandComp,
-      omx_base_component_Private->callbackData,
-      OMX_EventCmdComplete, /* The command was completed */
-      OMX_CommandStateSet, /* The commands was a OMX_CommandStateSet */
-      message->messageParam, /* The state has been changed in message->messageParam */
-      NULL);
+    	if (omx_base_component_Private->callbacks) {
+    		DEBUG(DEB_LEV_SIMPLE_SEQ, "running callback in %s\n", __func__);
+    		(*(omx_base_component_Private->callbacks->EventHandler))
+    		(openmaxStandComp,
+    				omx_base_component_Private->callbackData,
+    				OMX_EventCmdComplete, /* The command was completed */
+    				OMX_CommandStateSet, /* The commands was a OMX_CommandStateSet */
+    				message->messageParam, /* The state has been changed in message->messageParam */
+    				NULL);
+    	}
     }
   }
   break;
