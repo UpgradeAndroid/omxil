@@ -40,44 +40,64 @@
 /** @brief Get registry filename
  *
  */
-char* allRegistryGetFilename(char* registry_name) {
+char* componentsRegistryGetFilename() {
   char *omxregistryfile = NULL;
   char *buffer;
 
   buffer=getenv("OMX_BELLAGIO_REGISTRY");
   if(buffer!=NULL&&*buffer!='\0') {
-	  omxregistryfile = malloc(strlen(buffer) + strlen(registry_name) + 2);
-	  strcpy(omxregistryfile, buffer);
-	  strcat(omxregistryfile, "/");
-	  strcat(omxregistryfile, registry_name);
-	  return omxregistryfile;
+    omxregistryfile = strdup(buffer);
+    return omxregistryfile;
   }
 
   buffer=getenv("XDG_DATA_HOME");
   if(buffer!=NULL&&*buffer!='\0') {
-    omxregistryfile = malloc(strlen(buffer) + strlen(registry_name) + 2);
+    omxregistryfile = malloc(strlen(buffer) + strlen(REGISTRY_FILENAME) + 2);
     strcpy(omxregistryfile, buffer);
     strcat(omxregistryfile, "/");
-    strcat(omxregistryfile, registry_name);
+    strcat(omxregistryfile, REGISTRY_FILENAME);
     return omxregistryfile;
   }
 
   buffer=getenv("HOME");
   if(buffer!=NULL&&*buffer!='\0') {
-    omxregistryfile  = malloc(strlen(buffer) + strlen(registry_name) + 3);
+    omxregistryfile  = malloc(strlen(buffer) + strlen(REGISTRY_FILENAME) + 3);
     strcpy(omxregistryfile, buffer);
     strcat(omxregistryfile, "/");
-    strcat(omxregistryfile, registry_name);
+    strcat(omxregistryfile, REGISTRY_FILENAME);
   } else {
-    omxregistryfile  = malloc(strlen("/tmp/") + strlen(registry_name) + 2);
+    omxregistryfile  = malloc(strlen("/tmp/") + strlen(REGISTRY_FILENAME) + 2);
     strcpy(omxregistryfile, "/tmp/");
-    strcat(omxregistryfile, registry_name);
+    strcat(omxregistryfile, REGISTRY_FILENAME);
   }
   return omxregistryfile;
 }
 
-char* registryGetFilename(void) {
-	return allRegistryGetFilename(REGISTRY_FILENAME);
+char* loadersRegistryGetFilename(char* registry_name) {
+	char *omxregistryfile = NULL;
+	char *buffer;
+
+	buffer=getenv("XDG_DATA_HOME");
+	if(buffer!=NULL&&*buffer!='\0') {
+		omxregistryfile = malloc(strlen(buffer) + strlen(registry_name) + 2);
+		strcpy(omxregistryfile, buffer);
+		strcat(omxregistryfile, "/");
+		strcat(omxregistryfile, registry_name);
+		return omxregistryfile;
+	}
+
+	buffer=getenv("HOME");
+	if(buffer!=NULL&&*buffer!='\0') {
+		omxregistryfile  = malloc(strlen(buffer) + strlen(registry_name) + 3);
+		strcpy(omxregistryfile, buffer);
+		strcat(omxregistryfile, "/");
+		strcat(omxregistryfile, registry_name);
+	} else {
+		omxregistryfile  = malloc(strlen("/tmp/") + strlen(registry_name) + 2);
+		strcpy(omxregistryfile, "/tmp/");
+		strcat(omxregistryfile, registry_name);
+	}
+	return omxregistryfile;
 }
 
 /** This function creates the directory specified by newdir
@@ -129,7 +149,7 @@ int makedir (const char *newdir) {
 
 #ifdef COMMON_TEST
 int main (int argc, char*argv[]) {
-  printf (registryGetFilename ());
+  printf (componentsRegistryGetFilename ());
 }
 #endif
 

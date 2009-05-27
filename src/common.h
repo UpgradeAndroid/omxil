@@ -31,8 +31,9 @@
 #define __COMMON_H__
 
 int makedir(const char *newdir);
-char* allRegistryGetFilename(char* registry_name);
-char *registryGetFilename(void);
+
+char *componentsRegistryGetFilename(void);
+char* loadersRegistryGetFilename(char* registry_name);
 
 typedef struct nameList {
 	char* name;

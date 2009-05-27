@@ -254,7 +254,7 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 
 static void usage(const char *app) {
 	char *registry_filename;
-	registry_filename = registryGetFilename();
+	registry_filename = componentsRegistryGetFilename();
 
 	printf(
       "Usage: %s [-v] [-h] [componentspath]...\n"
@@ -302,7 +302,7 @@ int main(int argc, char *argv[]) {
 		}
   }
 
-	registry_filename = registryGetFilename();
+	registry_filename = componentsRegistryGetFilename();
 
 	/* make sure the registry directory exists */
 	dir = strdup(registry_filename);

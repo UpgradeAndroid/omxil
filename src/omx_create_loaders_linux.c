@@ -60,7 +60,7 @@ int createComponentLoaders() {
 	int onlyDefault = 0;
 	int oneAtLeast = 0;
 
-	omxloader_registry_filename = allRegistryGetFilename(OMX_LOADERS_FILENAME);
+	omxloader_registry_filename = loadersRegistryGetFilename(OMX_LOADERS_FILENAME);
 
 	/* make sure the registry directory exists */
 	dir = strdup(omxloader_registry_filename);

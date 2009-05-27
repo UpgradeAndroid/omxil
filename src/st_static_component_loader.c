@@ -92,7 +92,7 @@ OMX_ERRORTYPE BOSA_ST_InitComponentLoader(BOSA_COMPONENTLOADER *loader) {
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 
-  registry_filename = registryGetFilename();
+  registry_filename = componentsRegistryGetFilename();
   omxregistryfp = fopen(registry_filename, "r");
   if (omxregistryfp == NULL){
     DEBUG(DEB_LEV_ERR, "Cannot open OpenMAX registry file %s\n", registry_filename);
