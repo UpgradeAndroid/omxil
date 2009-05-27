@@ -1005,7 +1005,7 @@ OMX_ERRORTYPE base_port_ComponentTunnelRequest(omx_base_PortType* openmaxStandPo
       // compatibility not reached
       return OMX_ErrorPortsNotCompatible;
     }
-    openmaxStandPort->nNumTunnelBuffer=param.nBufferCountMin;
+    openmaxStandPort->nNumTunnelBuffer = param.nBufferCountActual;
     if(param.eDomain!=openmaxStandPort->sPortParam.eDomain) {
       return OMX_ErrorPortsNotCompatible;
     }
@@ -1135,7 +1135,7 @@ OMX_ERRORTYPE base_port_ComponentTunnelRequest(omx_base_PortType* openmaxStandPo
       openmaxStandPort->nTunnelFlags = 0;
     }
 
-    openmaxStandPort->nNumTunnelBuffer=param.nBufferCountMin;
+    openmaxStandPort->nNumTunnelBuffer=param.nBufferCountActual;
 
     openmaxStandPort->hTunneledComponent = hTunneledComp;
     openmaxStandPort->nTunneledPort = nTunneledPort;
