@@ -159,7 +159,8 @@ void* omx_base_sink_BufferMgmtFunction (void* param) {
       }
 
       if(omx_base_sink_Private->state == OMX_StateExecuting)  {
-        if (omx_base_sink_Private->BufferMgmtCallback && pInputBuffer->nFilledLen > 0) {
+        if ((omx_base_sink_Private->BufferMgmtCallback && pInputBuffer->nFilledLen > 0)
+        		|| (pInputBuffer->nFlags)){
           (*(omx_base_sink_Private->BufferMgmtCallback))(openmaxStandComp, pInputBuffer);
         }
         else {
