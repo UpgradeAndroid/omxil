@@ -113,6 +113,7 @@ OMX_ERRORTYPE omx_volume_component_Destructor(OMX_COMPONENTTYPE *openmaxStandCom
   OMX_U32 i;
 
   /* frees port/s */
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
   if (omx_volume_component_Private->ports) {
     for (i=0; i < omx_volume_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts; i++) {
       if(omx_volume_component_Private->ports[i])
@@ -122,7 +123,6 @@ OMX_ERRORTYPE omx_volume_component_Destructor(OMX_COMPONENTTYPE *openmaxStandCom
     omx_volume_component_Private->ports=NULL;
   }
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Destructor of audiodecoder component is called\n");
   omx_base_filter_Destructor(openmaxStandComp);
   noVolumeCompInstance--;
 
