@@ -12,3 +12,4 @@ libomxbase_la_SOURCES = omx_base_component.c omx_base_component.h \
                         omx_classmagic.h
 
 libomxbase_la_CFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
+

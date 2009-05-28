@@ -182,9 +182,9 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 								stComponents[i]->componentVersion.s.nRevision,
 								stComponents[i]->componentVersion.s.nStep,
 								lib_absolute_path);
-							if (verbose)
+							if (verbose) {
 								printf("Component %s registered\n", stComponents[i]->name);
-
+							}
 							// allocate max memory
 							len = sizeof(arrow)                 /* arrow */
 							+strlen(stComponents[i]->name) /* component name */
@@ -201,8 +201,9 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 								nroles += stComponents[i]->name_specific_length;
 								strcat(buffer, arrow);
 								for(j=0;j<stComponents[i]->name_specific_length;j++){
-									if (verbose)
+									if (verbose) {
 										printf("  Specific role %s registered\n", stComponents[i]->name_specific[j]);
+									}
 									len += strlen(stComponents[i]->name_specific[j]) /* specific role */
 									+1                                         /* ':' */;
 									buffer = realloc(buffer, len);
@@ -224,14 +225,6 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 								free(stComponents[i]->name_specific);
 								free(stComponents[i]->role_specific);
 							}
-/* This part should be added when the support
- * for quality levels will be available */
-/*							for (k=0; k<stComponents[i]->nqualitylevels; k++) {
-								free(stComponents[i]->multiResourceLevel[k]);
-							}
-							if (stComponents[i]->multiResourceLevel) {
-								free(stComponents[i]->multiResourceLevel);
-							}*/
 							free(stComponents[i]);
 						}
 						free(stComponents);
@@ -242,12 +235,12 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 		free(actual);
 		closedir(dirp);
 	}
-	free(buffer);
 	if (verbose) {
 		printf("\n %i OpenMAX IL ST static components in %i libraries succesfully scanned\n", ncomponents, num_of_libraries);
 	} else {
 		DEBUG(DEB_LEV_SIMPLE_SEQ, "\n %i OpenMAX IL ST static components with %i roles in %i libraries succesfully scanned\n", ncomponents, nroles, num_of_libraries);
 	}
+	free(buffer);
 
 	return 0;
 }
@@ -316,7 +309,7 @@ int main(int argc, char *argv[]) {
 			exit(EXIT_FAILURE);
 		}
 	}
-	free (dir);
+	free(dir);
 
 	omxregistryfp = fopen(registry_filename, "w");
 	if (omxregistryfp == NULL){

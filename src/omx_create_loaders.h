@@ -2,7 +2,7 @@
   src/omx_create_loaders.h
 
   Define a generic entry point for component loaders creation.
-  Each component loader should provide an implementation of the 
+  Each component loader should provide an implementation of the
   createComponentLoaders function.
 
   Copyright (C) 2007-2009 STMicroelectronics
@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-int 
+int
 createComponentLoaders(void);
 
 #ifdef __cplusplus

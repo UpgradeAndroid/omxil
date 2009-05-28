@@ -44,4 +44,4 @@ include_extra_HEADERS = $(srcdir)/omxcore.h \
 			$(srcdir)/base/omx_base_clock_port.h \
 			$(srcdir)/base/omx_base_image_port.h \
 			$(srcdir)/extension_struct.h
-			
+

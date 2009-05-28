@@ -142,7 +142,6 @@ CLASS(omx_base_component_PrivateType)
 	tsem_t* flush_condition;  /** @param The flush_condition condition */ \
 	tsem_t* bMgmtSem;/**< @param bMgmtSem the semaphore that control BufferMgmtFunction processing */\
 	tsem_t* bStateSem;/**< @param bMgmtSem the semaphore that control BufferMgmtFunction processing */\
-	int messageHandlerThreadID; /** @param  messageHandlerThreadID The ID of the pthread that handles the messages for the components */ \
 	pthread_t messageHandlerThread; /** @param  messageHandlerThread This field contains the reference to the thread that receives messages for the components */ \
 	int bufferMgmtThreadID; /** @param  bufferMgmtThreadID The ID of the pthread that process buffers */ \
 	pthread_t bufferMgmtThread; /** @param  bufferMgmtThread This field contains the reference to the thread that process buffers */ \
@@ -221,11 +220,11 @@ void setHeader(OMX_PTR header, OMX_U32 size);
  * it returns the version of the component. See OMX_Core.h
  */
 OMX_ERRORTYPE omx_base_component_GetComponentVersion(
-		OMX_HANDLETYPE hComponent,
-		OMX_STRING pComponentName,
-		OMX_VERSIONTYPE* pComponentVersion,
-		OMX_VERSIONTYPE* pSpecVersion,
-		OMX_UUIDTYPE* pComponentUUID);
+  OMX_HANDLETYPE hComponent,
+  OMX_STRING pComponentName,
+  OMX_VERSIONTYPE* pComponentVersion,
+  OMX_VERSIONTYPE* pSpecVersion,
+  OMX_UUIDTYPE* pComponentUUID);
 
 /** @brief Enumerates all the role of the component.
  *
@@ -367,51 +366,51 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
  * This function verify Component State and Structure header
  */
 OMX_ERRORTYPE omx_base_component_ParameterSanityCheck(
-		OMX_HANDLETYPE hComponent,
-		OMX_U32 nPortIndex,
-		OMX_PTR pStructure,
-		size_t size);
+  OMX_HANDLETYPE hComponent,
+  OMX_U32 nPortIndex,
+  OMX_PTR pStructure,
+  size_t size);
 
 OMX_ERRORTYPE omx_base_component_AllocateBuffer(
-		OMX_HANDLETYPE hComponent,
-		OMX_BUFFERHEADERTYPE** ppBuffer,
-		OMX_U32 nPortIndex,
-		OMX_PTR pAppPrivate,
-		OMX_U32 nSizeBytes);
+  OMX_HANDLETYPE hComponent,
+  OMX_BUFFERHEADERTYPE** ppBuffer,
+  OMX_U32 nPortIndex,
+  OMX_PTR pAppPrivate,
+  OMX_U32 nSizeBytes);
 
 OMX_ERRORTYPE omx_base_component_UseBuffer(
-		OMX_HANDLETYPE hComponent,
-		OMX_BUFFERHEADERTYPE** ppBufferHdr,
-		OMX_U32 nPortIndex,
-		OMX_PTR pAppPrivate,
-		OMX_U32 nSizeBytes,
-		OMX_U8* pBuffer);
+  OMX_HANDLETYPE hComponent,
+  OMX_BUFFERHEADERTYPE** ppBufferHdr,
+  OMX_U32 nPortIndex,
+  OMX_PTR pAppPrivate,
+  OMX_U32 nSizeBytes,
+  OMX_U8* pBuffer);
 
 OMX_ERRORTYPE omx_base_component_UseEGLImage (
-        OMX_HANDLETYPE hComponent,
-        OMX_BUFFERHEADERTYPE** ppBufferHdr,
-        OMX_U32 nPortIndex,
-        OMX_PTR pAppPrivate,
-        void* eglImage);
+  OMX_HANDLETYPE hComponent,
+  OMX_BUFFERHEADERTYPE** ppBufferHdr,
+  OMX_U32 nPortIndex,
+  OMX_PTR pAppPrivate,
+  void* eglImage);
 
 OMX_ERRORTYPE omx_base_component_FreeBuffer(
-        OMX_HANDLETYPE hComponent,
-        OMX_U32 nPortIndex,
-        OMX_BUFFERHEADERTYPE* pBuffer);
+  OMX_HANDLETYPE hComponent,
+  OMX_U32 nPortIndex,
+  OMX_BUFFERHEADERTYPE* pBuffer);
 
 OMX_ERRORTYPE omx_base_component_EmptyThisBuffer(
-        OMX_HANDLETYPE hComponent,
-        OMX_BUFFERHEADERTYPE* pBuffer);
+  OMX_HANDLETYPE hComponent,
+  OMX_BUFFERHEADERTYPE* pBuffer);
 
 OMX_ERRORTYPE omx_base_component_FillThisBuffer(
-        OMX_HANDLETYPE hComponent,
-        OMX_BUFFERHEADERTYPE* pBuffer);
+  OMX_HANDLETYPE hComponent,
+  OMX_BUFFERHEADERTYPE* pBuffer);
 
 OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
-        OMX_HANDLETYPE hComp,
-        OMX_U32 nPort,
-        OMX_HANDLETYPE hTunneledComp,
-        OMX_U32 nTunneledPort,
-        OMX_TUNNELSETUPTYPE* pTunnelSetup);
+  OMX_HANDLETYPE hComp,
+  OMX_U32 nPort,
+  OMX_HANDLETYPE hTunneledComp,
+  OMX_U32 nTunneledPort,
+  OMX_TUNNELSETUPTYPE* pTunnelSetup);
 
 #endif
