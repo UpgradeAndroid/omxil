@@ -59,6 +59,7 @@ extern "C" {
 OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OMX_STRING cComponentName) {
   omx_base_component_PrivateType* omx_base_component_Private;
   OMX_U32 i;
+	int err;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 
@@ -137,6 +138,11 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
   omx_base_component_Private->destructor = omx_base_component_Destructor;
   omx_base_component_Private->bufferMgmtThreadID = -1;
   omx_base_component_Private->bellagioThreads = calloc(1, sizeof(OMX_PARAM_BELLAGIOTHREADS_ID));
+  if (omx_base_component_Private->bellagioThreads == NULL) {
+	    return OMX_ErrorInsufficientResources;
+  }
+  omx_base_component_Private->bellagioThreads->nThreadBufferMngtID = 0;
+  omx_base_component_Private->bellagioThreads->nThreadMessageID = 0;
   omx_base_component_Private->bIsEOSReached = OMX_FALSE;
 
   pthread_mutex_init(&omx_base_component_Private->flush_mutex, NULL);
@@ -156,11 +162,10 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
     setHeader(&omx_base_component_Private->sPortTypesParam[i], sizeof(OMX_PORT_PARAM_TYPE));
   }
 
-  omx_base_component_Private->messageHandlerThreadID = pthread_create(&omx_base_component_Private->messageHandlerThread,
-  NULL,
-  compMessageHandlerFunction,
-  openmaxStandComp);
-
+  err = pthread_create(&omx_base_component_Private->messageHandlerThread, NULL, compMessageHandlerFunction, openmaxStandComp);
+	if (err) {
+      return OMX_ErrorInsufficientResources;
+	}
   DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s\n",__func__);
   return OMX_ErrorNone;
 }
@@ -190,7 +195,7 @@ OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp)
     omx_base_component_Private->messageQueue=NULL;
   }
 
-  err = pthread_join(omx_base_component_Private->messageHandlerThread,NULL);
+  err = pthread_join(omx_base_component_Private->messageHandlerThread, NULL);
   if(err!=0) {
     DEBUG(DEB_LEV_FUNCTION_NAME,"In %s pthread_join returned err=%d\n", __func__, err);
   }
@@ -336,7 +341,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       if(omx_base_component_Private->bufferMgmtThreadID == 0 ){
         /*Signal Buffer Management thread to exit*/
         tsem_up(omx_base_component_Private->bMgmtSem);
-        pthread_join(omx_base_component_Private->bufferMgmtThread,NULL);
+        pthread_join(omx_base_component_Private->bufferMgmtThread, NULL);
         omx_base_component_Private->bufferMgmtThreadID = -1;
         if(err != 0) {
           DEBUG(DEB_LEV_FUNCTION_NAME,"In %s pthread_join returned err=%d\n",__func__,err);
@@ -413,9 +418,9 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       omx_base_component_Private->state = OMX_StateIdle;
       /** starting buffer management thread */
       omx_base_component_Private->bufferMgmtThreadID = pthread_create(&omx_base_component_Private->bufferMgmtThread,
-      NULL,
-      omx_base_component_Private->BufferMgmtFunction,
-      openmaxStandComp);
+	      																									NULL,
+	      																									omx_base_component_Private->BufferMgmtFunction,
+	      																									openmaxStandComp);
       if(omx_base_component_Private->bufferMgmtThreadID < 0){
         DEBUG(DEB_LEV_ERR, "Starting buffer management thread failed\n");
         return OMX_ErrorUndefined;
@@ -550,7 +555,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
         tsem_signal(omx_base_component_Private->bStateSem);
         /*Signal Buffer Management Thread to Exit*/
         tsem_up(omx_base_component_Private->bMgmtSem);
-        pthread_join(omx_base_component_Private->bufferMgmtThread,NULL);
+        pthread_join(omx_base_component_Private->bufferMgmtThread, NULL);
         omx_base_component_Private->bufferMgmtThreadID = -1;
         if(err!=0) {
           DEBUG(DEB_LEV_FUNCTION_NAME,"In %s pthread_join returned err=%d\n",__func__,err);
