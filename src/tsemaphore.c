@@ -39,10 +39,18 @@
  * @param val the initial value of the semaphore
  *
  */
-void tsem_init(tsem_t* tsem, unsigned int val) {
-  pthread_cond_init(&tsem->condition, NULL);
-  pthread_mutex_init(&tsem->mutex, NULL);
-  tsem->semval = val;
+int tsem_init(tsem_t* tsem, unsigned int val) {
+	int i;
+	i = pthread_cond_init(&tsem->condition, NULL);
+	if (i!=0) {
+		return -1;
+	}
+	i = pthread_mutex_init(&tsem->mutex, NULL);
+	if (i!=0) {
+		return -1;
+	}
+	tsem->semval = val;
+	return 0;
 }
 
 /** Destroy the semaphore

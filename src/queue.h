@@ -54,8 +54,10 @@ typedef struct queue_t{
  *
  * @param queue The queue descriptor to initialize.
  * The user needs to allocate the queue
+ *
+ * @return -1 if the resources are not enough and the allocation cannot be performed
  */
-void queue_init(queue_t* queue);
+int queue_init(queue_t* queue);
 
 /** Deinitialize a queue descriptor
  * flushing all of its internal data

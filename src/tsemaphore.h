@@ -45,7 +45,7 @@ typedef struct tsem_t{
  *
  * @param val the initial value of the semaphore
  */
-void tsem_init(tsem_t* tsem, unsigned int val);
+int tsem_init(tsem_t* tsem, unsigned int val);
 
 /** Destroy the semaphore
  *

@@ -27,9 +27,7 @@
   Author $Author$
 */
 
-#ifndef __SYMBIAN32__
 #define _GNU_SOURCE
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,7 +47,7 @@ extern CPresult file_pipe_Constructor(CP_PIPETYPE* pPipe, CPstring szURI);
 extern CPresult inet_pipe_Constructor(CP_PIPETYPE* pPipe, CPstring szURI);
 
 /** The static field initialized is equal to 0 if the core is not initialized.
- * It is equal to 1 whern the OMX_Init has been called
+ * It is equal to 1 when the OMX_Init has been called
  */
 static int initialized;
 
@@ -88,7 +86,7 @@ OMX_ERRORTYPE BOSA_AddComponentLoader(BOSA_COMPONENTLOADER *pLoader)
 
 /** @brief The OMX_Init standard function
  *
- * This function calls the init function of each componente loader added. If there
+ * This function calls the init function of each component loader added. If there
  * is no component loaders present, the ST default component loader (static libraries)
  * is loaded as default component loader.
  *
@@ -98,7 +96,7 @@ OMX_ERRORTYPE OMX_Init() {
   int i = 0;
   OMX_ERRORTYPE err;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s \n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
   if(initialized == 0) {
     initialized = 1;
 
@@ -106,11 +104,9 @@ OMX_ERRORTYPE OMX_Init() {
     	return OMX_ErrorInsufficientResources;
     }
 
-    for (i = 0; i < bosa_loaders; i++)
-    {
+    for (i = 0; i < bosa_loaders; i++) {
       err = loadersList[i]->BOSA_InitComponentLoader(loadersList[i]);
-      if (err != OMX_ErrorNone)
-      {
+      if (err != OMX_ErrorNone) {
         DEBUG(DEB_LEV_ERR, "A Component loader constructor fails. Exiting\n");
         return OMX_ErrorInsufficientResources;
       }
@@ -192,25 +188,23 @@ OMX_ERRORTYPE OMX_GetHandle(OMX_HANDLETYPE* pHandle,
  *
  * @return The error of the BOSA_DestroyComponent function or OMX_ErrorNone
  */
-OMX_ERRORTYPE OMX_FreeHandle(OMX_HANDLETYPE hComponent)
-{
-  int i;
+OMX_ERRORTYPE OMX_FreeHandle(OMX_HANDLETYPE hComponent) {
+	int i;
     OMX_ERRORTYPE err;
+    DEBUG(DEB_LEV_ERR, "In %s for %x\n", __func__, (int)hComponent);
 
-    for (i = 0; i < bosa_loaders; i++)
-    {
-    err = loadersList[i]->BOSA_DestroyComponent(
-          loadersList[i],
-          hComponent);
+    for (i = 0; i < bosa_loaders; i++) {
+    	err = loadersList[i]->BOSA_DestroyComponent(
+    			loadersList[i],
+    			hComponent);
 
-    if (err == OMX_ErrorNone)
-    {
-      // the component has been found and destroyed
-      return OMX_ErrorNone;
+    	if (err == OMX_ErrorNone) {
+    		// the component has been found and destroyed
+    		return OMX_ErrorNone;
+    	}
     }
-  }
-
-  return OMX_ErrorComponentNotFound;
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
+    return OMX_ErrorComponentNotFound;
 }
 
 /** @brief the OMX_ComponentNameEnum standard function
@@ -276,7 +270,8 @@ OMX_ERRORTYPE OMX_SetupTunnel(
   OMX_COMPONENTTYPE* component;
   OMX_TUNNELSETUPTYPE* tunnelSetup;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s the output port is:%x/%i, the input port is %x/%i\n",
+		  __func__, (int)hOutput, (int)nPortOutput, (int)hInput, (int)nPortInput);
   tunnelSetup = malloc(sizeof(OMX_TUNNELSETUPTYPE));
   component = (OMX_COMPONENTTYPE*)hOutput;
   tunnelSetup->nTunnelFlags = 0;
@@ -421,6 +416,7 @@ OMX_ERRORTYPE OMX_GetContentPipe(
     OMX_STRING szURI) {
 	  OMX_ERRORTYPE err = OMX_ErrorContentPipeCreationFailed;
 	  CPresult res;
+	  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 
 	  if(strncmp(szURI, "file", 4) == 0) {
 	    res = file_pipe_Constructor((CP_PIPETYPE*) hPipe, szURI);
@@ -433,5 +429,6 @@ OMX_ERRORTYPE OMX_GetContentPipe(
 	    if(res == 0x00000000)
 	      err = OMX_ErrorNone;
 	  }
+	  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
 	  return err;
 }

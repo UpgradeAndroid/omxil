@@ -64,7 +64,7 @@ typedef struct BOSA_COMPONENTLOADER
    */
   OMX_ERRORTYPE (*BOSA_DeInitComponentLoader)(struct BOSA_COMPONENTLOADER *loader);
 
-  /** @brief The component costructor of the current component loader
+  /** @brief The component constructor of the current component loader
    *
    * This function implements the OMX_GetHandle function for the
    * specific component loader. Its interface is the same as the
@@ -128,7 +128,7 @@ typedef struct BOSA_COMPONENTLOADER
    * @param nNameLength The number of characters in the
    * cComponentName string.  With all component name strings
    * restricted to less than 128 characters (including the trailing null)
-   * it is recomended that the caller provide a input string for the
+   * it is recommended that the caller provide a input string for the
    * cComponentName of 128 characters.
    * @param nIndex A number containing the enumeration index
    * for the component. Multiple calls to OMX_ComponentNameEnum

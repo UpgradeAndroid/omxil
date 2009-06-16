@@ -3,7 +3,7 @@
 
   In this file is implemented the entry point for the construction
   of every component loader in linux. In the current implementation
-  only the st static loader is called.
+  only the ST static loader is called.
 
   Copyright (C) 2007-2009 STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
@@ -45,6 +45,16 @@
 #endif
 #define DEFAULT_LOADER_LIBRARY_NAME "/libstbaseloader.so"
 
+/**
+ * This function allocates all the structures needed by the component loaders
+ * available in the system and initialize the function pointers of the loader.
+ * Finally it searches for more loaders that can be pointed by the .omxloaders
+ * file. If this file exists it contains a list of library containing custom
+ * component loaders. Each library should contain a function named 'setup_component_loader'
+ * that will initialize the custom loader. This mechanism is similar to the
+ * default loading of the components.
+ *
+ */
 int createComponentLoaders() {
 	// load component loaders
 	BOSA_COMPONENTLOADER *loader;

@@ -38,23 +38,38 @@
  * @param queue The queue descriptor to initialize.
  * The user needs to allocate the queue
  */
-void queue_init(queue_t* queue) {
+int queue_init(queue_t* queue) {
   int i;
   qelem_t* newelem;
   qelem_t* current;
+  i = pthread_mutex_init(&queue->mutex, NULL);
+  if (i!=0) {
+	  return -1;
+  }
   queue->first = malloc(sizeof(qelem_t));
+  if (!(queue->first)) {
+	  return -1;
+  }
   memset(queue->first, 0, sizeof(qelem_t));
   current = queue->last = queue->first;
   queue->nelem = 0;
   for (i = 0; i<MAX_QUEUE_ELEMENTS - 2; i++) {
     newelem = malloc(sizeof(qelem_t));
+    if (!newelem) {
+    	// the memory is not enough. Free all
+    	while(queue->first!=NULL) {
+        	current = queue->first->q_forw;
+        	free(queue->first);
+        	queue->first = current;
+    	}
+    	return -1;
+    }
     memset(newelem, 0, sizeof(qelem_t));
     current->q_forw = newelem;
     current = newelem;
   }
   current->q_forw = queue->first;
-
-  pthread_mutex_init(&queue->mutex, NULL);
+  return 0;
 }
 
 /** Deinitialize a queue descriptor
