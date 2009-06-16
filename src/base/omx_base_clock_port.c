@@ -35,7 +35,7 @@
 #include "omx_base_clock_port.h"
 
 /**
-  * @brief the base contructor for the generic openmax ST Clock port
+  * @brief the base constructor for the generic OpenMAX ST Clock port
   *
   * This function is executed by the component that uses a port.
   * The parameter contains the info about the component.
@@ -45,25 +45,28 @@
   * @param openmaxStandComp pointer to the Handle of the component
   * @param openmaxStandPort the ST port to be initialized
   * @param nPortIndex Index of the port to be constructed
-  * @param isInput specifices if the port is an input or an output
+  * @param isInput specifies if the port is an input or an output
   *
   * @return OMX_ErrorInsufficientResources if a memory allocation fails
   */
 
 OMX_ERRORTYPE base_clock_port_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,omx_base_PortType **openmaxStandPort,OMX_U32 nPortIndex, OMX_BOOL isInput) {
-
+	OMX_ERRORTYPE err;
   omx_base_clock_PortType *omx_base_clock_Port;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %x\n", __func__, (int)openmaxStandComp);
   if (!(*openmaxStandPort)) {
     *openmaxStandPort = calloc(1,sizeof (omx_base_clock_PortType));
   }
-
   if (!(*openmaxStandPort)) {
     return OMX_ErrorInsufficientResources;
   }
 
-  base_port_Constructor(openmaxStandComp,openmaxStandPort,nPortIndex, isInput);
-
+  err = base_port_Constructor(openmaxStandComp,openmaxStandPort,nPortIndex, isInput);
+  if (err != OMX_ErrorNone) {
+	  DEBUG(DEB_LEV_ERR, "Base port constructor failed in %s\n", __func__);
+	  return err;
+  }
   omx_base_clock_Port = (omx_base_clock_PortType *)*openmaxStandPort;
 
   setHeader(&omx_base_clock_Port->sOtherParam, sizeof(OMX_OTHER_PARAM_PORTFORMATTYPE));
@@ -96,11 +99,12 @@ OMX_ERRORTYPE base_clock_port_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,om
   omx_base_clock_Port->Port_SendBufferFunction = &base_clock_port_SendBufferFunction;
   omx_base_clock_Port->PortDestructor = &base_clock_port_Destructor;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %x\n", __func__, (int)openmaxStandComp);
   return OMX_ErrorNone;
 }
 
 /**
-  * @brief the base clock port destructor for the generic openmax ST clock port
+  * @brief the base clock port destructor for the generic OpenMAX ST clock port
   *
   * This function is executed by the component that uses a port.
   * The parameter contains the info about the port.
@@ -112,10 +116,15 @@ OMX_ERRORTYPE base_clock_port_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,om
   */
 
 OMX_ERRORTYPE base_clock_port_Destructor(omx_base_PortType *openmaxStandPort){
-
-  base_port_Destructor(openmaxStandPort);
-
-  return OMX_ErrorNone;
+	OMX_ERRORTYPE err;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %x\n", __func__, (int)openmaxStandPort->standCompContainer);
+	err = base_port_Destructor(openmaxStandPort);
+	if (err != OMX_ErrorNone) {
+		DEBUG(DEB_LEV_ERR, "Base port destructor failed in %s\n", __func__);
+		return err;
+	}
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %x\n", __func__, (int)openmaxStandPort->standCompContainer);
+	return OMX_ErrorNone;
 }
 
 /** @brief the entry point for sending buffers to the port
@@ -132,6 +141,7 @@ OMX_ERRORTYPE base_clock_port_SendBufferFunction(
   OMX_U32 portIndex;
   OMX_COMPONENTTYPE* omxComponent = openmaxStandPort->standCompContainer;
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)omxComponent->pComponentPrivate;
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %x\n", __func__, (int)omxComponent);
 #if NO_GST_OMX_PATCH
   unsigned int i;
 #endif
@@ -216,8 +226,9 @@ OMX_ERRORTYPE base_clock_port_SendBufferFunction(
 	  tsem_up(openmaxStandPort->pBufferSem);
   }
   else { // If port being flushed and not tunneled then return error
-    DEBUG(DEB_LEV_FULL_SEQ, "In %s \n", __func__);
+    DEBUG(DEB_LEV_ERR, "Port flushed but not tunneled in %s \n", __func__);
     return OMX_ErrorIncorrectStateOperation;
   }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %x\n", __func__, (int)omx_base_component_Private);
   return OMX_ErrorNone;
 }

@@ -36,34 +36,47 @@
 #include "omx_base_filter.h"
 
 OMX_ERRORTYPE omx_base_filter_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OMX_STRING cComponentName) {
-  OMX_ERRORTYPE err = OMX_ErrorNone;
+  OMX_ERRORTYPE err;
   omx_base_filter_PrivateType* omx_base_filter_Private;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %x\n", __func__, (int)openmaxStandComp);
   if (openmaxStandComp->pComponentPrivate) {
     omx_base_filter_Private = (omx_base_filter_PrivateType*)openmaxStandComp->pComponentPrivate;
   } else {
     omx_base_filter_Private = calloc(1,sizeof(omx_base_filter_PrivateType));
     if (!omx_base_filter_Private) {
-      return OMX_ErrorInsufficientResources;
+    	DEBUG(DEB_LEV_ERR, "Insufficient memory in %s\n", __func__);
+    	return OMX_ErrorInsufficientResources;
     }
     openmaxStandComp->pComponentPrivate=omx_base_filter_Private;
   }
 
-  /* Call the base class constructory */
+  /* Call the base class constructor */
   err = omx_base_component_Constructor(openmaxStandComp,cComponentName);
-
+  if (err != OMX_ErrorNone) {
+	  DEBUG(DEB_LEV_ERR, "The base constructor failed in %s\n", __func__);
+	  return err;
+  }
   /* here we can override whatever defaults the base_component constructor set
   * e.g. we can override the function pointers in the private struct */
   omx_base_filter_Private = openmaxStandComp->pComponentPrivate;
 
   omx_base_filter_Private->BufferMgmtFunction = omx_base_filter_BufferMgmtFunction;
 
-  return err;
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %x\n", __func__, (int)openmaxStandComp);
+  return OMX_ErrorNone;
 }
 
 OMX_ERRORTYPE omx_base_filter_Destructor(OMX_COMPONENTTYPE *openmaxStandComp) {
-
-  return omx_base_component_Destructor(openmaxStandComp);
+	OMX_ERRORTYPE err;
+	  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %x\n", __func__, (int)openmaxStandComp);
+	  err = omx_base_component_Destructor(openmaxStandComp);
+	  if (err != OMX_ErrorNone) {
+		  DEBUG(DEB_LEV_ERR, "The base component destructor failed\n");
+		  return err;
+	  }
+	  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %x\n", __func__, (int)openmaxStandComp);
+	  return OMX_ErrorNone;
 }
 
 /** This is the central function for component processing. It
@@ -86,6 +99,7 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
   int inBufExchanged=0,outBufExchanged=0;
 
   omx_base_filter_Private->bellagioThreads->nThreadBufferMngtID = (long int)syscall(__NR_gettid);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %x\n", __func__, (int)openmaxStandComp);
   DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s the thread ID is %i\n", __func__, (int)omx_base_filter_Private->bellagioThreads->nThreadBufferMngtID);
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
@@ -267,6 +281,6 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
       isInputBufferNeeded=OMX_TRUE;
     }
   }
-  DEBUG(DEB_LEV_SIMPLE_SEQ,"Exiting Buffer Management Thread\n");
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %x\n", __func__, (int)openmaxStandComp);
   return NULL;
 }

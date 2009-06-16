@@ -36,7 +36,7 @@
 #include "omx_base_image_port.h"
 
 /**
-  * @brief The base contructor for the generic OpenMAX ST Image port
+  * @brief The base constructor for the generic OpenMAX ST Image port
   *
   * This function is executed by the component that uses a port.
   * The parameter contains the info about the component.
@@ -46,7 +46,7 @@
   * @param openmaxStandComp pointer to the Handle of the component
   * @param openmaxStandPort the ST port to be initialized
   * @param nPortIndex Index of the port to be constructed
-  * @param isInput specifices if the port is an input or an output
+  * @param isInput specifies if the port is an input or an output
   *
   * @return OMX_ErrorInsufficientResources if a memory allocation fails
   */
@@ -55,6 +55,7 @@ OMX_ERRORTYPE base_image_port_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,om
 
   omx_base_image_PortType *omx_base_image_Port;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %x\n", __func__, (int)openmaxStandComp);
   if (!(*openmaxStandPort)) {
     *openmaxStandPort = calloc(1,sizeof (omx_base_image_PortType));
   }
@@ -83,6 +84,7 @@ OMX_ERRORTYPE base_image_port_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,om
 
   omx_base_image_Port->PortDestructor = &base_image_port_Destructor;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %x\n", __func__, (int)openmaxStandComp);
   return OMX_ErrorNone;
 }
 
@@ -99,13 +101,18 @@ OMX_ERRORTYPE base_image_port_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,om
   */
 
 OMX_ERRORTYPE base_image_port_Destructor(omx_base_PortType *openmaxStandPort){
+	OMX_ERRORTYPE err;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of port %x\n", __func__, (int)openmaxStandPort);
+	if(openmaxStandPort->sPortParam.format.image.cMIMEType) {
+		free(openmaxStandPort->sPortParam.format.image.cMIMEType);
+		openmaxStandPort->sPortParam.format.image.cMIMEType = NULL;
+	}
 
-  if(openmaxStandPort->sPortParam.format.image.cMIMEType) {
-    free(openmaxStandPort->sPortParam.format.image.cMIMEType);
-    openmaxStandPort->sPortParam.format.image.cMIMEType = NULL;
-  }
-
-  base_port_Destructor(openmaxStandPort);
-
-  return OMX_ErrorNone;
+	err = base_port_Destructor(openmaxStandPort);
+	if (err != OMX_ErrorNone) {
+		DEBUG(DEB_LEV_ERR, "In %s base port destructor failed\n", __func__);
+		return err;
+	}
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of port %x\n", __func__, (int)openmaxStandPort);
+	return OMX_ErrorNone;
 }
