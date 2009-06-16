@@ -152,8 +152,10 @@ CLASS(omx_base_component_PrivateType)
 	OMX_ERRORTYPE (*destructor)(OMX_COMPONENTTYPE *openmaxStandComp); /** Component Destructor*/
 ENDCLASS(omx_base_component_PrivateType)
 
+void base_constructor_remove_garbage_collected(omx_base_component_PrivateType* omx_base_component_Private);
+
 /**
- * @brief The base contructor for the OpenMAX ST components
+ * @brief The base constructor for the OpenMAX ST components
  *
  * This function is executed by the ST static component loader.
  * It takes care of constructing the instance of the component.
@@ -180,7 +182,7 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
 OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp);
 
 /** Changes the state of a component taking proper actions depending on
- * the transiotion requested. This base function cover only the state
+ * the transition requested. This base function cover only the state
  * changes that do not involve any port
  *
  * @param openmaxStandComp the OpenMAX component which state is to be changed
@@ -335,7 +337,7 @@ OMX_ERRORTYPE omx_base_component_SendCommand(
  *
  * In this way the implementation of the FreeHandle is standard,
  * and it does not need a support by a specific component loader.
- * The implementaiton of the ComponentDeInit contains the
+ * The implementation of the ComponentDeInit contains the
  * implementation specific part of the destroying phase.
  */
 OMX_ERRORTYPE omx_base_component_ComponentDeInit(
@@ -350,7 +352,7 @@ OMX_ERRORTYPE omx_base_component_ComponentDeInit(
 void* compMessageHandlerFunction(void*);
 
 /** This is called by the component message entry point.
- * In thea base version this function is named compMessageHandlerFunction
+ * In the base version this function is named compMessageHandlerFunction
  *
  * A request is made by the component when some asynchronous services are needed:
  * 1) A SendCommand() is to be processed

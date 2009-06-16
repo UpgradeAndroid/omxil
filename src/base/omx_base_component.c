@@ -41,6 +41,45 @@ extern "C" {
 #include "queue.h"
 
 /**
+ * This function releases all the resources allocated by the base constructor if something fails.
+ * It checks if any item has been already allocated/configured
+ */
+void base_constructor_remove_garbage_collected(omx_base_component_PrivateType* omx_base_component_Private) {
+	if (omx_base_component_Private->flush_condition) {
+		tsem_deinit(omx_base_component_Private->flush_condition);
+		free(omx_base_component_Private->flush_condition);
+	}
+	if (omx_base_component_Private->flush_all_condition) {
+		tsem_deinit(omx_base_component_Private->flush_all_condition);
+		free(omx_base_component_Private->flush_all_condition);
+	}
+	if (omx_base_component_Private->bellagioThreads) {
+		free(omx_base_component_Private->bellagioThreads);
+	}
+	if (omx_base_component_Private->name) {
+		free(omx_base_component_Private->name);
+	}
+	if (omx_base_component_Private->bStateSem) {
+		tsem_deinit(omx_base_component_Private->bStateSem);
+		free(omx_base_component_Private->bStateSem);
+	}
+	if (omx_base_component_Private->bMgmtSem) {
+		tsem_deinit(omx_base_component_Private->bMgmtSem);
+		free(omx_base_component_Private->bMgmtSem);
+	}
+	if (omx_base_component_Private->messageSem) {
+		tsem_deinit(omx_base_component_Private->messageSem);
+		free(omx_base_component_Private->messageSem);
+	}
+	if (omx_base_component_Private->messageQueue) {
+		queue_deinit(omx_base_component_Private->messageQueue);
+		free(omx_base_component_Private->messageQueue);
+	}
+	if (omx_base_component_Private) {
+		free(omx_base_component_Private);
+	}
+}
+/**
  * @brief The base constructor for the OpenMAX ST components
  *
  * This function is executed by the ST static component loader.
@@ -57,117 +96,168 @@ extern "C" {
  * @return OMX_ErrorInsufficientResources if a memory allocation fails
  */
 OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OMX_STRING cComponentName) {
-  omx_base_component_PrivateType* omx_base_component_Private;
-  OMX_U32 i;
+	omx_base_component_PrivateType* omx_base_component_Private;
+	OMX_U32 i;
 	int err;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
 
-  if (openmaxStandComp->pComponentPrivate) {
-    omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
-  } else {
-    omx_base_component_Private = calloc(1,sizeof(omx_base_component_PrivateType));
-    if (!omx_base_component_Private) {
-      return OMX_ErrorInsufficientResources;
-    }
-  }
-
-  if(!omx_base_component_Private->messageQueue) {
-    omx_base_component_Private->messageQueue = calloc(1,sizeof(queue_t));
-    queue_init(omx_base_component_Private->messageQueue);
-  }
-
-  if(!omx_base_component_Private->messageSem) {
-    omx_base_component_Private->messageSem = calloc(1,sizeof(tsem_t));
-    tsem_init(omx_base_component_Private->messageSem, 0);
-  }
-  if(!omx_base_component_Private->bMgmtSem) {
-    omx_base_component_Private->bMgmtSem = calloc(1,sizeof(tsem_t));
-    tsem_init(omx_base_component_Private->bMgmtSem, 0);
-  }
-
-  if(!omx_base_component_Private->bStateSem) {
-    omx_base_component_Private->bStateSem = calloc(1,sizeof(tsem_t));
-    tsem_init(omx_base_component_Private->bStateSem, 0);
-  }
-
-  openmaxStandComp->nSize = sizeof(OMX_COMPONENTTYPE);
-  openmaxStandComp->pApplicationPrivate = NULL;
-  openmaxStandComp->GetComponentVersion = omx_base_component_GetComponentVersion;
-  openmaxStandComp->SendCommand = omx_base_component_SendCommand;
-  openmaxStandComp->GetParameter = omx_base_component_GetParameter;
-  openmaxStandComp->SetParameter = omx_base_component_SetParameter;
-  openmaxStandComp->GetConfig = omx_base_component_GetConfig;
-  openmaxStandComp->SetConfig = omx_base_component_SetConfig;
-  openmaxStandComp->GetExtensionIndex = omx_base_component_GetExtensionIndex;
-  openmaxStandComp->GetState = omx_base_component_GetState;
-  openmaxStandComp->SetCallbacks = omx_base_component_SetCallbacks;
-  openmaxStandComp->ComponentDeInit = omx_base_component_ComponentDeInit;
-  openmaxStandComp->ComponentRoleEnum = omx_base_component_ComponentRoleEnum;
-  openmaxStandComp->ComponentTunnelRequest =omx_base_component_ComponentTunnelRequest;
-
-  /*Will make Specific port Allocate buffer call*/
-  openmaxStandComp->AllocateBuffer = omx_base_component_AllocateBuffer;
-  openmaxStandComp->UseBuffer = omx_base_component_UseBuffer;
-  openmaxStandComp->UseEGLImage = omx_base_component_UseEGLImage;
-  openmaxStandComp->FreeBuffer = omx_base_component_FreeBuffer;
-  openmaxStandComp->EmptyThisBuffer = omx_base_component_EmptyThisBuffer;
-  openmaxStandComp->FillThisBuffer = omx_base_component_FillThisBuffer;
-
-  openmaxStandComp->nVersion.s.nVersionMajor = SPECVERSIONMAJOR;
-  openmaxStandComp->nVersion.s.nVersionMinor = SPECVERSIONMINOR;
-  openmaxStandComp->nVersion.s.nRevision = SPECREVISION;
-  openmaxStandComp->nVersion.s.nStep = SPECSTEP;
-
-  omx_base_component_Private->name = calloc(1,OMX_MAX_STRINGNAME_SIZE);
-  if (!omx_base_component_Private->name) {
-    return OMX_ErrorInsufficientResources;
-  }
-  strcpy(omx_base_component_Private->name,cComponentName);
-  omx_base_component_Private->state = OMX_StateLoaded;
-  omx_base_component_Private->transientState = OMX_TransStateMax;
-  omx_base_component_Private->callbacks = NULL;
-  omx_base_component_Private->callbackData = NULL;
-  omx_base_component_Private->nGroupPriority = 0;
-  omx_base_component_Private->nGroupID = 0;
-  omx_base_component_Private->pMark.hMarkTargetComponent = NULL;
-  omx_base_component_Private->pMark.pMarkData            = NULL;
-  omx_base_component_Private->openmaxStandComp=openmaxStandComp;
-  omx_base_component_Private->DoStateSet = &omx_base_component_DoStateSet;
-  omx_base_component_Private->messageHandler = omx_base_component_MessageHandler;
-  omx_base_component_Private->destructor = omx_base_component_Destructor;
-  omx_base_component_Private->bufferMgmtThreadID = -1;
-  omx_base_component_Private->bellagioThreads = calloc(1, sizeof(OMX_PARAM_BELLAGIOTHREADS_ID));
-  if (omx_base_component_Private->bellagioThreads == NULL) {
-	    return OMX_ErrorInsufficientResources;
-  }
-  omx_base_component_Private->bellagioThreads->nThreadBufferMngtID = 0;
-  omx_base_component_Private->bellagioThreads->nThreadMessageID = 0;
-  omx_base_component_Private->bIsEOSReached = OMX_FALSE;
-
-  pthread_mutex_init(&omx_base_component_Private->flush_mutex, NULL);
-
-  if(!omx_base_component_Private->flush_all_condition) {
-    omx_base_component_Private->flush_all_condition = calloc(1,sizeof(tsem_t));
-    tsem_init(omx_base_component_Private->flush_all_condition, 0);
-  }
-
-  if(!omx_base_component_Private->flush_condition) {
-    omx_base_component_Private->flush_condition = calloc(1,sizeof(tsem_t));
-    tsem_init(omx_base_component_Private->flush_condition, 0);
-  }
-
-  for(i=0;i<NUM_DOMAINS;i++) {
-    memset(&omx_base_component_Private->sPortTypesParam[i], 0, sizeof(OMX_PORT_PARAM_TYPE));
-    setHeader(&omx_base_component_Private->sPortTypesParam[i], sizeof(OMX_PORT_PARAM_TYPE));
-  }
-
-  err = pthread_create(&omx_base_component_Private->messageHandlerThread, NULL, compMessageHandlerFunction, openmaxStandComp);
-	if (err) {
-      return OMX_ErrorInsufficientResources;
+	if (openmaxStandComp->pComponentPrivate) {
+		omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
+	} else {
+		omx_base_component_Private = calloc(1,sizeof(omx_base_component_PrivateType));
+		if (!omx_base_component_Private) {
+			return OMX_ErrorInsufficientResources;
+		}
 	}
-  DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s\n",__func__);
-  return OMX_ErrorNone;
+
+	if(!omx_base_component_Private->messageQueue) {
+		omx_base_component_Private->messageQueue = calloc(1,sizeof(queue_t));
+		if (!omx_base_component_Private->messageQueue) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+		err = queue_init(omx_base_component_Private->messageQueue);
+		if (err != 0) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+	}
+
+	if(!omx_base_component_Private->messageSem) {
+		omx_base_component_Private->messageSem = calloc(1,sizeof(tsem_t));
+		if (!omx_base_component_Private->messageSem) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+		err = tsem_init(omx_base_component_Private->messageSem, 0);
+		if (err != 0) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+	}
+	if(!omx_base_component_Private->bMgmtSem) {
+		omx_base_component_Private->bMgmtSem = calloc(1,sizeof(tsem_t));
+		if (!omx_base_component_Private->bMgmtSem) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+		err = tsem_init(omx_base_component_Private->bMgmtSem, 0);
+		if (err != 0) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+	}
+
+	if(!omx_base_component_Private->bStateSem) {
+		omx_base_component_Private->bStateSem = calloc(1,sizeof(tsem_t));
+		if (!omx_base_component_Private->bStateSem) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+		err = tsem_init(omx_base_component_Private->bStateSem, 0);
+		if (err != 0) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+	}
+
+	openmaxStandComp->nSize = sizeof(OMX_COMPONENTTYPE);
+	openmaxStandComp->pApplicationPrivate = NULL;
+	openmaxStandComp->GetComponentVersion = omx_base_component_GetComponentVersion;
+	openmaxStandComp->SendCommand = omx_base_component_SendCommand;
+	openmaxStandComp->GetParameter = omx_base_component_GetParameter;
+	openmaxStandComp->SetParameter = omx_base_component_SetParameter;
+	openmaxStandComp->GetConfig = omx_base_component_GetConfig;
+	openmaxStandComp->SetConfig = omx_base_component_SetConfig;
+	openmaxStandComp->GetExtensionIndex = omx_base_component_GetExtensionIndex;
+	openmaxStandComp->GetState = omx_base_component_GetState;
+	openmaxStandComp->SetCallbacks = omx_base_component_SetCallbacks;
+	openmaxStandComp->ComponentDeInit = omx_base_component_ComponentDeInit;
+	openmaxStandComp->ComponentRoleEnum = omx_base_component_ComponentRoleEnum;
+	openmaxStandComp->ComponentTunnelRequest =omx_base_component_ComponentTunnelRequest;
+
+	/*Will make Specific port Allocate buffer call*/
+	openmaxStandComp->AllocateBuffer = omx_base_component_AllocateBuffer;
+	openmaxStandComp->UseBuffer = omx_base_component_UseBuffer;
+	openmaxStandComp->UseEGLImage = omx_base_component_UseEGLImage;
+	openmaxStandComp->FreeBuffer = omx_base_component_FreeBuffer;
+	openmaxStandComp->EmptyThisBuffer = omx_base_component_EmptyThisBuffer;
+	openmaxStandComp->FillThisBuffer = omx_base_component_FillThisBuffer;
+
+	openmaxStandComp->nVersion.s.nVersionMajor = SPECVERSIONMAJOR;
+	openmaxStandComp->nVersion.s.nVersionMinor = SPECVERSIONMINOR;
+	openmaxStandComp->nVersion.s.nRevision = SPECREVISION;
+	openmaxStandComp->nVersion.s.nStep = SPECSTEP;
+
+	omx_base_component_Private->name = calloc(1,OMX_MAX_STRINGNAME_SIZE);
+	if (!omx_base_component_Private->name) {
+		base_constructor_remove_garbage_collected(omx_base_component_Private);
+		return OMX_ErrorInsufficientResources;
+	}
+	strcpy(omx_base_component_Private->name,cComponentName);
+	omx_base_component_Private->state = OMX_StateLoaded;
+	omx_base_component_Private->transientState = OMX_TransStateMax;
+	omx_base_component_Private->callbacks = NULL;
+	omx_base_component_Private->callbackData = NULL;
+	omx_base_component_Private->nGroupPriority = 0;
+	omx_base_component_Private->nGroupID = 0;
+	omx_base_component_Private->pMark.hMarkTargetComponent = NULL;
+	omx_base_component_Private->pMark.pMarkData            = NULL;
+	omx_base_component_Private->openmaxStandComp = openmaxStandComp;
+	omx_base_component_Private->DoStateSet = &omx_base_component_DoStateSet;
+	omx_base_component_Private->messageHandler = omx_base_component_MessageHandler;
+	omx_base_component_Private->destructor = omx_base_component_Destructor;
+	omx_base_component_Private->bufferMgmtThreadID = -1;
+	omx_base_component_Private->bellagioThreads = calloc(1, sizeof(OMX_PARAM_BELLAGIOTHREADS_ID));
+	if (omx_base_component_Private->bellagioThreads == NULL) {
+		base_constructor_remove_garbage_collected(omx_base_component_Private);
+		return OMX_ErrorInsufficientResources;
+	}
+	omx_base_component_Private->bellagioThreads->nThreadBufferMngtID = 0;
+	omx_base_component_Private->bellagioThreads->nThreadMessageID = 0;
+	omx_base_component_Private->bIsEOSReached = OMX_FALSE;
+
+	pthread_mutex_init(&omx_base_component_Private->flush_mutex, NULL);
+
+	if(!omx_base_component_Private->flush_all_condition) {
+		omx_base_component_Private->flush_all_condition = calloc(1,sizeof(tsem_t));
+		if(!omx_base_component_Private->flush_all_condition) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+		err = tsem_init(omx_base_component_Private->flush_all_condition, 0);
+		if (err != 0) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+	}
+
+	if(!omx_base_component_Private->flush_condition) {
+		omx_base_component_Private->flush_condition = calloc(1,sizeof(tsem_t));
+		if(!omx_base_component_Private->flush_condition) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+		err = tsem_init(omx_base_component_Private->flush_condition, 0);
+		if (err != 0) {
+			base_constructor_remove_garbage_collected(omx_base_component_Private);
+			return OMX_ErrorInsufficientResources;
+		}
+	}
+
+	for(i=0;i<NUM_DOMAINS;i++) {
+		memset(&omx_base_component_Private->sPortTypesParam[i], 0, sizeof(OMX_PORT_PARAM_TYPE));
+		setHeader(&omx_base_component_Private->sPortTypesParam[i], sizeof(OMX_PORT_PARAM_TYPE));
+	}
+
+	err = pthread_create(&omx_base_component_Private->messageHandlerThread, NULL, compMessageHandlerFunction, openmaxStandComp);
+	if (err) {
+		base_constructor_remove_garbage_collected(omx_base_component_Private);
+		return OMX_ErrorInsufficientResources;
+	}
+	DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s for component %x\n", __func__, (int)openmaxStandComp);
+	return OMX_ErrorNone;
 }
 
 /** @brief The base destructor for ST OpenMAX components
@@ -181,7 +271,7 @@ OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp)
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
   int err;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
   omx_base_component_Private->state = OMX_StateInvalid;
   omx_base_component_Private->callbacks=NULL;
 
@@ -239,7 +329,7 @@ OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp)
     omx_base_component_Private->flush_condition=NULL;
   }
 
-  DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s\n",__func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s for component %x\n", __func__, (int)openmaxStandComp);
   return OMX_ErrorNone;
 }
 
@@ -255,23 +345,24 @@ OMX_ERRORTYPE omx_base_component_ComponentDeInit(
   OMX_HANDLETYPE hComponent) {
   OMX_COMPONENTTYPE *openmaxStandComp = (OMX_COMPONENTTYPE *)hComponent;
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
+  DEBUG(DEB_LEV_FUNCTION_NAME,"In %s for component %x\n", __func__, (int)openmaxStandComp);
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s pComponentPrivate =%x \n", __func__,(int)openmaxStandComp->pComponentPrivate);
   omx_base_component_Private->destructor(openmaxStandComp);
 
   free(openmaxStandComp->pComponentPrivate);
   openmaxStandComp->pComponentPrivate=NULL;
+  DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s for component %x\n", __func__, (int)openmaxStandComp);
   return OMX_ErrorNone;
 }
 
 /** Changes the state of a component taking proper actions depending on
- * the transiotion requested. This base function cover only the state
+ * the transition requested. This base function cover only the state
  * changes that do not involve any port
  *
  * @param openmaxStandComp the OpenMAX component which state is to be changed
  * @param destinationState the requested target state
  *
- * @return OMX_ErrorNotImplemented if the state change is noty handled in this base class, but needs
+ * @return OMX_ErrorNotImplemented if the state change is not handled in this base class, but needs
  * a specific handling
  */
 OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp, OMX_U32 destinationState) {
@@ -280,7 +371,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
   OMX_U32 i,j,k;
   OMX_ERRORTYPE err=OMX_ErrorNone;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
   DEBUG(DEB_LEV_PARAMS, "Changing state from %i to %i\n", omx_base_component_Private->state, (int)destinationState);
 
   if(destinationState == OMX_StateLoaded){
@@ -354,6 +445,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
+    DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
 
@@ -373,6 +465,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
+    DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
 
@@ -455,6 +548,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
+    DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
 
@@ -476,6 +570,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
+  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
 
@@ -540,6 +635,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
+    DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
 
@@ -564,8 +660,10 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorInvalidState;
       break;
     }
+    DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);
   return OMX_ErrorNone;
 }
 
@@ -626,7 +724,9 @@ OMX_ERRORTYPE omx_base_component_ParameterSanityCheck(OMX_HANDLETYPE hComponent,
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)(((OMX_COMPONENTTYPE*)hComponent)->pComponentPrivate);
   omx_base_PortType *pPort;
   int nNumPorts;
+  OMX_ERRORTYPE err;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
   nNumPorts = omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
               omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
               omx_base_component_Private->sPortTypesParam[OMX_PortDomainImage].nPorts +
@@ -646,7 +746,13 @@ OMX_ERRORTYPE omx_base_component_ParameterSanityCheck(OMX_HANDLETYPE hComponent,
     }
   }
 
-  return checkHeader(pStructure , size);
+  err = checkHeader(pStructure, size);
+  if (err != OMX_ErrorNone) {
+	  DEBUG(DEB_LEV_ERR, "In %s failing the checkHeader with err %i\n", __func__, (int)err);
+	  return err;
+  }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  return OMX_ErrorNone;
 }
 
 /** @brief Standard OpenMAX function
@@ -664,7 +770,7 @@ OMX_ERRORTYPE omx_base_component_GetComponentVersion(OMX_HANDLETYPE hComponent,
 
   OMX_U32 uuid[3];
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
   /* Fill component name */
   strcpy(pComponentName, omx_base_component_Private->name);
 
@@ -684,7 +790,7 @@ OMX_ERRORTYPE omx_base_component_GetComponentVersion(OMX_HANDLETYPE hComponent,
   uuid[2] = getuid();
   memcpy(*pComponentUUID, uuid, 3*sizeof(uuid));
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
   return OMX_ErrorNone;
 }
 
@@ -719,7 +825,7 @@ OMX_ERRORTYPE omx_base_component_SetCallbacks(
   omx_base_PortType *pPort;
   OMX_U32 i,j;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
   omx_base_component_Private->callbacks = pCallbacks;
   omx_base_component_Private->callbackData = pAppData;
 
@@ -736,6 +842,7 @@ OMX_ERRORTYPE omx_base_component_SetCallbacks(
       }
     }
   }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
   return OMX_ErrorNone;
 }
 
@@ -763,7 +870,7 @@ OMX_ERRORTYPE omx_base_component_GetParameter(
   OMX_VENDOR_PROP_TUNNELSETUPTYPE *pPropTunnelSetup;
   OMX_PARAM_BELLAGIOTHREADS_ID *threadID;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
   DEBUG(DEB_LEV_PARAMS, "Getting parameter %i\n", nParamIndex);
   if (ComponentParameterStructure == NULL) {
     return OMX_ErrorBadParameter;
@@ -865,6 +972,7 @@ OMX_ERRORTYPE omx_base_component_GetParameter(
     err = OMX_ErrorUnsupportedIndex;
     break;
   }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
   return err;
 }
 
@@ -889,7 +997,7 @@ OMX_ERRORTYPE omx_base_component_SetParameter(
   OMX_PARAM_BUFFERSUPPLIERTYPE *pBufferSupplier;
   omx_base_PortType *pPort;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
   DEBUG(DEB_LEV_PARAMS, "Setting parameter %x\n", nParamIndex);
   if (ComponentParameterStructure == NULL) {
     DEBUG(DEB_LEV_ERR, "In %s parameter provided is null! err = %x\n", __func__, err);
@@ -1067,6 +1175,7 @@ OMX_ERRORTYPE omx_base_component_SetParameter(
     err = OMX_ErrorUnsupportedIndex;
     break;
   }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
   return err;
 }
 
@@ -1108,13 +1217,14 @@ OMX_ERRORTYPE omx_base_component_GetExtensionIndex(
   OMX_STRING cParameterName,
   OMX_INDEXTYPE* pIndexType) {
 
-  DEBUG(DEB_LEV_FUNCTION_NAME,"In  %s \n",__func__);
-  if(strcmp(cParameterName,"OMX.st.index.param.BellagioThreadsID") == 0) {
-	  *pIndexType = OMX_IndexParameterThreadsID;
-  } else {
-	  return OMX_ErrorBadParameter;
-  }
-  return OMX_ErrorNone;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+	if(strcmp(cParameterName,"OMX.st.index.param.BellagioThreadsID") == 0) {
+		*pIndexType = OMX_IndexParameterThreadsID;
+	} else {
+		return OMX_ErrorBadParameter;
+	}
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+	return OMX_ErrorNone;
 }
 
 /** @return the state of the component
@@ -1126,7 +1236,9 @@ OMX_ERRORTYPE omx_base_component_GetState(
   OMX_STATETYPE* pState) {
   OMX_COMPONENTTYPE *omxcomponent = (OMX_COMPONENTTYPE*)hComponent;
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)omxcomponent->pComponentPrivate;
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
   *pState = omx_base_component_Private->state;
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
   return OMX_ErrorNone;
 }
 
@@ -1149,7 +1261,7 @@ OMX_ERRORTYPE omx_base_component_SendCommand(
   omx_base_PortType *pPort;
   OMX_ERRORTYPE err = OMX_ErrorNone;
   int errQue;
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
 
   messageQueue = omx_base_component_Private->messageQueue;
   messageSem = omx_base_component_Private->messageSem;
@@ -1272,7 +1384,7 @@ OMX_ERRORTYPE omx_base_component_SendCommand(
       }
       tsem_up(messageSem);
   }
-  DEBUG(DEB_LEV_FULL_SEQ, "In %s messageSem up param=%d\n", __func__,message->messageParam);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
   return err;
 }
 
@@ -1287,6 +1399,7 @@ void* compMessageHandlerFunction(void* param) {
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
   internalRequestMessageType *message;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
   omx_base_component_Private->bellagioThreads->nThreadMessageID = (long int)syscall(__NR_gettid);
   DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s the thread ID is %i\n", __func__, (int)omx_base_component_Private->bellagioThreads->nThreadMessageID);
 
@@ -1315,7 +1428,7 @@ void* compMessageHandlerFunction(void* param) {
     free(message);
     message = NULL;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME,"Exiting Message Handler thread\n");
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);
   return NULL;
 }
 
@@ -1336,7 +1449,7 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
   OMX_ERRORTYPE                   err = OMX_ErrorNone;
   omx_base_PortType*              pPort;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s with message %i\n", __func__, message->messageType);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x with message %i\n", __func__, (int)openmaxStandComp, message->messageType);
 
   /* Dealing with a SendCommand call.
   * -messageType contains the command to execute
@@ -1609,7 +1722,7 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
     DEBUG(DEB_LEV_ERR, "In %s: Unrecognized command %i\n", __func__, message->messageType);
   break;
   }
-  DEBUG(DEB_LEV_SIMPLE_SEQ, "Returning from %s: \n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);
   return OMX_ErrorNone;
 }
 
@@ -1621,6 +1734,9 @@ OMX_ERRORTYPE omx_base_component_AllocateBuffer(
             OMX_U32 nSizeBytes) {
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)((OMX_COMPONENTTYPE*)hComponent)->pComponentPrivate;
   omx_base_PortType *pPort;
+  OMX_ERRORTYPE err;
+
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
 
   if (nPortIndex >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                      omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
@@ -1630,12 +1746,13 @@ OMX_ERRORTYPE omx_base_component_AllocateBuffer(
     return OMX_ErrorBadPortIndex;
   }
   pPort = omx_base_component_Private->ports[nPortIndex];
-
-  return pPort->Port_AllocateBuffer(pPort,
-                                    ppBuffer,
-                                    nPortIndex,
-                                    pAppPrivate,
-                                    nSizeBytes);
+  err = pPort->Port_AllocateBuffer(pPort, ppBuffer, nPortIndex, pAppPrivate, nSizeBytes);
+  if (err != OMX_ErrorNone) {
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  return err;
+  }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  return OMX_ErrorNone;
 }
 
 OMX_ERRORTYPE omx_base_component_UseBuffer(
@@ -1647,7 +1764,9 @@ OMX_ERRORTYPE omx_base_component_UseBuffer(
             OMX_U8* pBuffer) {
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)((OMX_COMPONENTTYPE*)hComponent)->pComponentPrivate;
   omx_base_PortType *pPort;
+  OMX_ERRORTYPE err;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
   if (nPortIndex >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                      omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
                      omx_base_component_Private->sPortTypesParam[OMX_PortDomainImage].nPorts +
@@ -1656,13 +1775,13 @@ OMX_ERRORTYPE omx_base_component_UseBuffer(
     return OMX_ErrorBadPortIndex;
   }
   pPort = omx_base_component_Private->ports[nPortIndex];
-
-  return  pPort->Port_UseBuffer(pPort,
-                                ppBufferHdr,
-                                nPortIndex,
-                                pAppPrivate,
-                                nSizeBytes,
-                                pBuffer);
+  err = pPort->Port_UseBuffer(pPort, ppBufferHdr, nPortIndex, pAppPrivate, nSizeBytes, pBuffer);
+  if (err != OMX_ErrorNone) {
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  return err;
+  }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  return OMX_ErrorNone;
 }
 
 OMX_ERRORTYPE omx_base_component_UseEGLImage (
@@ -1680,7 +1799,9 @@ OMX_ERRORTYPE omx_base_component_FreeBuffer(
             OMX_BUFFERHEADERTYPE* pBuffer) {
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)((OMX_COMPONENTTYPE*)hComponent)->pComponentPrivate;
   omx_base_PortType *pPort;
+  OMX_ERRORTYPE err;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
   if (nPortIndex >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                      omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
                      omx_base_component_Private->sPortTypesParam[OMX_PortDomainImage].nPorts +
@@ -1690,10 +1811,13 @@ OMX_ERRORTYPE omx_base_component_FreeBuffer(
   }
 
   pPort = omx_base_component_Private->ports[nPortIndex];
-
-  return pPort->Port_FreeBuffer(pPort,
-                                nPortIndex,
-                                pBuffer);
+  err = pPort->Port_FreeBuffer(pPort, nPortIndex, pBuffer);
+  if (err != OMX_ErrorNone) {
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  return err;
+  }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  return OMX_ErrorNone;
 }
 
 OMX_ERRORTYPE omx_base_component_EmptyThisBuffer(
@@ -1701,7 +1825,9 @@ OMX_ERRORTYPE omx_base_component_EmptyThisBuffer(
 		OMX_BUFFERHEADERTYPE* pBuffer) {
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)((OMX_COMPONENTTYPE*)hComponent)->pComponentPrivate;
   omx_base_PortType *pPort;
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  OMX_ERRORTYPE err;
+
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
 
   if (pBuffer->nInputPortIndex >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                                    omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
@@ -1715,7 +1841,13 @@ OMX_ERRORTYPE omx_base_component_EmptyThisBuffer(
     DEBUG(DEB_LEV_ERR, "In %s: wrong port direction in Component %s\n", __func__,omx_base_component_Private->name);
     return OMX_ErrorBadPortIndex;
   }
-  return pPort->Port_SendBufferFunction(pPort, pBuffer);
+  err = pPort->Port_SendBufferFunction(pPort, pBuffer);
+  if (err != OMX_ErrorNone) {
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  return err;
+  }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  return OMX_ErrorNone;
 }
 
 OMX_ERRORTYPE omx_base_component_FillThisBuffer(
@@ -1724,7 +1856,9 @@ OMX_ERRORTYPE omx_base_component_FillThisBuffer(
 
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)((OMX_COMPONENTTYPE*)hComponent)->pComponentPrivate;
   omx_base_PortType *pPort;
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+  OMX_ERRORTYPE err;
+
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
   if (pBuffer->nOutputPortIndex >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                                     omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
                                     omx_base_component_Private->sPortTypesParam[OMX_PortDomainImage].nPorts +
@@ -1738,7 +1872,13 @@ OMX_ERRORTYPE omx_base_component_FillThisBuffer(
 			  (int)pBuffer->nOutputPortIndex, (int)pPort->sPortParam.eDir,(int)pBuffer,omx_base_component_Private->name);
     return OMX_ErrorBadPortIndex;
   }
-  return pPort->Port_SendBufferFunction(pPort,  pBuffer);
+  err = pPort->Port_SendBufferFunction(pPort,  pBuffer);
+  if (err != OMX_ErrorNone) {
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  return err;
+  }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  return OMX_ErrorNone;
 }
 
 OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
@@ -1750,7 +1890,9 @@ OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
 
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)((OMX_COMPONENTTYPE*)hComponent)->pComponentPrivate;
   omx_base_PortType *pPort;
+  OMX_ERRORTYPE err;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
   if (nPort >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                 omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
                 omx_base_component_Private->sPortTypesParam[OMX_PortDomainImage].nPorts +
@@ -1759,8 +1901,13 @@ OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
   }
 
   pPort = omx_base_component_Private->ports[nPort];
-
-  return pPort->ComponentTunnelRequest(pPort, hTunneledComp, nTunneledPort, pTunnelSetup);
+  err = pPort->ComponentTunnelRequest(pPort, hTunneledComp, nTunneledPort, pTunnelSetup);
+  if (err != OMX_ErrorNone) {
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  return err;
+  }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  return OMX_ErrorNone;
 }
 #ifdef __cplusplus
 }
