@@ -114,6 +114,8 @@ CLASS(omx_base_PortType)
   OMX_BUFFERSUPPLIERTYPE eBufferSupplier; /**< @param eBufferSupplier the type of supplier in case of tunneling */\
   OMX_U32 nNumTunnelBuffer; /**< @param nNumTunnelBuffer Number of buffer to be tunnelled */\
   tsem_t* pAllocSem; /**< @param pFlushSem Semaphore that locks the execution until the buffers have been flushed, if needed */ \
+  pthread_mutex_t exitMutex; /** This mutex synchronizes the access to the boolean variable bIsDestroying */ \
+  OMX_BOOL bIsDestroying; /** This variable is set to true when the port has been selected for destruction */ \
   OMX_U32 nNumBufferFlushed; /**< @param nNumBufferFlushed Number of buffer Flushed */\
   OMX_BOOL bIsPortFlushed;/**< @param bIsPortFlushed Boolean variables indicate port is being flushed at the moment */ \
   queue_t* pBufferQueue; /**< @param pBufferQueue queue for buffer to be processed by the port */\

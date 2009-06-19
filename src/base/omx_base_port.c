@@ -126,34 +126,47 @@ OMX_ERRORTYPE base_port_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,omx_base
   (*openmaxStandPort)->ComponentTunnelRequest = &base_port_ComponentTunnelRequest;
   (*openmaxStandPort)->Port_AllocateTunnelBuffer = &base_port_AllocateTunnelBuffer;
   (*openmaxStandPort)->Port_FreeTunnelBuffer = &base_port_FreeTunnelBuffer;
+  (*openmaxStandPort)->bIsDestroying = OMX_FALSE;
+  pthread_mutex_init(&((*openmaxStandPort)->exitMutex), NULL);
 
-	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);
+
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);
   return OMX_ErrorNone;
 }
 
 OMX_ERRORTYPE base_port_Destructor(omx_base_PortType *openmaxStandPort){
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for port %x\n", __func__, (int)openmaxStandPort);
 
-  if(openmaxStandPort->pAllocSem) {
-    tsem_deinit(openmaxStandPort->pAllocSem);
-    free(openmaxStandPort->pAllocSem);
-    openmaxStandPort->pAllocSem=NULL;
-  }
-  /** Allocate and initialize buffer queue */
-  if(openmaxStandPort->pBufferQueue) {
-    queue_deinit(openmaxStandPort->pBufferQueue);
-    free(openmaxStandPort->pBufferQueue);
-    openmaxStandPort->pBufferQueue=NULL;
-  }
-  /*Allocate and initialise port semaphores*/
-  if(openmaxStandPort->pBufferSem) {
-    tsem_deinit(openmaxStandPort->pBufferSem);
-    free(openmaxStandPort->pBufferSem);
-    openmaxStandPort->pBufferSem=NULL;
-  }
+	if(openmaxStandPort->pAllocSem) {
+		pthread_mutex_lock(&openmaxStandPort->exitMutex);
+		openmaxStandPort->bIsDestroying = OMX_TRUE;
+		pthread_mutex_unlock(&openmaxStandPort->exitMutex);
 
-  free(openmaxStandPort);
-  openmaxStandPort = NULL;
-  return OMX_ErrorNone;
+		tsem_up(openmaxStandPort->pAllocSem);
+
+		tsem_deinit(openmaxStandPort->pAllocSem);
+		free(openmaxStandPort->pAllocSem);
+		openmaxStandPort->pAllocSem=NULL;
+	}
+	/** Allocate and initialize buffer queue */
+	if(openmaxStandPort->pBufferQueue) {
+		queue_deinit(openmaxStandPort->pBufferQueue);
+		free(openmaxStandPort->pBufferQueue);
+		openmaxStandPort->pBufferQueue=NULL;
+	}
+	/*Allocate and initialise port semaphores*/
+	if(openmaxStandPort->pBufferSem) {
+		tsem_deinit(openmaxStandPort->pBufferSem);
+		free(openmaxStandPort->pBufferSem);
+		openmaxStandPort->pBufferSem=NULL;
+	}
+
+	pthread_mutex_destroy(&openmaxStandPort->exitMutex);
+
+	free(openmaxStandPort);
+	openmaxStandPort = NULL;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for port %x\n", __func__, (int)openmaxStandPort);
+	return OMX_ErrorNone;
 }
 
 /** @brief Releases buffers under processing.
@@ -185,6 +198,7 @@ OMX_ERRORTYPE base_port_FlushProcessingBuffers(omx_base_PortType *openmaxStandPo
     pthread_mutex_unlock(&omx_base_component_Private->flush_mutex);
     tsem_down(omx_base_component_Private->flush_all_condition);
   }
+DEBUG(DEB_LEV_FUNCTION_NAME, "In %s flushed all the buffers under processing\n", __func__);
 
   tsem_reset(omx_base_component_Private->bMgmtSem);
 
@@ -655,7 +669,6 @@ OMX_ERRORTYPE base_port_AllocateTunnelBuffer(
 	  }
   }
   if (openmaxStandPort->sPortParam.nBufferCountActual == 0) {
-      DEBUG(DEB_LEV_ERR, "------------------------1111---------------------\n");
       openmaxStandPort->sPortParam.bPopulated = OMX_TRUE;
       openmaxStandPort->bIsFullOfBuffers = OMX_TRUE;
       DEBUG(DEB_LEV_ERR, "In %s Allocated nothing\n",__func__);

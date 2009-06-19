@@ -270,7 +270,6 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
 OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp) {
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
   int err;
-
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
   omx_base_component_Private->state = OMX_StateInvalid;
   omx_base_component_Private->callbacks=NULL;
@@ -278,6 +277,12 @@ OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp)
   /*Send Dummy signal to Component Message handler to exit*/
   tsem_up(omx_base_component_Private->messageSem);
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s before pthread_join\n", __func__);
+  err = pthread_join(omx_base_component_Private->messageHandlerThread, NULL);
+  if(err!=0) {
+    DEBUG(DEB_LEV_FUNCTION_NAME,"In %s pthread_join returned err=%d\n", __func__, err);
+  }
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s after pthread_join\n", __func__);
   /*Deinitialize and free message queue*/
   if(omx_base_component_Private->messageQueue) {
     queue_deinit(omx_base_component_Private->messageQueue);
@@ -285,10 +290,6 @@ OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp)
     omx_base_component_Private->messageQueue=NULL;
   }
 
-  err = pthread_join(omx_base_component_Private->messageHandlerThread, NULL);
-  if(err!=0) {
-    DEBUG(DEB_LEV_FUNCTION_NAME,"In %s pthread_join returned err=%d\n", __func__, err);
-  }
 
   /*Deinitialize and free buffer management semaphore*/
   if(omx_base_component_Private->bMgmtSem){
@@ -370,6 +371,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
   omx_base_PortType *pPort;
   OMX_U32 i,j,k;
   OMX_ERRORTYPE err=OMX_ErrorNone;
+  OMX_BOOL bExit = OMX_FALSE;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
   DEBUG(DEB_LEV_PARAMS, "Changing state from %i to %i\n", omx_base_component_Private->state, (int)destinationState);
@@ -499,6 +501,13 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
               __func__, pPort->sPortParam.bEnabled,pPort->sPortParam.bPopulated);
             if (pPort->sPortParam.nBufferCountActual > 0) {
                 tsem_down(pPort->pAllocSem);
+                pthread_mutex_lock(&pPort->exitMutex);
+                if (pPort->bIsDestroying) {
+                	bExit = OMX_TRUE;
+                    pthread_mutex_unlock(&pPort->exitMutex);
+                	continue;
+                }
+                pthread_mutex_unlock(&pPort->exitMutex);
             }
             pPort->sPortParam.bPopulated = OMX_TRUE;
           }
@@ -508,12 +517,15 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
         DEBUG(DEB_LEV_SIMPLE_SEQ, "Tunnel status : port %d flags  0x%x\n",(int)i, (int)pPort->nTunnelFlags);
         }
       }
+      if (bExit) {
+    	  break;
+      }
       omx_base_component_Private->state = OMX_StateIdle;
       /** starting buffer management thread */
       omx_base_component_Private->bufferMgmtThreadID = pthread_create(&omx_base_component_Private->bufferMgmtThread,
-	      																									NULL,
-	      																									omx_base_component_Private->BufferMgmtFunction,
-	      																									openmaxStandComp);
+	      																NULL,
+	      																omx_base_component_Private->BufferMgmtFunction,
+	      																openmaxStandComp);
       if(omx_base_component_Private->bufferMgmtThreadID < 0){
         DEBUG(DEB_LEV_ERR, "Starting buffer management thread failed\n");
         return OMX_ErrorUndefined;
@@ -1457,7 +1469,7 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
   *  (destination state in case of a state change command).
   */
   switch(message->messageType){
-  case OMX_CommandStateSet: {
+  case OMX_CommandStateSet: {//0
     /* Do the actual state change */
     err = (*(omx_base_component_Private->DoStateSet))(openmaxStandComp, message->messageParam);
     if (err != OMX_ErrorNone) {
