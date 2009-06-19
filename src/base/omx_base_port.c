@@ -141,9 +141,12 @@ OMX_ERRORTYPE base_port_Destructor(omx_base_PortType *openmaxStandPort){
 		pthread_mutex_lock(&openmaxStandPort->exitMutex);
 		openmaxStandPort->bIsDestroying = OMX_TRUE;
 		pthread_mutex_unlock(&openmaxStandPort->exitMutex);
-
-		tsem_up(openmaxStandPort->pAllocSem);
-
+/** TODO This semaphore, if activated, can cause memory leaks.
+ * It can be necessary to avoid to wait forever if the other component in tunnel
+ * doesn't perform required actions. This operation can be timed but can cause problems.
+ * Currently it is left commented for reference.
+//		tsem_up(openmaxStandPort->pAllocSem);
+ */
 		tsem_deinit(openmaxStandPort->pAllocSem);
 		free(openmaxStandPort->pAllocSem);
 		openmaxStandPort->pAllocSem=NULL;
@@ -154,7 +157,7 @@ OMX_ERRORTYPE base_port_Destructor(omx_base_PortType *openmaxStandPort){
 		free(openmaxStandPort->pBufferQueue);
 		openmaxStandPort->pBufferQueue=NULL;
 	}
-	/*Allocate and initialise port semaphores*/
+	/*Allocate and initialize port semaphores*/
 	if(openmaxStandPort->pBufferSem) {
 		tsem_deinit(openmaxStandPort->pBufferSem);
 		free(openmaxStandPort->pBufferSem);
