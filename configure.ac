@@ -51,6 +51,7 @@ AC_CONFIG_FILES([
     m4/Makefile
     test/Makefile
     test/components/Makefile
+    test/components/common/Makefile
     test/components/audio_effects/Makefile
 ])
 ################################################################################

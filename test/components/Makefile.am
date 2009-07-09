@@ -1,1 +1,1 @@
-SUBDIRS = audio_effects
+SUBDIRS = common audio_effects
