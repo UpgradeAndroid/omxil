@@ -53,6 +53,7 @@ AC_CONFIG_FILES([
     test/components/Makefile
     test/components/common/Makefile
     test/components/audio_effects/Makefile
+    test/components/resource_manager/Makefile
 ])
 ################################################################################
 # Define the extra arguments the user can pass to the configure script         #

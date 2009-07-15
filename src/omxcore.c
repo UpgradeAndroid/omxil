@@ -158,7 +158,7 @@ OMX_ERRORTYPE OMX_GetHandle(OMX_HANDLETYPE* pHandle,
 
   OMX_ERRORTYPE err = OMX_ErrorNone;
   int i;
-  DEBUG(DEB_LEV_ERR, "In %s for %s\n", __func__, cComponentName);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for %s\n", __func__, cComponentName);
 
   for (i = 0; i < bosa_loaders; i++) {
     err = loadersList[i]->BOSA_CreateComponent(
@@ -191,7 +191,7 @@ OMX_ERRORTYPE OMX_GetHandle(OMX_HANDLETYPE* pHandle,
 OMX_ERRORTYPE OMX_FreeHandle(OMX_HANDLETYPE hComponent) {
 	int i;
     OMX_ERRORTYPE err;
-    DEBUG(DEB_LEV_ERR, "In %s for %x\n", __func__, (int)hComponent);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for %x\n", __func__, (int)hComponent);
 
     for (i = 0; i < bosa_loaders; i++) {
     	err = loadersList[i]->BOSA_DestroyComponent(

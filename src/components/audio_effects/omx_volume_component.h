@@ -74,6 +74,4 @@ OMX_ERRORTYPE omx_volume_component_SetConfig(
   OMX_INDEXTYPE nIndex,
   OMX_PTR pComponentConfigStructure);
 
-OMX_ERRORTYPE omx_volume_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp, OMX_U32 destinationState);
-
 #endif

@@ -36,6 +36,7 @@ extern "C" {
 #include <OMX_Component.h>
 
 #include "omx_base_component.h"
+#include <omx_reference_resource_manager.h>
 
 #include "tsemaphore.h"
 #include "queue.h"
@@ -200,7 +201,7 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
 	omx_base_component_Private->transientState = OMX_TransStateMax;
 	omx_base_component_Private->callbacks = NULL;
 	omx_base_component_Private->callbackData = NULL;
-	omx_base_component_Private->nGroupPriority = 0;
+	omx_base_component_Private->nGroupPriority = 100;
 	omx_base_component_Private->nGroupID = 0;
 	omx_base_component_Private->pMark.hMarkTargetComponent = NULL;
 	omx_base_component_Private->pMark.pMarkData            = NULL;
@@ -376,6 +377,16 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
   DEBUG(DEB_LEV_PARAMS, "Changing state from %i to %i\n", omx_base_component_Private->state, (int)destinationState);
 
+  if (omx_base_component_Private->state == OMX_StateLoaded && destinationState == OMX_StateIdle) {
+	  err = RM_getResource(openmaxStandComp);
+	  if (err != OMX_ErrorNone) {
+		  return OMX_ErrorInsufficientResources;
+	  }
+  }
+  if (omx_base_component_Private->state == OMX_StateIdle && destinationState == OMX_StateLoaded) {
+	  RM_releaseResource(openmaxStandComp);
+  }
+
   if(destinationState == OMX_StateLoaded){
     switch(omx_base_component_Private->state){
     case OMX_StateInvalid:
@@ -437,7 +448,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
         pthread_join(omx_base_component_Private->bufferMgmtThread, NULL);
         omx_base_component_Private->bufferMgmtThreadID = -1;
         if(err != 0) {
-          DEBUG(DEB_LEV_FUNCTION_NAME,"In %s pthread_join returned err=%d\n",__func__,err);
+          DEBUG(DEB_LEV_ERR,"In %s pthread_join returned err=%d\n",__func__,err);
         }
       }
 
@@ -447,7 +458,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
-    DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
 
@@ -467,7 +478,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
-    DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
 
@@ -511,8 +522,9 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
             }
             pPort->sPortParam.bPopulated = OMX_TRUE;
           }
-          else
-            DEBUG(DEB_LEV_ERR, "In %s: Port %i Disabled So no wait\n",__func__,(int)i);
+          else {
+            DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s: Port %i Disabled So no wait\n",__func__,(int)i);
+          }
         }
         DEBUG(DEB_LEV_SIMPLE_SEQ, "Tunnel status : port %d flags  0x%x\n",(int)i, (int)pPort->nTunnelFlags);
         }
@@ -560,7 +572,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
-    DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
 
@@ -582,7 +594,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
-  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
 
@@ -647,7 +659,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
-    DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
 
@@ -672,7 +684,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorInvalidState;
       break;
     }
-    DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
     return err;
   }
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);

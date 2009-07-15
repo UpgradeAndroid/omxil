@@ -39,11 +39,12 @@
 
 #include "common.h"
 #include "st_static_component_loader.h"
-#include "omx_base_component.h"
+#include "omx_reference_resource_manager.h"
+#include "base/omx_base_component.h"
 
 /** This pointer holds and handle allocate by this loader and requested by
  * some application. If the IL client does not de-allocate it calling
- * explicitely the FreeHandle function, any pending handle is release at the
+ * explicitly the FreeHandle function, any pending handle is release at the
  * end, when the global function OMX_Deinit is called. This list takes track of
  * any handle
  */
@@ -67,11 +68,11 @@ void st_static_setup_component_loader(BOSA_COMPONENTLOADER * st_static_loader) {
 
 }
 
-/** @brief the ST static loader contructor
+/** @brief the ST static loader constructor
  *
  * This function creates the ST static component loader, and creates
  * the list of available components, based on a registry file
- * created by a separate appication. It is called omxregister,
+ * created by a separate application. It is called omxregister,
  * and must be called before the use of this loader
  */
 OMX_ERRORTYPE BOSA_ST_InitComponentLoader(BOSA_COMPONENTLOADER *loader) {
@@ -150,6 +151,7 @@ OMX_ERRORTYPE BOSA_ST_InitComponentLoader(BOSA_COMPONENTLOADER *loader) {
   libname = NULL;
   fclose(omxregistryfp);
   loader->loaderPrivate = templateList;
+
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
   return OMX_ErrorNone;
 }
@@ -298,6 +300,9 @@ OMX_ERRORTYPE BOSA_ST_CreateComponent(
 
   *pHandle = openmaxStandComp;
   ((OMX_COMPONENTTYPE*)*pHandle)->SetCallbacks(*pHandle, pCallBacks, pAppData);
+  //Add handle to Resource manager
+  RM_addComponent(openmaxStandComp);
+
   DEBUG(DEB_LEV_FULL_SEQ, "Template %s found returning from OMX_GetHandle\n", cComponentName);
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
   return OMX_ErrorNone;
@@ -313,6 +318,9 @@ OMX_ERRORTYPE BOSA_ST_DestroyComponent(
   if (priv->loader != loader) {
     return OMX_ErrorComponentNotFound;
   }
+
+  //remove handle from Resource manager
+  RM_removeComponent(hComponent);
 
   err = ((OMX_COMPONENTTYPE*)hComponent)->ComponentDeInit(hComponent);
 

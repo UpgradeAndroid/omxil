@@ -35,12 +35,6 @@
 /* gain value */
 #define GAIN_VALUE 100.0f
 
-/* Max allowable volume component instance */
-#define MAX_RUNNING_COMPONENT_VOLUME 10
-
-/** Maximum Number of Volume Component Instance*/
-static OMX_U32 noVolumeRunningInstance = 0;
-
 #define VOLUME_COMP_ROLE "volume.component"
 
 OMX_ERRORTYPE omx_volume_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp, OMX_STRING cComponentName) {
@@ -108,7 +102,7 @@ OMX_ERRORTYPE omx_volume_component_Constructor(OMX_COMPONENTTYPE *openmaxStandCo
 	openmaxStandComp->GetParameter = omx_volume_component_GetParameter;
 	openmaxStandComp->GetConfig = omx_volume_component_GetConfig;
 	openmaxStandComp->SetConfig = omx_volume_component_SetConfig;
-	omx_volume_component_Private->DoStateSet = &omx_volume_component_DoStateSet;
+//	omx_volume_component_Private->DoStateSet = &omx_volume_component_DoStateSet;
 	omx_volume_component_Private->BufferMgmtCallback = omx_volume_component_BufferMgmtCallback;
 
 	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);
@@ -333,26 +327,5 @@ OMX_ERRORTYPE omx_volume_component_GetParameter(
     default:
       err = omx_base_component_GetParameter(hComponent, nParamIndex, ComponentParameterStructure);
   }
-  return err;
-}
-
-OMX_ERRORTYPE omx_volume_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp, OMX_U32 destinationState) {
-  OMX_ERRORTYPE err = OMX_ErrorNone;
-  omx_volume_component_PrivateType* omx_volume_component_Private = openmaxStandComp->pComponentPrivate;
-
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n",__func__);
-
-  if (omx_volume_component_Private->state == OMX_StateLoaded && destinationState == OMX_StateIdle) {
-	  noVolumeRunningInstance++;
-	  if(noVolumeRunningInstance > MAX_RUNNING_COMPONENT_VOLUME) {
-		  noVolumeRunningInstance--;
-		  return OMX_ErrorInsufficientResources;
-	  }
-  }
-  if (omx_volume_component_Private->state == OMX_StateIdle && destinationState == OMX_StateLoaded) {
-	  noVolumeRunningInstance--;
-  }
-  err = omx_base_component_DoStateSet(openmaxStandComp, destinationState);
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n",__func__);
   return err;
 }
