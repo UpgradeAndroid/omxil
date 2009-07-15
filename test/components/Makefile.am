@@ -1,1 +1,1 @@
-SUBDIRS = common audio_effects
+SUBDIRS = common audio_effects resource_manager
