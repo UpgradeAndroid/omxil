@@ -152,6 +152,8 @@ OMX_ERRORTYPE BOSA_ST_InitComponentLoader(BOSA_COMPONENTLOADER *loader) {
   fclose(omxregistryfp);
   loader->loaderPrivate = templateList;
 
+  RM_Init();
+
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
   return OMX_ErrorNone;
 }
@@ -215,6 +217,8 @@ OMX_ERRORTYPE BOSA_ST_DeInitComponentLoader(BOSA_COMPONENTLOADER *loader) {
     }
   }
   numLib=0;
+
+  RM_Deinit();
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
   return OMX_ErrorNone;
@@ -300,8 +304,6 @@ OMX_ERRORTYPE BOSA_ST_CreateComponent(
 
   *pHandle = openmaxStandComp;
   ((OMX_COMPONENTTYPE*)*pHandle)->SetCallbacks(*pHandle, pCallBacks, pAppData);
-  //Add handle to Resource manager
-  RM_addComponent(openmaxStandComp);
 
   DEBUG(DEB_LEV_FULL_SEQ, "Template %s found returning from OMX_GetHandle\n", cComponentName);
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
@@ -318,9 +320,6 @@ OMX_ERRORTYPE BOSA_ST_DestroyComponent(
   if (priv->loader != loader) {
     return OMX_ErrorComponentNotFound;
   }
-
-  //remove handle from Resource manager
-  RM_removeComponent(hComponent);
 
   err = ((OMX_COMPONENTTYPE*)hComponent)->ComponentDeInit(hComponent);
 

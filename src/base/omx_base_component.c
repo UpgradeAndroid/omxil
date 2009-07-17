@@ -340,7 +340,7 @@ OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp)
  *
  * In this way the implementation of the FreeHandle is standard,
  * and it does not need a support by a specific component loader.
- * The implementaiton of the ComponentDeInit contains the
+ * The implementation of the ComponentDeInit contains the
  * implementation specific part of the destroying phase.
  */
 OMX_ERRORTYPE omx_base_component_ComponentDeInit(
@@ -394,6 +394,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       break;
     case OMX_StateWaitForResources:
       /* return back from wait for resources */
+    	RM_removeFromWaitForResource(openmaxStandComp);
       omx_base_component_Private->state = OMX_StateLoaded;
       break;
     case OMX_StateLoaded:
@@ -454,8 +455,8 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
 
       break;
     default:
-      DEBUG(DEB_LEV_ERR, "In %s: state transition not allowed\n", __func__);
-      err = OMX_ErrorIncorrectStateTransition;
+    	DEBUG(DEB_LEV_ERR, "In %s: state transition not allowed\n", __func__);
+    	err = OMX_ErrorIncorrectStateTransition;
       break;
     }
     DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
@@ -465,17 +466,18 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
   if(destinationState == OMX_StateWaitForResources){
     switch(omx_base_component_Private->state){
     case OMX_StateInvalid:
-      err = OMX_ErrorInvalidState;
+    	err = OMX_ErrorInvalidState;
       break;
     case OMX_StateLoaded:
-      omx_base_component_Private->state = OMX_StateWaitForResources;
+    	omx_base_component_Private->state = OMX_StateWaitForResources;
+    	err = RM_waitForResource(openmaxStandComp);
       break;
     case OMX_StateWaitForResources:
-      err = OMX_ErrorSameState;
+    	err = OMX_ErrorSameState;
       break;
     default:
-      DEBUG(DEB_LEV_ERR, "In %s: state transition not allowed\n", __func__);
-      err = OMX_ErrorIncorrectStateTransition;
+    	DEBUG(DEB_LEV_ERR, "In %s: state transition not allowed\n", __func__);
+    	err = OMX_ErrorIncorrectStateTransition;
       break;
     }
     DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
@@ -488,6 +490,9 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorInvalidState;
       break;
     case OMX_StateWaitForResources:
+/*        (*(omx_base_component_Private->callbacks->EventHandler))
+          (openmaxStandComp, omx_base_component_Private->callbackData,
+        	OMX_EventResourcesAcquired, 0, 0, NULL);*/
       omx_base_component_Private->state = OMX_StateIdle;
       break;
     case OMX_StateLoaded:

@@ -33,6 +33,9 @@
 
 #define MAX_COMPONENTS 5
 /* Application private date: should go in the component field (segs...) */
+//#define PROPRITY_TEST
+#define WAIT_TEST
+//#define ALTERNATE_WAIT_TEST
 
 OMX_ERRORTYPE err;
 
@@ -43,6 +46,7 @@ OMX_CALLBACKTYPE callbacks = { .EventHandler = rmEventHandler,
                                .FillBufferDone = rmFillBufferDone,
 };
 
+#ifdef PROPRITY_TEST
 static void setHeader(OMX_PTR header, OMX_U32 size) {
   OMX_VERSIONTYPE* ver = (OMX_VERSIONTYPE*)(header + sizeof(OMX_U32));
   *((OMX_U32*)header) = size;
@@ -52,6 +56,7 @@ static void setHeader(OMX_PTR header, OMX_U32 size) {
   ver->s.nRevision = VERSIONREVISION;
   ver->s.nStep = VERSIONSTEP;
 }
+#endif
 
 void display_help() {
   printf("\n");
@@ -64,7 +69,10 @@ int main(int argc, char** argv) {
 
 	int i;
 	int num_of_components;
+#ifdef PROPRITY_TEST
     OMX_PRIORITYMGMTTYPE oPriority;
+#else
+#endif
     OMX_STATETYPE state;
 	/* Obtain file descriptor */
 	eventSem = malloc(sizeof(tsem_t));
@@ -86,6 +94,17 @@ int main(int argc, char** argv) {
 		}
 		DEBUG(DEFAULT_MESSAGES, "OMX_GetHandle() %i\n", i);
 	}
+#ifdef ALTERNATE_WAIT_TEST
+	DEBUG(DEFAULT_MESSAGES, "OMX_StateWaitForResources 0\n");
+    err = OMX_SendCommand(handle[0], OMX_CommandPortDisable, 0, 0);
+    err = OMX_SendCommand(handle[0], OMX_CommandPortDisable, 1, 0);
+    err = OMX_SendCommand(handle[0], OMX_CommandStateSet, OMX_StateWaitForResources, NULL);
+    tsem_down(eventSem);
+    tsem_down(eventSem);
+	DEBUG(DEFAULT_MESSAGES, "OMX_StateLoaded 0\n");
+    err = OMX_SendCommand(handle[0], OMX_CommandStateSet, OMX_StateLoaded, NULL);
+    tsem_down(eventSem);
+#endif
 
 	for (i = 0; i<MAX_COMPONENTS; i++) {
 		num_of_components = i;
@@ -99,11 +118,20 @@ int main(int argc, char** argv) {
         tsem_down(eventSem);
         if (bResourceErrorReceived) {
         	DEBUG(DEFAULT_MESSAGES, "The resources are exhausted\n");
+#ifdef PROPRITY_TEST
 			setHeader(&oPriority, sizeof(OMX_PRIORITYMGMTTYPE));
 		    oPriority.nGroupPriority = 1;
 		    err = OMX_SetParameter(handle[i], OMX_IndexParamPriorityMgmt, &oPriority);
 	        err = OMX_SendCommand(handle[i], OMX_CommandStateSet, OMX_StateIdle, NULL);
 	        tsem_down(eventSem);
+#endif
+#ifdef WAIT_TEST
+	        err = OMX_SendCommand(handle[i], OMX_CommandStateSet, OMX_StateWaitForResources, NULL);
+	        tsem_down(eventSem);
+	        err = OMX_SendCommand(handle[i-1], OMX_CommandStateSet, OMX_StateLoaded, NULL);
+	        tsem_down(eventSem);
+	        tsem_down(eventSem);
+#endif
         	break;
         }
 	}
@@ -154,7 +182,7 @@ OMX_ERRORTYPE rmEventHandler(
   DEBUG(DEB_LEV_ERR, "Hi there, I am in the %s callback for %x\n", __func__, (int)hComponent);
   if(eEvent == OMX_EventCmdComplete) {
     if (Data1 == OMX_CommandStateSet) {
-      DEBUG(DEFAULT_MESSAGES, "Volume Component State changed in ");
+      DEBUG(DEFAULT_MESSAGES, "Volume Component %x State changed in ", (int)hComponent);
       switch ((int)Data2) {
       case OMX_StateInvalid:
         DEBUG(DEFAULT_MESSAGES, "OMX_StateInvalid\n");
@@ -191,6 +219,8 @@ OMX_ERRORTYPE rmEventHandler(
   	} else {
   	  	DEBUG(DEFAULT_MESSAGES, "Received error %i\n", (int)Data1);
   	}
+  } else if(eEvent == OMX_EventResourcesAcquired) {
+	  	DEBUG(DEFAULT_MESSAGES, "Received message OMX_EventResourcesAcquired\n");
   } else {
     DEBUG(DEFAULT_MESSAGES, "Param1 is %i\n", (int)Data1);
     DEBUG(DEFAULT_MESSAGES, "Param2 is %i\n", (int)Data2);

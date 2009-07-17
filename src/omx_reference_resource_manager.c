@@ -31,34 +31,188 @@
 #include <string.h>
 #include "omx_reference_resource_manager.h"
 #include "base/omx_base_component.h"
+#include "queue.h"
 
 
 /** This is the static base pointer of the list
  */
-static ComponentListType *componentList = NULL;
-static int globalTimestamp;
-
+static int globalTimestamp = 0;
 
 /** Components specific section
  * Each component that has some resources to be handled by this
  * resource manager should add some fields here
  */
 /* Max allowable volume component instance */
-#define MAX_RUNNING_COMPONENT_VOLUME 3
-/** Maximum Number of Volume Component Instance*/
-static OMX_U32 noVolumeResourceAllocated = 0;
+static ComponentListType *volumeComponentList = NULL;
+static ComponentListType *volumeWaitingList = NULL;
+#define MAX_RESOURCE_VOLUME 3
 
+/**
+ * This function initializes the Resource manager. In the current implementation
+ * it does not perform any operation
+ */
+OMX_ERRORTYPE RM_Init() {
+	return OMX_ErrorNone;
+}
+
+/**
+ * This function de-initializes the resource manager.
+ * In the current implementation its responsibility is to clean up any queue
+ * that can be left pending at the end of usage. With a correct use of the
+ * resource manager it won't happen, but it is safer to clean up everything
+ * this these lists are global and alive for all the life of IL client,
+ * beyond the usual OMX_Init - Deinit scope.
+ */
+OMX_ERRORTYPE RM_Deinit() {
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+	clearList(&volumeComponentList);
+	clearList(&volumeWaitingList);
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
+	return OMX_ErrorNone;
+}
+
+/**
+ * This function adds a new element to a given list.
+ * If it does not yet exists, this function also allocates the list.
+ */
+OMX_ERRORTYPE addElemToList(ComponentListType **list, OMX_COMPONENTTYPE *openmaxStandComp) {
+	ComponentListType *componentTemp;
+	ComponentListType *componentNext;
+	omx_base_component_PrivateType* omx_base_component_Private;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+	omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
+	if (!*list) {
+		*list = malloc(sizeof(ComponentListType));
+		if (!*list) {
+			DEBUG(DEB_LEV_ERR, "In %s OMX_ErrorInsufficientResources\n", __func__);
+			return OMX_ErrorInsufficientResources;
+		}
+		(*list)->openmaxStandComp = openmaxStandComp;
+		(*list)->timestamp = globalTimestamp;
+		globalTimestamp++;
+		(*list)->nGroupPriority = omx_base_component_Private->nGroupPriority;
+		(*list)->next = NULL;
+		DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
+		return OMX_ErrorNone;
+	}
+	componentTemp = *list;
+	while(componentTemp->next) {
+		componentTemp = componentTemp->next;
+	}
+	componentNext = malloc(sizeof(ComponentListType));
+	if (!componentNext) {
+		DEBUG(DEB_LEV_ERR, "In %s OMX_ErrorInsufficientResources\n", __func__);
+		return OMX_ErrorInsufficientResources;
+	}
+	componentTemp->next = componentNext;
+	componentNext->next = NULL;
+	componentNext->openmaxStandComp = openmaxStandComp;
+	componentNext->timestamp = globalTimestamp;
+	globalTimestamp++;
+	componentNext->nGroupPriority = omx_base_component_Private->nGroupPriority;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
+	return OMX_ErrorNone;
+}
+
+/**
+ * This function removes the given element from the list, if present.
+ * If the list is empty, this function cleans up everything.
+ */
+OMX_ERRORTYPE removeElemFromList(ComponentListType **list, OMX_COMPONENTTYPE *openmaxStandComp) {
+	ComponentListType *componentTemp;
+	ComponentListType *componentPrev;
+	OMX_BOOL bFound = OMX_FALSE;
+
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s list %x\n", __func__, (int)*list);
+	if (!*list) {
+		DEBUG(DEB_LEV_ERR, "In %s, the resource manager is not initialized\n", __func__);
+		return OMX_ErrorUndefined;
+	}
+	componentTemp = *list;
+	componentPrev = *list;
+	while(componentTemp) {
+		if (componentTemp->openmaxStandComp == openmaxStandComp) {
+			if (componentTemp == *list) {
+				*list = (*list)->next;
+				free(componentTemp);
+			} else {
+				componentPrev->next = componentTemp->next;
+				free(componentTemp);
+			}
+			 bFound = OMX_TRUE;
+			 break;
+		} else {
+			if (componentTemp != *list) {
+				componentPrev = componentPrev->next;
+			}
+			componentTemp = componentTemp->next;
+		}
+	}
+	if(!bFound) {
+		DEBUG(DEB_LEV_ERR, "In %s, the specified component does not exist\n", __func__);
+		return OMX_ErrorComponentNotFound;
+	}
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
+	return OMX_ErrorNone;
+
+}
+
+
+/**
+ * This function returns the number of elements present in the
+ * list. If the list does not exists, this function returns 0 elements
+ * without further warnings
+ */
+int numElemInList(ComponentListType *list) {
+	ComponentListType *componentTemp;
+	int numElem = 0;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+	if (!list) {
+		DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s, no list no elements\n", __func__);
+		return 0;
+	}
+	componentTemp = list;
+	while(componentTemp) {
+		numElem++;
+		componentTemp = componentTemp->next;
+	}
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
+	return numElem;
+}
+
+/**
+ * This function deallocate any remaining elemnt in a list
+ * and dispose it
+ */
+OMX_ERRORTYPE clearList(ComponentListType **list) {
+	ComponentListType *componentTemp;
+	ComponentListType *componentPrev;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+	if (!*list) {
+		DEBUG(DEB_LEV_ERR, "In %s, no list no elements\n", __func__);
+		return OMX_ErrorNone;
+	}
+	componentTemp = *list;
+	while(componentTemp) {
+		componentPrev = componentTemp;
+		componentTemp = componentTemp->next;
+		free(componentPrev);
+	}
+	*list = NULL;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
+	return OMX_ErrorNone;
+}
 
 /**
  * This debug function is capable of printing the full list
  * actually stored
  */
-void RM_printList(int viewFlag) {
-	ComponentListType *componentTemp = componentList;
+void RM_printList(ComponentListType *list, int viewFlag) {
+	ComponentListType *componentTemp = list;
 	omx_base_component_PrivateType* omx_base_component_Private;
 	int index;
 
-	if (!componentList) {
+	if (!list) {
 		printf("The list is empty\n");
 		return;
 	}
@@ -77,22 +231,23 @@ void RM_printList(int viewFlag) {
 	}
 }
 
-/** This function returns the number of components that have a lower priority
+/**
+ * This function returns the number of components that have a lower priority
  * than the value specified, and the lowest among all possibles.
  * If the number returned is 0, no component is preemptable. if it is 1 or more,
  * the oldest_component_preemptable will contain the reference to the preemptable
  * component with the oldest time stamp.
  */
-int searchLowerPriority(int current_priority, ComponentListType **oldest_component_preemptable) {
+int searchLowerPriority(ComponentListType *list, int current_priority, ComponentListType **oldest_component_preemptable) {
 	ComponentListType *componentTemp;
 	ComponentListType *componentCandidate;
 	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 	int nComp = 0;
-	if (!componentList) {
+	if (!list) {
 		DEBUG(DEB_LEV_ERR, "In %s no list\n", __func__);
 		return OMX_ErrorUndefined;
 	}
-	componentTemp = componentList;
+	componentTemp = list;
 	componentCandidate = NULL;
 	while (componentTemp) {
 		if (componentTemp->nGroupPriority > current_priority) {
@@ -105,7 +260,6 @@ int searchLowerPriority(int current_priority, ComponentListType **oldest_compone
 				}
 			} else {
 				componentCandidate = componentTemp;
-
 			}
 		}
 		componentTemp = componentTemp->next;
@@ -115,33 +269,25 @@ int searchLowerPriority(int current_priority, ComponentListType **oldest_compone
 	return nComp;
 }
 
-/** this function tries to preempt the given component, that has been detected as
+/**
+ * This function tries to preempt the given component, that has been detected as
  * the candidate by the default policy defined in the OpenMAX spec.
- *
  */
-OMX_ERRORTYPE RM_preemptComponent(OMX_COMPONENTTYPE *openmaxStandComp) {
+OMX_ERRORTYPE preemptComponent(OMX_COMPONENTTYPE *openmaxStandComp) {
 	OMX_STATETYPE state;
     OMX_ERRORTYPE err;
     omx_base_component_PrivateType* omx_base_component_Private = openmaxStandComp->pComponentPrivate;
-    internalRequestMessageType message;
-
 	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
-    err = openmaxStandComp->GetState(openmaxStandComp, &state);
-	DEBUG(DEB_LEV_PARAMS, "In %s, err = %i, state = %i\n", __func__, (int)err, (int)state);
     if (state == OMX_StateIdle) {
         (*(omx_base_component_Private->callbacks->EventHandler))
           (openmaxStandComp, omx_base_component_Private->callbackData,
             OMX_EventError, OMX_ErrorResourcesLost, 0, NULL);
-
-    	message.messageParam = OMX_StateLoaded;
-    	message.pCmdData = NULL;
-    	message.messageType = OMX_CommandStateSet;
-    	err = omx_base_component_Private->messageHandler(openmaxStandComp, &message);
+        err = OMX_SendCommand(openmaxStandComp, OMX_CommandStateSet, OMX_StateLoaded, NULL);
         if (err != OMX_ErrorNone) {
         	DEBUG(DEB_LEV_ERR, "In %s, the state cannot be changed\n", __func__);
+        	return OMX_ErrorUndefined;
         }
-    }
-    if ((state == OMX_StateExecuting) || (state == OMX_StatePause)) {
+    } else if ((state == OMX_StateExecuting) || (state == OMX_StatePause)) {
     	// TODO fill also this section that cover the preemption of a running component
     	// send OMX_ErrorResourcesPreempted
     	// change state to Idle
@@ -153,162 +299,115 @@ OMX_ERRORTYPE RM_preemptComponent(OMX_COMPONENTTYPE *openmaxStandComp) {
 }
 
 /**
- * This function adds the given component to the list of components already allocated.
- */
-OMX_ERRORTYPE RM_addComponent(OMX_COMPONENTTYPE *openmaxStandComp) {
-	ComponentListType *componentTemp;
-	ComponentListType *componentNext;
-	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
-	if (!componentList) {
-		componentList = malloc(sizeof(ComponentListType));
-		if (!componentList) {
-			DEBUG(DEB_LEV_ERR, "In %s OMX_ErrorInsufficientResources\n", __func__);
-			return OMX_ErrorInsufficientResources;
-		}
-		componentList->openmaxStandComp = openmaxStandComp;
-		componentList->next = NULL;
-		DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
-		return OMX_ErrorNone;
-	}
-	componentTemp = componentList;
-	while(componentTemp->next) {
-		componentTemp = componentTemp->next;
-	}
-	componentNext = malloc(sizeof(ComponentListType));
-	if (!componentNext) {
-		DEBUG(DEB_LEV_ERR, "In %s OMX_ErrorInsufficientResources\n", __func__);
-		return OMX_ErrorInsufficientResources;
-	}
-	componentTemp->next = componentNext;
-	componentNext->next = NULL;
-	componentNext->openmaxStandComp = openmaxStandComp;
-	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
-	return OMX_ErrorNone;
-}
-
-/**
- * This function removes from the list the specified component, if it exists.
- */
-OMX_ERRORTYPE RM_removeComponent(OMX_COMPONENTTYPE *openmaxStandComp) {
-	ComponentListType *componentTemp;
-	ComponentListType *componentPrev;
-	OMX_BOOL bFound = OMX_FALSE;
-	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
-	if (!componentList) {
-		DEBUG(DEB_LEV_ERR, "In %s, the resource manager is not initialized\n", __func__);
-		return OMX_ErrorUndefined;
-	}
-	componentTemp = componentList;
-	componentPrev = componentList;
-	while(componentTemp) {
-		if (componentTemp->openmaxStandComp == openmaxStandComp) {
-			if (componentTemp == componentList) {
-				componentList = componentList->next;
-				free(componentTemp);
-			} else {
-				componentPrev->next = componentTemp->next;
-				free(componentTemp);
-			}
-			 bFound = OMX_TRUE;
-			 break;
-		} else {
-			if (componentTemp != componentList) {
-				componentPrev = componentPrev->next;
-			}
-			componentTemp = componentTemp->next;
-		}
-	}
-	if(!bFound) {
-		DEBUG(DEB_LEV_ERR, "In %s, the specified component does not exist\n", __func__);
-		return OMX_ErrorComponentNotFound;
-	}
-	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
-	return OMX_ErrorNone;
-}
-
-/** This function is executed by a component when it changes state from Loaded to Idle.
+ * This function is executed by a component when it changes state from Loaded to Idle.
  * If it return ErrorNone the resource is granted and it can transit to Idle.
  * In case the resource is already busy, the resource manager preempt another component
  * with a lower priority and a oldest time flag if it exists. Differently it returns OMX_ErrorInsufficientResources
- *
  */
 OMX_ERRORTYPE RM_getResource(OMX_COMPONENTTYPE *openmaxStandComp) {
-	ComponentListType *componentTemp = componentList;
 	ComponentListType *componentCandidate;
 	omx_base_component_PrivateType* omx_base_component_Private;
 	int candidates;
 	OMX_ERRORTYPE err;
 
 	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
-	if (!componentList) {
-		DEBUG(DEB_LEV_ERR, "In %s, the resource manager is not initialized\n", __func__);
-		return OMX_ErrorUndefined;
-	}
-	if (componentTemp->openmaxStandComp == NULL) {
-		// the list is empty
-		DEBUG(DEB_LEV_ERR, "In %s, the list is empty\n", __func__);
-		return OMX_ErrorComponentNotFound;
-	}
-	while(componentTemp) {
-		if (componentTemp->openmaxStandComp == openmaxStandComp) {
-			omx_base_component_Private = (omx_base_component_PrivateType*)componentTemp->openmaxStandComp->pComponentPrivate;
-			componentTemp->nGroupPriority = omx_base_component_Private->nGroupPriority;
-			componentTemp->timestamp = globalTimestamp;
-			globalTimestamp++;
-			if (!strcmp(omx_base_component_Private->name, "OMX.st.volume.component")) {
-				noVolumeResourceAllocated++;
-				if (noVolumeResourceAllocated>MAX_RUNNING_COMPONENT_VOLUME) {
-					candidates = searchLowerPriority(componentTemp->nGroupPriority, &componentCandidate);
-					if (candidates) {
-						DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %x\n", __func__, candidates, (int)componentCandidate->openmaxStandComp);
-						err = RM_preemptComponent(componentCandidate->openmaxStandComp);
-						if (err != OMX_ErrorNone) {
-							DEBUG(DEB_LEV_ERR, "In %s the component cannot be preempted\n", __func__);
-							noVolumeResourceAllocated--;
-							return OMX_ErrorInsufficientResources;
-						}
-					} else {
-						noVolumeResourceAllocated--;
-						DEBUG(DEB_LEV_ERR, "Out of %s\n", __func__);
+	omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
+	if (!strcmp(omx_base_component_Private->name, "OMX.st.volume.component")) {
+		if (numElemInList(volumeComponentList) >= MAX_RESOURCE_VOLUME) {
+			candidates = searchLowerPriority(volumeComponentList, omx_base_component_Private->nGroupPriority, &componentCandidate);
+			if (candidates) {
+				DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %x\n", __func__, candidates, (int)componentCandidate->openmaxStandComp);
+				err = RM_preemptComponent(componentCandidate->openmaxStandComp);
+				if (err != OMX_ErrorNone) {
+					DEBUG(DEB_LEV_ERR, "In %s the component cannot be preempted\n", __func__);
+					return OMX_ErrorInsufficientResources;
+				} else {
+					err = removeElemFromList(&volumeComponentList, componentCandidate->openmaxStandComp);
+					err = addElemToList(&volumeComponentList, openmaxStandComp);
+					if (err != OMX_ErrorNone) {
+						DEBUG(DEB_LEV_ERR, "In %s memory error\n", __func__);
 						return OMX_ErrorInsufficientResources;
 					}
 				}
+			} else {
+				DEBUG(DEB_LEV_ERR, "Out of %s\n", __func__);
+				return OMX_ErrorInsufficientResources;
 			}
-			break;
+		} else {
+			err = addElemToList(&volumeComponentList, openmaxStandComp);
 		}
-		componentTemp = componentTemp->next;
 	}
 	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
 	return OMX_ErrorNone;
 }
 
-/** This function is called by a component when it transit from Idle to Loaded and can release
+/**
+ * This function is called by a component when it transit from Idle to Loaded and can release
  * its used resource handled by the resource manager
  */
 OMX_ERRORTYPE RM_releaseResource(OMX_COMPONENTTYPE *openmaxStandComp){
-	ComponentListType *componentTemp = componentList;
+	omx_base_component_PrivateType* omx_base_component_Private;
+	OMX_COMPONENTTYPE *openmaxWaitingComp;
+	OMX_ERRORTYPE err;
+
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+	omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
+	if (!strcmp(omx_base_component_Private->name, "OMX.st.volume.component")) {
+		if (!volumeComponentList) {
+			DEBUG(DEB_LEV_ERR, "In %s, the resource manager is not initialized\n", __func__);
+			return OMX_ErrorUndefined;
+		}
+		err = removeElemFromList(&volumeComponentList, openmaxStandComp);
+		if (err != OMX_ErrorNone) {
+			DEBUG(DEB_LEV_ERR, "In %s, the resource cannot be released\n", __func__);
+			return OMX_ErrorUndefined;
+		}
+		if(numElemInList(volumeWaitingList)) {
+			openmaxWaitingComp = volumeWaitingList->openmaxStandComp;
+			removeElemFromList(&volumeWaitingList, openmaxWaitingComp);
+        	DEBUG(DEB_LEV_ERR, "In %s --1-- %x\n", __func__, (int)openmaxWaitingComp);
+	        err = OMX_SendCommand(openmaxWaitingComp, OMX_CommandStateSet, OMX_StateIdle, NULL);
+        	DEBUG(DEB_LEV_ERR, "In %s --2--\n", __func__);
+	        if (err != OMX_ErrorNone) {
+	        	DEBUG(DEB_LEV_ERR, "In %s, the state cannot be changed\n", __func__);
+	        }
+		}
+	}
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of  %s\n", __func__);
+	return OMX_ErrorNone;
+}
+
+/**
+ * This function adds the given component to the waiting queue for
+ * the given resource. When a resource becomes available through the
+ * RM_releaseResource function the first element in the queue is taken
+ * off the list and it receives the resource just released.
+ */
+OMX_ERRORTYPE RM_waitForResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 	omx_base_component_PrivateType* omx_base_component_Private;
 
 	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
-	if (!componentList) {
-		DEBUG(DEB_LEV_ERR, "In %s, the resource manager is not initialized\n", __func__);
-		return OMX_ErrorUndefined;
+	omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
+	if (!strcmp(omx_base_component_Private->name, "OMX.st.volume.component")) {
+		addElemToList(&volumeWaitingList, openmaxStandComp);
 	}
-	if (componentTemp->openmaxStandComp == NULL) {
-		// the list is empty
-		DEBUG(DEB_LEV_ERR, "In %s, the list is empty\n", __func__);
-		return OMX_ErrorComponentNotFound;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
+	return OMX_ErrorNone;
+}
+
+/**
+ * This function removes a component from the waiting queue
+ * if the IL client decides that the component should not wait any
+ * more for the resource
+ */
+OMX_ERRORTYPE RM_removeFromWaitForResource(OMX_COMPONENTTYPE *openmaxStandComp) {
+	omx_base_component_PrivateType* omx_base_component_Private;
+
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+	omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
+	if (!strcmp(omx_base_component_Private->name, "OMX.st.volume.component")) {
+		removeElemFromList(&volumeWaitingList, openmaxStandComp);
 	}
-	while(componentTemp) {
-		if (componentTemp->openmaxStandComp == openmaxStandComp) {
-			omx_base_component_Private = (omx_base_component_PrivateType*)componentTemp->openmaxStandComp->pComponentPrivate;
-			if (!strcmp(omx_base_component_Private->name, "OMX.st.volume.component")) {
-				noVolumeResourceAllocated--;
-			}
-			break;
-		}
-		componentTemp = componentTemp->next;
-	}
-	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of  %s\n", __func__);
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
 	return OMX_ErrorNone;
 }

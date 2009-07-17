@@ -41,14 +41,22 @@ struct ComponentListType {
 	ComponentListType* next;
 };
 
+OMX_ERRORTYPE addElemToList(ComponentListType **list, OMX_COMPONENTTYPE *openmaxStandComp);
+OMX_ERRORTYPE removeElemFromList(ComponentListType **list, OMX_COMPONENTTYPE *openmaxStandComp);
+int numElemInList(ComponentListType *list);
+OMX_ERRORTYPE clearList(ComponentListType **list);
+
 /** Debug flags
  */
 #define RM_SHOW_NAME 0x01
 #define RM_SHOW_ADDRESS 0x02
 
-OMX_ERRORTYPE RM_addComponent(OMX_COMPONENTTYPE *openmaxStandComp);
-OMX_ERRORTYPE RM_removeComponent(OMX_COMPONENTTYPE *openmaxStandComp);
+OMX_ERRORTYPE RM_Init();
+OMX_ERRORTYPE RM_Deinit();
 OMX_ERRORTYPE RM_getResource(OMX_COMPONENTTYPE *openmaxStandComp);
 OMX_ERRORTYPE RM_releaseResource(OMX_COMPONENTTYPE *openmaxStandComp);
+OMX_ERRORTYPE RM_waitForResource(OMX_COMPONENTTYPE *openmaxStandComp);
+OMX_ERRORTYPE RM_removeFromWaitForResource(OMX_COMPONENTTYPE *openmaxStandComp);
+void RM_printList(ComponentListType *list, int viewFlag);
 
 #endif

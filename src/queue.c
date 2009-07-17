@@ -1,7 +1,7 @@
 /**
   src/queue.c
 
-  Implements a simple LIFO structure used for queueing OMX buffers.
+  Implements a simple FIFO structure used for queueing OMX buffers.
 
   Copyright (C) 2007-2009 STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
