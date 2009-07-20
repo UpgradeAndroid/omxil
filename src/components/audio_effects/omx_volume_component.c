@@ -102,7 +102,6 @@ OMX_ERRORTYPE omx_volume_component_Constructor(OMX_COMPONENTTYPE *openmaxStandCo
 	openmaxStandComp->GetParameter = omx_volume_component_GetParameter;
 	openmaxStandComp->GetConfig = omx_volume_component_GetConfig;
 	openmaxStandComp->SetConfig = omx_volume_component_SetConfig;
-//	omx_volume_component_Private->DoStateSet = &omx_volume_component_DoStateSet;
 	omx_volume_component_Private->BufferMgmtCallback = omx_volume_component_BufferMgmtCallback;
 
 	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);

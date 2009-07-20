@@ -35,9 +35,6 @@
 /* Gain value */
 #define GAIN_VALUE 100.0f
 
-/* Max allowable audio_mixer component instance */
-#define MAX_COMPONENT_AUDIO_MIXER 1
-
 #define MIXER_COMP_ROLE "audio.mixer"
 
 /** Maximum Number of AudioMixer Component Instance*/
@@ -66,7 +63,7 @@ OMX_ERRORTYPE omx_audio_mixer_component_Constructor(OMX_COMPONENTTYPE *openmaxSt
   /** Calling base filter constructor */
   err = omx_base_filter_Constructor(openmaxStandComp, cComponentName);
 
-  /*Assuming 2 input and 1 output portd*/
+  /*Assuming 4 input and 1 output ports*/
   omx_audio_mixer_component_Private->sPortTypesParam[OMX_PortDomainAudio].nStartPortNumber = 0;
   omx_audio_mixer_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts = MAX_PORTS;
 
@@ -125,11 +122,6 @@ OMX_ERRORTYPE omx_audio_mixer_component_Constructor(OMX_COMPONENTTYPE *openmaxSt
   openmaxStandComp->SetConfig = omx_audio_mixer_component_SetConfig;
   omx_audio_mixer_component_Private->BufferMgmtCallback = omx_audio_mixer_component_BufferMgmtCallback;
   omx_audio_mixer_component_Private->BufferMgmtFunction = omx_audio_mixer_BufferMgmtFunction;
-
-  noAudioMixerCompInstance++;
-  if(noAudioMixerCompInstance > MAX_COMPONENT_AUDIO_MIXER) {
-    return OMX_ErrorInsufficientResources;
-  }
 
   return err;
 }
