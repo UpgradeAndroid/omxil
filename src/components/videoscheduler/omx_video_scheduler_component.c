@@ -28,12 +28,6 @@
 #include <omxcore.h>
 #include <omx_video_scheduler_component.h>
 
-/** Maximum Number of Video Scheduler Component Instance*/
-#define MAX_COMPONENT_VIDEOSCHEDULER 1
-
-/** Counter of Video Scheduler Instance*/
-static OMX_U32 noVideoScheduler = 0;
-
 #define VIDEO_SCHEDULER_COMP_ROLE "video.schduler"
 #define DEFAULT_WIDTH   352
 #define DEFAULT_HEIGHT  288
@@ -100,7 +94,7 @@ OMX_ERRORTYPE omx_video_scheduler_component_Constructor(OMX_COMPONENTTYPE *openm
       return OMX_ErrorInsufficientResources;
     }
     base_clock_port_Constructor(openmaxStandComp, &omx_video_scheduler_component_Private->ports[CLOCKPORT_INDEX], 2, OMX_TRUE);
-    omx_video_scheduler_component_Private->ports[CLOCKPORT_INDEX]->sPortParam.bEnabled = OMX_FALSE;
+    omx_video_scheduler_component_Private->ports[CLOCKPORT_INDEX]->sPortParam.bEnabled = OMX_TRUE;
   }
 
   inPort = (omx_base_video_PortType *) omx_video_scheduler_component_Private->ports[OMX_BASE_FILTER_INPUTPORT_INDEX];
@@ -128,11 +122,6 @@ OMX_ERRORTYPE omx_video_scheduler_component_Constructor(OMX_COMPONENTTYPE *openm
   openmaxStandComp->SetParameter  = omx_video_scheduler_component_SetParameter;
   openmaxStandComp->GetParameter  = omx_video_scheduler_component_GetParameter;
 
-  noVideoScheduler++;
-
-  if(noVideoScheduler > MAX_COMPONENT_VIDEOSCHEDULER) {
-    return OMX_ErrorInsufficientResources;
-  }
   return err;
 }
 
@@ -156,7 +145,6 @@ OMX_ERRORTYPE omx_video_scheduler_component_Destructor(OMX_COMPONENTTYPE *openma
   }
 
   omx_base_filter_Destructor(openmaxStandComp);
-  noVideoScheduler--;
 
   return OMX_ErrorNone;
 }

@@ -47,11 +47,15 @@ static ComponentListType *volumeComponentList = NULL;
 static ComponentListType *volumeWaitingList = NULL;
 #define MAX_RESOURCE_VOLUME 3
 
-/* Max allowable volume component instance */
+/* Max allowable mixer component instance */
 static ComponentListType *mixerComponentList = NULL;
 static ComponentListType *mixerWaitingList = NULL;
 #define MAX_RESOURCE_MIXER 5
 
+/* Max allowable video scheduler component instance */
+static ComponentListType *videoschedComponentList = NULL;
+static ComponentListType *videoschedWaitingList = NULL;
+#define MAX_RESOURCE_VIDEOSCHED 5
 
 /**
  * This function initializes the Resource manager. In the current implementation
@@ -75,6 +79,8 @@ OMX_ERRORTYPE RM_Deinit() {
 	clearList(&volumeWaitingList);
 	clearList(&mixerComponentList);
 	clearList(&mixerWaitingList);
+	clearList(&videoschedComponentList);
+	clearList(&videoschedWaitingList);
 	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
 	return OMX_ErrorNone;
 }
@@ -368,6 +374,30 @@ OMX_ERRORTYPE RM_getResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 		} else {
 			err = addElemToList(&mixerComponentList, openmaxStandComp);
 		}
+	} else if (!strcmp(omx_base_component_Private->name, "OMX.st.video.scheduler")) {
+		if (numElemInList(videoschedComponentList) >= MAX_RESOURCE_MIXER) {
+			candidates = searchLowerPriority(videoschedComponentList, omx_base_component_Private->nGroupPriority, &componentCandidate);
+			if (candidates) {
+				DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %x\n", __func__, candidates, (int)componentCandidate->openmaxStandComp);
+				err = preemptComponent(componentCandidate->openmaxStandComp);
+				if (err != OMX_ErrorNone) {
+					DEBUG(DEB_LEV_ERR, "In %s the component cannot be preempted\n", __func__);
+					return OMX_ErrorInsufficientResources;
+				} else {
+					err = removeElemFromList(&videoschedComponentList, componentCandidate->openmaxStandComp);
+					err = addElemToList(&videoschedComponentList, openmaxStandComp);
+					if (err != OMX_ErrorNone) {
+						DEBUG(DEB_LEV_ERR, "In %s memory error\n", __func__);
+						return OMX_ErrorInsufficientResources;
+					}
+				}
+			} else {
+				DEBUG(DEB_LEV_ERR, "Out of %s\n", __func__);
+				return OMX_ErrorInsufficientResources;
+			}
+		} else {
+			err = addElemToList(&videoschedComponentList, openmaxStandComp);
+		}
 	}
 	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
 	return OMX_ErrorNone;
@@ -420,6 +450,24 @@ OMX_ERRORTYPE RM_releaseResource(OMX_COMPONENTTYPE *openmaxStandComp){
 	        	DEBUG(DEB_LEV_ERR, "In %s, the state cannot be changed\n", __func__);
 	        }
 		}
+	} else if (!strcmp(omx_base_component_Private->name, "OMX.st.video.scheduler")) {
+		if (!videoschedComponentList) {
+			DEBUG(DEB_LEV_ERR, "In %s, the resource manager is not initialized\n", __func__);
+			return OMX_ErrorUndefined;
+		}
+		err = removeElemFromList(&videoschedComponentList, openmaxStandComp);
+		if (err != OMX_ErrorNone) {
+			DEBUG(DEB_LEV_ERR, "In %s, the resource cannot be released\n", __func__);
+			return OMX_ErrorUndefined;
+		}
+		if(numElemInList(videoschedWaitingList)) {
+			openmaxWaitingComp = videoschedWaitingList->openmaxStandComp;
+			removeElemFromList(&videoschedWaitingList, openmaxWaitingComp);
+	        err = OMX_SendCommand(openmaxWaitingComp, OMX_CommandStateSet, OMX_StateIdle, NULL);
+	        if (err != OMX_ErrorNone) {
+	        	DEBUG(DEB_LEV_ERR, "In %s, the state cannot be changed\n", __func__);
+	        }
+		}
 	}
 	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of  %s\n", __func__);
 	return OMX_ErrorNone;
@@ -440,6 +488,8 @@ OMX_ERRORTYPE RM_waitForResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 		addElemToList(&volumeWaitingList, openmaxStandComp);
 	} else if (!strcmp(omx_base_component_Private->name, "OMX.st.audio.mixer")) {
 		addElemToList(&mixerWaitingList, openmaxStandComp);
+	} else if (!strcmp(omx_base_component_Private->name, "OMX.st.video.scheduler")) {
+		addElemToList(&videoschedWaitingList, openmaxStandComp);
 	}
 	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
 	return OMX_ErrorNone;
@@ -459,7 +509,10 @@ OMX_ERRORTYPE RM_removeFromWaitForResource(OMX_COMPONENTTYPE *openmaxStandComp) 
 		removeElemFromList(&volumeWaitingList, openmaxStandComp);
 	} else if (!strcmp(omx_base_component_Private->name, "OMX.st.audio.mixer")) {
 		removeElemFromList(&mixerWaitingList, openmaxStandComp);
+	} else if (!strcmp(omx_base_component_Private->name, "OMX.st.video.scheduler")) {
+		removeElemFromList(&videoschedWaitingList, openmaxStandComp);
 	}
 	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
 	return OMX_ErrorNone;
 }
+
