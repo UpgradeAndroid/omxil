@@ -34,14 +34,9 @@
 #include <config.h>
 #include <unistd.h>
 
-#define MAX_COMPONENT_CLOCKSRC 10
-
 #ifdef AV_SYNC_LOG
 static FILE *fd;
 #endif
-
-/** Maximum Number of Clocksrc Instance*/
-static OMX_U32 noClocksrcInstance=0;
 
 /** The Constructor
  */
@@ -121,11 +116,6 @@ OMX_ERRORTYPE omx_clocksrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
  fd = fopen("clock_timestamps.out","w");
 #endif
 
-  noClocksrcInstance++;
-  if(noClocksrcInstance > MAX_COMPONENT_CLOCKSRC) {
-    return OMX_ErrorInsufficientResources;
-  }
-
   openmaxStandComp->SetParameter  = omx_clocksrc_component_SetParameter;
   openmaxStandComp->GetParameter  = omx_clocksrc_component_GetParameter;
 
@@ -170,8 +160,6 @@ OMX_ERRORTYPE omx_clocksrc_component_Destructor(OMX_COMPONENTTYPE *openmaxStandC
      fclose(fd);
 #endif
 
-  noClocksrcInstance--;
-
   return omx_base_source_Destructor(openmaxStandComp);
 }
 
@@ -185,6 +173,8 @@ OMX_ERRORTYPE omx_clocksrc_component_GetParameter(
   OMX_COMPONENTTYPE                      *openmaxStandComp = (OMX_COMPONENTTYPE*)hComponent;
   omx_clocksrc_component_PrivateType*    omx_clocksrc_component_Private = openmaxStandComp->pComponentPrivate;
   omx_base_clock_PortType*               pPort; // = (omx_base_clock_PortType *) omx_clocksrc_component_Private->ports[OMX_BASE_SOURCE_OUTPUTPORT_INDEX];
+  OMX_PARAM_COMPONENTROLETYPE     *pComponentRole;
+
   if (ComponentParameterStructure == NULL) {
     return OMX_ErrorBadParameter;
   }
@@ -209,6 +199,13 @@ OMX_ERRORTYPE omx_clocksrc_component_GetParameter(
       return OMX_ErrorBadPortIndex;
     }
     break;
+  case OMX_IndexParamStandardComponentRole:
+    pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
+      break;
+    }
+    strcpy( (char*) pComponentRole->cRole, "");
+    break;
   default: /*Call the base component function*/
     return omx_base_component_GetParameter(hComponent, nParamIndex, ComponentParameterStructure);
   }
@@ -225,6 +222,7 @@ OMX_ERRORTYPE omx_clocksrc_component_SetParameter(
   OMX_COMPONENTTYPE                     *openmaxStandComp = (OMX_COMPONENTTYPE*)hComponent;
   omx_clocksrc_component_PrivateType*   omx_clocksrc_component_Private = openmaxStandComp->pComponentPrivate;
   omx_base_clock_PortType*              pPort;
+  OMX_PARAM_COMPONENTROLETYPE     *pComponentRole;
 
   if (ComponentParameterStructure == NULL) {
     return OMX_ErrorBadParameter;
@@ -246,6 +244,22 @@ OMX_ERRORTYPE omx_clocksrc_component_SetParameter(
       memcpy(&pPort->sOtherParam,pOtherPortFormat,sizeof(OMX_OTHER_PARAM_PORTFORMATTYPE));
     } else {
       return OMX_ErrorBadPortIndex;
+    }
+    break;
+  case OMX_IndexParamStandardComponentRole:
+    pComponentRole = (OMX_PARAM_COMPONENTROLETYPE*)ComponentParameterStructure;
+
+    if (omx_clocksrc_component_Private->state != OMX_StateLoaded && omx_clocksrc_component_Private->state != OMX_StateWaitForResources) {
+      DEBUG(DEB_LEV_ERR, "In %s Incorrect State=%x lineno=%d\n",__func__, omx_clocksrc_component_Private->state, __LINE__);
+      return OMX_ErrorIncorrectStateOperation;
+    }
+
+    if ((err = checkHeader(ComponentParameterStructure, sizeof(OMX_PARAM_COMPONENTROLETYPE))) != OMX_ErrorNone) {
+      break;
+    }
+
+    if (strcmp( (char*) pComponentRole->cRole, "")) {
+      return OMX_ErrorBadParameter;
     }
     break;
   default: /*Call the base component function*/
