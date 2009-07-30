@@ -8,12 +8,13 @@ http://www.khronos.org/openmax).
 This package includes the libomxil-bellagio shared library together with the
 following OpenMAX components (built as separate shared objects and
 loaded at runtime):
+
 CORE FUNCTIONALITIES
 - An IL core
 - A component loader for static libraries for Linux
-- A component loader for Symbian
-- A framework of components and ports base 
-  implementations for Bellagio Hierarchy
+- A simple resource manager
+- A framework of components and ports base classes for Bellagio Hierarchy
+- a draft support to content pipes
 
 AUDIO
 - OMX audio volume control
@@ -27,11 +28,6 @@ CLOCK
   and provide media clock to video sink and other component. It support
   fast forward and rewind.
 
-SYMBIAN COMPONENTS
-- Audio mixer
-- MMF Output stream audio renderer
-- Volume control component
-
 BUILD the bellagio library
 =====
 
@@ -41,13 +37,6 @@ make
 make install
 make check
 
-If the pkg-config check fails, verify that the environment variable
-PKG_CONFIG_PATH is set, and it points to the directory(ies) containing
-the .pc files describing the package to be verified.  Usually it can be
-set as (for a bash):
-
-export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/:/usr/lib/pkgconfig/
-
 Before attempting to run any test, the OMX components *must* be
 registered with the command "omxregister-bellagio".
 
@@ -56,7 +45,10 @@ omxregister-bellagio components_path1:components_path2
 That will create a registry file that will contain all the components
 installed in the specified directories. By default the components 
 distributed with this package are installed in /usr/local/lib/bellagio
-
+and the registry entries are stored in the file $HOME/.omxregister
+The location of registry file can be changed setting the environment variable
+OMX_BELLAGIO_REGISTRY to the location and name of the new register file.
+ 
 Note: the default location for the installation is TARGET=/usr/local/lib 
 for the library, and the component will be installed in TARGET/bellagio 
 To change the installation directory execute the configure as in the example:
@@ -71,6 +63,7 @@ The following simple test applications are provided:
 test/components/audio_effects/omxvolcontroltest
 test/components/audio_effects/omxaudiomixertest
 
+test/components/resource_manager/omxrmtest
 
 TEST USAGE
 ----------------------------------------------
@@ -98,7 +91,7 @@ Usage: omxaudiomixertest [-o outfile] [-gi gain] -t -r 44100 -n 2 filename1 file
 
 
 BUILD RPM
-----------------------------------------------
+=========
 
 - To build RPM:
 
@@ -107,12 +100,10 @@ BUILD RPM
  sudo rpmbuild -ba libomxil-bellagio.spec
 
 BUILD DEB
-----------------------------------------------
-
+=========
 
 This version has been tested on:
 
-- UBUNTU 8.04
+- UBUNTU 9.04
 
-Last modified: Feb 12, 2009
-
+Last modified: Jul 30, 2009

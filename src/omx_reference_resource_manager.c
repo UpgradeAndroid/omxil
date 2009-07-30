@@ -2,8 +2,8 @@
   src/omx_reference_resource_manager.c
 
   This simple resource manager emulates the behavior of a real RM.
-	It applies the rules defined in the OpenMAX spec. It can be replaced in
-	the future by a real system.
+  It applies the rules defined in the OpenMAX spec. It can be replaced in
+  the future by a real system.
 
   Copyright (C) 2007-2009 STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
@@ -33,12 +33,13 @@
 #include "base/omx_base_component.h"
 #include "queue.h"
 
-
-/** This is the static base pointer of the list
+/**
+ * This is the static base pointer of the list
  */
 static int globalTimestamp = 0;
 
-/** Components specific section
+/**
+ * Components specific section
  * Each component that has some resources to be handled by this
  * resource manager should add some fields here
  */
@@ -202,7 +203,7 @@ int numElemInList(ComponentListType *list) {
 }
 
 /**
- * This function deallocate any remaining elemnt in a list
+ * This function deallocate any remaining element in a list
  * and dispose it
  */
 OMX_ERRORTYPE clearList(ComponentListType **list) {

@@ -15,9 +15,9 @@ enable developers and platform providers to integrate and communicate
 with multimedia codecs implemented in hardware or software.
 
 The libomxil shared library implements the OpenMAX IL Core functionalities.
-Three dynamically loadable components are also included: OMX alsa sink
-component, OMX mp3,aac,ogg decoder component and OMX volume control component.
-(requires ffmpeg library, not part of this package).
+Four dynamically loadable components are also included: OMX volume control,
+OMX audio mixer (up to 4 inputs), a video scheduler component for uncompressed
+video streams and a clock component
 
 %prep
 %setup
@@ -50,20 +50,13 @@ make
 %{_libdir}/libomxil-bellagio.la
 %{_libdir}/libomxil-bellagio.so.0
 %{_libdir}/libomxil-bellagio.so.0.0.0
-%{_libdir}/bellagio/libomxalsa.so
 %{_libdir}/bellagio/libomxaudio_effects.so
 %{_libdir}/bellagio/libomxclocksrc.so
-%{_libdir}/bellagio/libomxfbdev.so
-%{_libdir}/bellagio/libomxvideosrc.so
-%{_libdir}/bellagio/libomxcamera.so
-%{_libdir}/bellagio/libomxffmpeg.so
-%{_libdir}/bellagio/libomxfilereader.so
-%{_libdir}/bellagio/libomxmad.so
-%{_libdir}/bellagio/libomxparser3gp.so
-%{_libdir}/bellagio/libomxvorbis.so
-%{_libdir}/bellagio/libomximagejpeg.so
+%{_libdir}/bellagio/libomxvideosched.so
 
 %changelog
+* Wed Jul 29 2002 Giulio Urlini
+- removed old library files. Added diffs for 0.9.2
 * Wed Sep 17 2008 Giulio Urlini
 - added jpeg encoder/decoder
 * Mon Jul 07 2008 Giulio Urlini

@@ -24,7 +24,7 @@ CFLAGS="${CFLAGS} -Werror"
 #     then set AGE to 0.                                                       #
 #                                                                              #
 ################################################################################
-SHARED_VERSION_INFO="0:0:0"
+SHARED_VERSION_INFO="0:1:0"
 AC_SUBST(SHARED_VERSION_INFO)
 
 # Check if the OMX_Core.h file is present
@@ -76,15 +76,6 @@ AC_ARG_ENABLE(
         [whether to disable the clocksrc compilation])],
     [with_clocksrc=$enableval],
     [with_clocksrc=yes]) dnl default
-
-#Enable clock source log
-AC_ARG_ENABLE(
-    [clocksrclog],
-    [AC_HELP_STRING(
-        [--enable-clocksrclog],
-        [whether to enable clock component log compilation])],
-    [with_clocksrclog=$enableval],
-    [with_clocksrclog=no])
 
 #Check whether xvideosink component has been requested
 AC_ARG_ENABLE(
@@ -168,11 +159,6 @@ AX_SET_PLUGINDIR
 ################################################################################
 # Check for pkg-config modules                                                 #
 ################################################################################
-
-# Check for clock component log
-if test "x$with_clocksrclog" = "xyes"; then
-        AC_DEFINE([AV_SYNC_LOG], [1], [Clock Component Log])
-fi
 
 ################################################################################
 # Check for types                                                              #

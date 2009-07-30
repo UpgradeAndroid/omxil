@@ -1,3 +1,11 @@
+Changes in 0.9.2:
+- Moved all the components in a separate package.
+  The actual version contains only few reference
+  components that do not depend from any external library
+- Added an internal abstract resource manager to
+  emulate the correct behavior for WaitForResources status
+- Removed all the symbian support
+
 Changes in 0.9.1:
 Added omx_base_image_port base class
 Added symbian support skipped in the last delivery

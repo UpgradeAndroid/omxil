@@ -34,10 +34,6 @@
 #include <config.h>
 #include <unistd.h>
 
-#ifdef AV_SYNC_LOG
-static FILE *fd;
-#endif
-
 /** The Constructor
  */
 OMX_ERRORTYPE omx_clocksrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OMX_STRING cComponentName) {
@@ -112,10 +108,6 @@ OMX_ERRORTYPE omx_clocksrc_component_Constructor(OMX_COMPONENTTYPE *openmaxStand
   omx_clocksrc_component_Private->destructor = omx_clocksrc_component_Destructor;
   omx_clocksrc_component_Private->BufferMgmtFunction = omx_clocksrc_BufferMgmtFunction;
 
-#ifdef AV_SYNC_LOG
- fd = fopen("clock_timestamps.out","w");
-#endif
-
   openmaxStandComp->SetParameter  = omx_clocksrc_component_SetParameter;
   openmaxStandComp->GetParameter  = omx_clocksrc_component_GetParameter;
 
@@ -155,10 +147,6 @@ OMX_ERRORTYPE omx_clocksrc_component_Destructor(OMX_COMPONENTTYPE *openmaxStandC
     free(omx_clocksrc_component_Private->ports);
     omx_clocksrc_component_Private->ports=NULL;
   }
-
-#ifdef AV_SYNC_LOG
-     fclose(fd);
-#endif
 
   return omx_base_source_Destructor(openmaxStandComp);
 }
@@ -602,10 +590,6 @@ OMX_ERRORTYPE omx_clocksrc_component_SetConfig(
             pPort->sMediaTime.eUpdateType          = OMX_TIME_UpdateRequestFulfillment;
             DEBUG(DEB_LEV_SIMPLE_SEQ,"pI=%d MB=%lld WB=%lld MT=%lld RT=%lld WT=%lld \n",(int)portIndex,
                 omx_clocksrc_component_Private->MediaTimeBase,omx_clocksrc_component_Private->WallTimeBase, mediatime,sMediaTimeRequest->nMediaTimestamp,walltime);
-#ifdef AV_SYNC_LOG
-              fprintf(fd,"%d %lld %lld %lld %lld %lld\n",
-                  (int)portIndex,sMediaTimeRequest->nMediaTimestamp,mediatime,pPort->sMediaTime.nWallTimeAtMediaTime,wallTimediff,mediaTimediff);
-#endif
          }
       }
       /*Signal Buffer Management Thread*/

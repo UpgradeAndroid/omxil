@@ -386,9 +386,6 @@ OMX_BOOL omx_video_scheduler_component_ClockPortHandleFunction(
           }
           if(pMediaTime->eUpdateType==OMX_TIME_UpdateRequestFulfillment){
             if((pMediaTime->nOffset)>0) {
-#ifdef AV_SYNC_LOG
-              fprintf(fd,"%lld %lld\n",pInputBuffer->nTimeStamp,pMediaTime->nWallTimeAtMediaTime);
-#endif
               SendFrame=OMX_TRUE;
             }else {
               SendFrame = OMX_FALSE;

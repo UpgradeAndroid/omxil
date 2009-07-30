@@ -47,7 +47,7 @@
 #include "st_static_component_loader.h"
 #include "common.h"
 
-/** String element to be put in the .omxregistry file to indicate  an
+/** String element to be put in the .omxregister file to indicate  an
  * OpenMAX component and its roles
  */
 static const char arrow[] =  " ==> ";
