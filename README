@@ -28,8 +28,9 @@ CLOCK
   and provide media clock to video sink and other component. It support
   fast forward and rewind.
 
-BUILD the bellagio library
-=====
+=============================
+ BUILD the bellagio library
+=============================
 
 autoreconf -i -f $(source_path)
 $(source_path)/configure
@@ -55,8 +56,9 @@ To change the installation directory execute the configure as in the example:
 
 $(source_path)/configure --prefix=new_installation_path
 
-TEST
-====
+=============================
+ TEST
+=============================
 
 The following simple test applications are provided:
 
@@ -76,7 +78,7 @@ Usage: omxvolcontroltest [-o outfile] [-g gain] filename
        -g: Gain of PCM data [0...100]
        -h: Displays this help
 
-Usage: omxaudiomixertest [-o outfile] [-gi gain] -t -r 44100 -n 2 filename1 filename2
+Usage: omxaudiomixertest [-o outfile] [-gi gain] -t -r 44100 -n 2 filename1 filename2 [filename3] [filename4] 
 
        -o outfile: If this option is specified, the output stream is
                    written to outfile otherwise redirected to std
@@ -90,8 +92,9 @@ Usage: omxaudiomixertest [-o outfile] [-gi gain] -t -r 44100 -n 2 filename1 file
 
 
 
-BUILD RPM
-=========
+=============================
+ BUILD RPM
+=============================
 
 - To build RPM:
 
@@ -99,8 +102,9 @@ BUILD RPM
  sudo cp libomxil-bellagio-0.9.2.tar.gz /usr/src/redhat/SOURCES/
  sudo rpmbuild -ba libomxil-bellagio.spec
 
-BUILD DEB
-=========
+=============================
+ BUILD DEB
+=============================
 To build the installable deb package with the Bellagio libraries run:
 sudo checkinstall --pkgsource=/home/urlinigi/OpenMAX/sourceforge/omxil --install=no --maintainer=giulio.urlini@st.com --spec=/home/urlinigi/OpenMAX/sourceforge/omxil/libomxil-bellagio.spec --inspect
 
@@ -112,5 +116,6 @@ This version has been tested on:
 
 - UBUNTU 9.04
 - Fedora Core 11
+
 
 Last modified: Aug 3, 2009
