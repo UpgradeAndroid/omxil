@@ -101,9 +101,16 @@ BUILD RPM
 
 BUILD DEB
 =========
+To build the installable deb package with the Bellagio libraries run:
+sudo checkinstall --pkgsource=/home/urlinigi/OpenMAX/sourceforge/omxil --install=no --maintainer=giulio.urlini@st.com --spec=/home/urlinigi/OpenMAX/sourceforge/omxil/libomxil-bellagio.spec --inspect
+
+To build the source debian package run in the root of the source code:
+dpkg-buildpackage -S
+
 
 This version has been tested on:
 
 - UBUNTU 9.04
+- Fedora Core 11
 
-Last modified: Jul 30, 2009
+Last modified: Aug 3, 2009
