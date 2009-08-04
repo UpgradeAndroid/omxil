@@ -296,11 +296,12 @@ int searchLowerPriority(ComponentListType *list, int current_priority, Component
  * the candidate by the default policy defined in the OpenMAX spec.
  */
 OMX_ERRORTYPE preemptComponent(OMX_COMPONENTTYPE *openmaxStandComp) {
-	OMX_STATETYPE state;
-    OMX_ERRORTYPE err;
-    omx_base_component_PrivateType* omx_base_component_Private = openmaxStandComp->pComponentPrivate;
+	OMX_ERRORTYPE err;
+	omx_base_component_PrivateType* omx_base_component_Private = openmaxStandComp->pComponentPrivate;
+
 	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
-    if (state == OMX_StateIdle) {
+
+	if (omx_base_component_Private->state == OMX_StateIdle) {
         (*(omx_base_component_Private->callbacks->EventHandler))
           (openmaxStandComp, omx_base_component_Private->callbackData,
             OMX_EventError, OMX_ErrorResourcesLost, 0, NULL);
@@ -309,7 +310,7 @@ OMX_ERRORTYPE preemptComponent(OMX_COMPONENTTYPE *openmaxStandComp) {
         	DEBUG(DEB_LEV_ERR, "In %s, the state cannot be changed\n", __func__);
         	return OMX_ErrorUndefined;
         }
-    } else if ((state == OMX_StateExecuting) || (state == OMX_StatePause)) {
+    } else if ((omx_base_component_Private->state == OMX_StateExecuting) || (omx_base_component_Private->state == OMX_StatePause)) {
     	// TODO fill also this section that cover the preemption of a running component
     	// send OMX_ErrorResourcesPreempted
     	// change state to Idle
