@@ -193,7 +193,7 @@ void* omx_base_source_BufferMgmtFunction (void* param) {
       /*Output Buffer has been produced or EOS. So, return output buffer and get new buffer*/
       if((pOutputBuffer->nFilledLen != 0) || ((pOutputBuffer->nFlags & OMX_BUFFERFLAG_EOS) ==OMX_BUFFERFLAG_EOS) || (omx_base_source_Private->bIsEOSReached == OMX_TRUE)) {
     	  if((pOutputBuffer->nFlags & OMX_BUFFERFLAG_EOS) == OMX_BUFFERFLAG_EOS)
-    		  DEBUG(DEB_LEV_ERR, "In %s nFlags=%x Name=%s \n", __func__, (int)pOutputBuffer->nFlags, omx_base_source_Private->name);
+    		  DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s nFlags=%x Name=%s \n", __func__, (int)pOutputBuffer->nFlags, omx_base_source_Private->name);
     	  pOutPort->ReturnBufferFunction(pOutPort, pOutputBuffer);
     	  outBufExchanged--;
     	  pOutputBuffer = NULL;

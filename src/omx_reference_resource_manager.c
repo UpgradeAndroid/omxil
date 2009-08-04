@@ -211,7 +211,7 @@ OMX_ERRORTYPE clearList(ComponentListType **list) {
 	ComponentListType *componentPrev;
 	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 	if (!*list) {
-		DEBUG(DEB_LEV_ERR, "In %s, no list no elements\n", __func__);
+		DEBUG(DEB_LEV_FUNCTION_NAME, "In %s, no list no elements\n", __func__);
 		return OMX_ErrorNone;
 	}
 	componentTemp = *list;

@@ -108,10 +108,26 @@ Usage: omxaudiomixertest [-o outfile] [-gi gain] -t -r 44100 -n 2 filename1 file
 To build the installable deb package with the Bellagio libraries run:
 sudo checkinstall --pkgsource=/home/urlinigi/OpenMAX/sourceforge/omxil --install=no --maintainer=giulio.urlini@st.com --spec=/home/urlinigi/OpenMAX/sourceforge/omxil/libomxil-bellagio.spec --inspect
 
-To build the source debian package run in the root of the source code:
+
+=============================
+ SOURCE CODE PACKAGE
+=============================
+There are two ways to generate the source code package. One is provided by the
+makefile internal structure, running the following command:
+
+make dist
+ 
+In Ubuntu system is also available the debian mechanism to build a 
+source code package, running the following instructions, in the base
+directory of the source code:
+
 dpkg-buildpackage -S
 
 
+
+=============================
+ DITRIBUTIONS
+=============================
 This version has been tested on:
 
 - UBUNTU 9.04
