@@ -86,7 +86,7 @@ static CPresult Open( CPhandle* hContent, CPstring szURI, CP_ACCESSTYPE eAccess 
   inet_ContentPipe* pPipe = (inet_ContentPipe*) hContent;
   CPresult err = 0;
   char strHostName[80];
-  int nHostPort;
+  int nHostPort = 0;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "content_pipe_inet:%s \n", __func__);
 

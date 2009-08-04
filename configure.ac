@@ -24,7 +24,7 @@ CFLAGS="${CFLAGS} -Werror"
 #     then set AGE to 0.                                                       #
 #                                                                              #
 ################################################################################
-SHARED_VERSION_INFO="0:1:0"
+SHARED_VERSION_INFO="0:0:0"
 AC_SUBST(SHARED_VERSION_INFO)
 
 # Check if the OMX_Core.h file is present
