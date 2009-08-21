@@ -536,7 +536,8 @@ void* omx_audio_mixer_BufferMgmtFunction (void* param) {
             }
           } else {
             DEBUG(DEB_LEV_ERR, "In %s Received Buffer in non-Executing State(%x)\n", __func__, (int)omx_audio_mixer_component_Private->state);
-            if(OMX_TransStateExecutingToIdle == omx_audio_mixer_component_Private->transientState) {
+            if(OMX_TransStateExecutingToIdle == omx_audio_mixer_component_Private->transientState ||
+			   OMX_TransStatePauseToIdle == omx_audio_mixer_component_Private->transientState) {
               pBuffer[i]->nFilledLen = 0;
             }
           }
