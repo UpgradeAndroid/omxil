@@ -568,6 +568,19 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       omx_base_component_Private->state = OMX_StateIdle;
       break;
       case OMX_StatePause:
+      /*Flush Ports*/
+      /* for all ports */
+      for(j = 0; j < NUM_DOMAINS; j++) {
+        for(i = omx_base_component_Private->sPortTypesParam[j].nStartPortNumber;
+        i < omx_base_component_Private->sPortTypesParam[j].nStartPortNumber +
+        omx_base_component_Private->sPortTypesParam[j].nPorts; i++) {
+          DEBUG(DEB_LEV_FULL_SEQ, "Flushing Port %i\n",(int)i);
+          pPort = omx_base_component_Private->ports[i];
+          if(PORT_IS_ENABLED(pPort)) {
+            pPort->FlushProcessingBuffers(pPort);
+          }
+        }
+      }
       omx_base_component_Private->state = OMX_StateIdle;
       /*Signal buffer management thread if waiting at paused state*/
       tsem_signal(omx_base_component_Private->bStateSem);
@@ -1335,6 +1348,8 @@ OMX_ERRORTYPE omx_base_component_SendCommand(
       omx_base_component_Private->transientState = OMX_TransStateIdleToLoaded;
     } else if ((nParam == OMX_StateIdle) && (omx_base_component_Private->state == OMX_StateExecuting)) {
       omx_base_component_Private->transientState = OMX_TransStateExecutingToIdle;
+    } else if ((nParam == OMX_StateIdle) && (omx_base_component_Private->state == OMX_StatePause)) {
+      omx_base_component_Private->transientState = OMX_TransStatePauseToIdle;
     }
     break;
   case OMX_CommandFlush:

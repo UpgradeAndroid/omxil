@@ -165,7 +165,8 @@ OMX_ERRORTYPE base_clock_port_SendBufferFunction(
     return OMX_ErrorIncorrectStateOperation;
   }
   if (!PORT_IS_ENABLED(openmaxStandPort) || (PORT_IS_BEING_DISABLED(openmaxStandPort) && !PORT_IS_TUNNELED_N_BUFFER_SUPPLIER(openmaxStandPort)) ||
-      (omx_base_component_Private->transientState == OMX_TransStateExecutingToIdle &&
+      ((omx_base_component_Private->transientState == OMX_TransStateExecutingToIdle || 
+	    omx_base_component_Private->transientState == OMX_TransStatePauseToIdle) &&
       (PORT_IS_TUNNELED(openmaxStandPort) && !PORT_IS_BUFFER_SUPPLIER(openmaxStandPort)))) {
     DEBUG(DEB_LEV_ERR, "In %s: Port %d is disabled comp = %s \n", __func__, (int)portIndex,omx_base_component_Private->name);
     return OMX_ErrorIncorrectStateOperation;

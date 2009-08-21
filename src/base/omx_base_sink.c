@@ -174,7 +174,8 @@ void* omx_base_sink_BufferMgmtFunction (void* param) {
         DEBUG(DEB_LEV_ERR, "In %s Received Buffer in non-Executing State(%x) TrState (%x)\n",
           __func__, (int)omx_base_sink_Private->state,
           (int)omx_base_component_Private->transientState);
-        if(OMX_TransStateExecutingToIdle == omx_base_component_Private->transientState) {
+        if(OMX_TransStateExecutingToIdle == omx_base_component_Private->transientState || 
+           OMX_TransStatePauseToIdle == omx_base_component_Private->transientState) {
           pInputBuffer->nFilledLen = 0;
         }
       }
@@ -360,7 +361,8 @@ void* omx_base_sink_twoport_BufferMgmtFunction (void* param) {
           } else {
             DEBUG(DEB_LEV_ERR, "In %s Received Buffer in non-Executing State(%x)\n", __func__, (int)omx_base_sink_Private->state);
 
-            if(OMX_TransStateExecutingToIdle == omx_base_component_Private->transientState) {
+            if(OMX_TransStateExecutingToIdle == omx_base_component_Private->transientState || 
+               OMX_TransStatePauseToIdle == omx_base_component_Private->transientState) {
               pInputBuffer[i]->nFilledLen = 0;
             }
           }
