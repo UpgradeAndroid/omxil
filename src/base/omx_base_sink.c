@@ -161,7 +161,7 @@ void* omx_base_sink_BufferMgmtFunction (void* param) {
         DEBUG(DEB_LEV_FULL_SEQ, "Can't Pass Mark. This is a Sink!!\n");
       }
 
-      if(omx_base_sink_Private->state == OMX_StateExecuting)  {
+      if((omx_base_sink_Private->state == OMX_StateExecuting) || (omx_base_sink_Private->state == OMX_StateIdle)) {
         if ((omx_base_sink_Private->BufferMgmtCallback && pInputBuffer->nFilledLen > 0)
         		|| (pInputBuffer->nFlags)){
           (*(omx_base_sink_Private->BufferMgmtCallback))(openmaxStandComp, pInputBuffer);
@@ -171,10 +171,10 @@ void* omx_base_sink_BufferMgmtFunction (void* param) {
           pInputBuffer->nFilledLen = 0;
         }
       } else {
-        DEBUG(DEB_LEV_ERR, "In %s Received Buffer in non-Executing State(%x) TrState (%x)\n",
-          __func__, (int)omx_base_sink_Private->state,
-          (int)omx_base_component_Private->transientState);
-        if(OMX_TransStateExecutingToIdle == omx_base_component_Private->transientState || 
+        DEBUG(DEB_LEV_ERR, "In %s Received Buffer in non-Executing State(%s) TrState (%s)\n",
+          __func__, stateName(omx_base_sink_Private->state),
+          transientStateName(omx_base_component_Private->transientState));
+        if(OMX_TransStateExecutingToIdle == omx_base_component_Private->transientState ||
            OMX_TransStatePauseToIdle == omx_base_component_Private->transientState) {
           pInputBuffer->nFilledLen = 0;
         }
@@ -352,7 +352,6 @@ void* omx_base_sink_twoport_BufferMgmtFunction (void* param) {
 
           if(omx_base_sink_Private->state == OMX_StateExecuting)  {
             if (omx_base_sink_Private->BufferMgmtCallback && pInputBuffer[i]->nFilledLen > 0) {
-              //(*(omx_base_sink_Private->BufferMgmtCallback))(openmaxStandComp, pInputBuffer[0], pInputBuffer[1]);
               (*(omx_base_sink_Private->BufferMgmtCallback))(openmaxStandComp, pInputBuffer[i]);
             } else {
               /*If no buffer management call back then don't produce any Input buffer*/
@@ -361,7 +360,7 @@ void* omx_base_sink_twoport_BufferMgmtFunction (void* param) {
           } else {
             DEBUG(DEB_LEV_ERR, "In %s Received Buffer in non-Executing State(%x)\n", __func__, (int)omx_base_sink_Private->state);
 
-            if(OMX_TransStateExecutingToIdle == omx_base_component_Private->transientState || 
+            if(OMX_TransStateExecutingToIdle == omx_base_component_Private->transientState ||
                OMX_TransStatePauseToIdle == omx_base_component_Private->transientState) {
               pInputBuffer[i]->nFilledLen = 0;
             }
