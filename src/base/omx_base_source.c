@@ -350,13 +350,11 @@ void* omx_base_source_twoport_BufferMgmtFunction (void* param) {
               pOutputBuffer[i]->pMarkData);
           } else if(pOutputBuffer[i]->hMarkTargetComponent!=NULL){
             /*If this is not the target component then pass the mark*/
-            //pOutputBuffer[i]->pMarkData=NULL;
             DEBUG(DEB_LEV_FULL_SEQ, "Pass Mark. This is a Source!!\n");
           }
 
           if(omx_base_source_Private->state == OMX_StateExecuting)  {
             if (omx_base_source_Private->BufferMgmtCallback && pOutputBuffer[i]->nFilledLen == 0) {
-              //(*(omx_base_source_Private->BufferMgmtCallback))(openmaxStandComp, pOutputBuffer[0], pOutputBuffer[1]);
               (*(omx_base_source_Private->BufferMgmtCallback))(openmaxStandComp, pOutputBuffer[i]);
             } else {
               /*If no buffer management call back then don't produce any output buffer*/
