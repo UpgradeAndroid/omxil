@@ -3,7 +3,8 @@
 
   This component implements a video scheduler
 
-  Copyright (C) 2008-2009  STMicroelectronics
+  Copyright (C) 2008-2009 STMicroelectronics
+  Copyright (C) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
   the terms of the GNU Lesser General Public License as published by the Free
