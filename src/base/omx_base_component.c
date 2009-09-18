@@ -1953,6 +1953,69 @@ OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
   return OMX_ErrorNone;
 }
+
+char *stateName(OMX_STATETYPE state) {
+	char *nameString;
+	switch(state) {
+	case 0:
+		nameString = "OMX_StateInvalid";
+		break;
+	case 1:
+		nameString = "OMX_StateLoaded";
+		break;
+	case 2:
+		nameString = "OMX_StateIdle";
+		break;
+	case 3:
+		nameString = "OMX_StateExecuting";
+		break;
+	case 4:
+		nameString = "OMX_StatePause";
+		break;
+	case 5:
+		nameString = "OMX_StateWaitForResources";
+		break;
+	default: nameString = '\0';
+	}
+	return nameString;
+}
+
+
+char *transientStateName(OMX_TRANS_STATETYPE state) {
+	char *nameString;
+	switch(state) {
+	case 0:
+		nameString = "OMX_StateInvalid";
+		break;
+	case 1:
+		nameString = "OMX_TransStateLoadedToIdle";
+		break;
+	case 2:
+		nameString = "OMX_TransStateIdleToPause";
+		break;
+	case 3:
+		nameString = "OMX_TransStatePauseToExecuting";
+		break;
+	case 4:
+		nameString = "OMX_TransStateIdleToExecuting";
+		break;
+	case 5:
+		nameString = "OMX_TransStateExecutingToIdle";
+		break;
+	case 6:
+		nameString = "OMX_TransStateExecutingToPause";
+		break;
+	case 7:
+		nameString = "OMX_TransStatePauseToIdle";
+		break;
+	case 8:
+		nameString = "OMX_TransStateIdleToLoaded";
+		break;
+	default: nameString = '\0';
+	}
+	return nameString;
+}
+
 #ifdef __cplusplus
 }
 #endif

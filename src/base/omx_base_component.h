@@ -153,6 +153,8 @@ CLASS(omx_base_component_PrivateType)
 ENDCLASS(omx_base_component_PrivateType)
 
 void base_constructor_remove_garbage_collected(omx_base_component_PrivateType* omx_base_component_Private);
+char *stateName(OMX_STATETYPE state);
+char *transientStateName(OMX_TRANS_STATETYPE state);
 
 /**
  * @brief The base constructor for the OpenMAX ST components
