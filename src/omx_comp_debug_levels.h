@@ -38,7 +38,7 @@
  */
 #define DEB_LEV_NO_OUTPUT  0
 
-/** Messages explaing the reason of critical errors
+/** Messages explaining the reason of critical errors
  */
 #define DEB_LEV_ERR        1
 
