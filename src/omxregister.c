@@ -196,7 +196,6 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 							// insert first of all the name of the library
 							strcpy(buffer, arrow);
 							strcat(buffer, stComponents[i]->name);
-
 							if (stComponents[i]->name_specific_length>0) {
 								nroles += stComponents[i]->name_specific_length;
 								strcat(buffer, arrow);

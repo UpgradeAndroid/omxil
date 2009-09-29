@@ -490,9 +490,6 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorInvalidState;
       break;
     case OMX_StateWaitForResources:
-/*        (*(omx_base_component_Private->callbacks->EventHandler))
-          (openmaxStandComp, omx_base_component_Private->callbackData,
-        	OMX_EventResourcesAcquired, 0, 0, NULL);*/
       omx_base_component_Private->state = OMX_StateIdle;
       break;
     case OMX_StateLoaded:
@@ -649,7 +646,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       /* Tunneled Supplier Ports were enabled in paused state. So signal buffer managment thread*/
       /* for all ports */
       for(j = 0; j < NUM_DOMAINS; j++) {
-        for(i = omx_base_component_Private->sPortTypesParam[j].nStartPortNumber;
+         for(i = omx_base_component_Private->sPortTypesParam[j].nStartPortNumber;
           i < omx_base_component_Private->sPortTypesParam[j].nStartPortNumber +
           omx_base_component_Private->sPortTypesParam[j].nPorts; i++) {
 
@@ -1501,7 +1498,7 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
   *  (destination state in case of a state change command).
   */
   switch(message->messageType){
-  case OMX_CommandStateSet: {//0
+  case OMX_CommandStateSet: {
     /* Do the actual state change */
     err = (*(omx_base_component_Private->DoStateSet))(openmaxStandComp, message->messageParam);
     if (err != OMX_ErrorNone) {

@@ -58,6 +58,7 @@ OMX_ERRORTYPE base_clock_port_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,om
   if (!(*openmaxStandPort)) {
     *openmaxStandPort = calloc(1,sizeof (omx_base_clock_PortType));
   }
+
   if (!(*openmaxStandPort)) {
     return OMX_ErrorInsufficientResources;
   }

@@ -67,8 +67,28 @@ int omx_component_library_Setup(stLoaderComponentType **stComponents) {
     return OMX_ErrorInsufficientResources;
   }
   strcpy(stComponents[0]->name, "OMX.st.video.scheduler");
-  stComponents[0]->name_specific_length = 0;
+  stComponents[0]->name_specific_length = 1;
   stComponents[0]->constructor =  omx_video_scheduler_component_Constructor;
+
+
+  stComponents[0]->name_specific = calloc(stComponents[0]->name_specific_length,sizeof(char *));
+  stComponents[0]->role_specific = calloc(stComponents[0]->name_specific_length,sizeof(char *));
+
+  for(i=0;i<stComponents[0]->name_specific_length;i++) {
+    stComponents[0]->name_specific[i] = calloc(1, OMX_MAX_STRINGNAME_SIZE);
+    if (stComponents[0]->name_specific[i] == NULL) {
+      return OMX_ErrorInsufficientResources;
+    }
+  }
+  for(i=0;i<stComponents[0]->name_specific_length;i++) {
+    stComponents[0]->role_specific[i] = calloc(1, OMX_MAX_STRINGNAME_SIZE);
+    if (stComponents[0]->role_specific[i] == NULL) {
+      return OMX_ErrorInsufficientResources;
+    }
+  }
+
+  strcpy(stComponents[0]->name_specific[0], "OMX.st.video.scheduler");
+  strcpy(stComponents[0]->role_specific[0], "video.scheduler");
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s \n",__func__);
   return 1;
