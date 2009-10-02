@@ -46,6 +46,8 @@ The
 component registry file.
 .RE
 .SH ENVIRONMENT
+.IP BELLAGIO_SEARCH_PATH
+.SM This variable can be set to indicate the location(s) of the components
 .IP OMX_BELLAGIO_REGISTRY
 .RS
 Location of the registry.

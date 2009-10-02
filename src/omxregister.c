@@ -12,6 +12,9 @@
 
 	omxregister-bellagio installation_path
 
+	If the installation path parameter is not set also the environment variable BELLAGIO_SEARCH_PATH
+	is checked. If set it contains the locations of the components, separated by colons
+
 	Copyright (C) 2007-2009  STMicroelectronics
 	Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
@@ -249,7 +252,10 @@ static void usage(const char *app) {
 	registry_filename = componentsRegistryGetFilename();
 
 	printf(
-      "Usage: %s [-v] [-h] [componentspath]...\n"
+      "Usage: %s [-v] [-h] [componentspath[:other_components_path]]...\n"
+	  "\n"
+	  "Version 0.9.2\n"
+	  "\n"
       "This programs scans for a given list of directory searching for any OpenMAX\n"
       "component compatible with the ST static component loader.\n"
 			"The registry is saved under %s. (can be changed via OMX_BELLAGIO_REGISTRY\n"
@@ -262,7 +268,8 @@ static void usage(const char *app) {
       "\n"
       "         componentspath: a searching path for components can be specified.\n"
       "         If this parameter is omitted, the components are searched in the\n"
-      "         default %s directory\n"
+      "         locations specified by the environment variable BELLAGIO_SEARCH_PATH.If it \n"
+      "         is not defined the components are searched in the default %s directory \n"
       "\n",
 			app, registry_filename, OMXILCOMPONENTSPATH);
 
@@ -271,7 +278,7 @@ static void usage(const char *app) {
 
 /** @brief execution of registration function
  *
- * This register by default searches for openmax libraries in OMXILCOMPONENTSPATH
+ * This register by default searches for OpenMAX libraries in OMXILCOMPONENTSPATH
  * If specified it can search in a different directory
  */
 int main(int argc, char *argv[]) {
@@ -281,6 +288,7 @@ int main(int argc, char *argv[]) {
 	FILE *omxregistryfp;
 	char *registry_filename;
 	char *dir,*dirp;
+	char *buffer;
 
 	for(i = 1; i < argc; i++) {
 		if(*(argv[i]) != '-') {
@@ -332,9 +340,17 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (found == 0) {
-		err = buildComponentsList(omxregistryfp, OMXILCOMPONENTSPATH, verbose);
-		if(err) {
-			DEBUG(DEB_LEV_ERR, "Error registering OpenMAX components with ST static component loader %s\n", strerror(err));
+		buffer=getenv("BELLAGIO_SEARCH_PATH");
+		if (buffer!=NULL&&*buffer!='\0') {
+			err = buildComponentsList(omxregistryfp, buffer, verbose);
+			if(err) {
+				DEBUG(DEB_LEV_ERR, "Error registering OpenMAX components with ST static component loader %s\n", strerror(err));
+			}
+		} else {
+			err = buildComponentsList(omxregistryfp, OMXILCOMPONENTSPATH, verbose);
+			if(err) {
+				DEBUG(DEB_LEV_ERR, "Error registering OpenMAX components with ST static component loader %s\n", strerror(err));
+			}
 		}
 	}
 
