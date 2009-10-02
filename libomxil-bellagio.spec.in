@@ -2,7 +2,7 @@
 Name: libomxil-bellagio
 Version: @VERSION@
 Release: 0
-License: GNU LGPL
+License: GNU LGPL 2.1
 Group: System Environment/Libraries
 Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root

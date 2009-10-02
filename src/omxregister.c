@@ -12,8 +12,9 @@
 
 	omxregister-bellagio installation_path
 
-	If the installation path parameter is not set also the environment variable BELLAGIO_SEARCH_PATH
-	is checked. If set it contains the locations of the components, separated by colons
+	If the installation path parameter is not set also the environment variable
+	BELLAGIO_SEARCH_PATH is checked.
+	If set it contains the locations of the components, separated by colons
 
 	Copyright (C) 2007-2009  STMicroelectronics
 	Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
