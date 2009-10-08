@@ -1,8 +1,7 @@
 /**
-  src/omxcore.h
+  src/utils.h
 
-  OpenMAX Integration Layer Core. This library implements the OpenMAX core
-  responsible for environment setup, components tunneling and communication.
+  Set of utility functions for debugging purposes
 
   Copyright (C) 2007-2009 STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
@@ -27,29 +26,15 @@
   Author $Author$
 */
 
-#ifndef __ST_OMXCORE_H__
-#define __ST_OMXCORE_H__
+
+#ifndef __ST_UTILS_H__
+#define __ST_UTILS_H__
 
 #include <OMX_Component.h>
 #include <OMX_Types.h>
-#include <pthread.h>
 
-#include "utils.h"
-#include "component_loader.h"
-#include "omx_comp_debug_levels.h"
-
-//forward decl
-struct BOSA_COMPONENTLOADER;
-
-OMX_ERRORTYPE BOSA_AddComponentLoader(struct BOSA_COMPONENTLOADER *pLoader);
-
-/** Defines the major version of the core */
-#define SPECVERSIONMAJOR  1
-/** Defines the minor version of the core */
-#define SPECVERSIONMINOR  1
-/** Defines the revision of the core */
-#define SPECREVISION      0
-/** Defines the step version of the core */
-#define SPECSTEP          0
+char *stateName(OMX_STATETYPE state);
+char *transientStateName(int state);
+char *errorName(OMX_ERRORTYPE error);
 
 #endif

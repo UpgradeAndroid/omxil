@@ -16,6 +16,7 @@ libomxil_bellagio_la_SOURCES = component_loader.h \
 			       extension_struct.h \
 			       tsemaphore.c tsemaphore.h \
 			       queue.c queue.h \
+			       utils.c utils.h \
 			       common.c common.h \
 			       content_pipe_inet.c content_pipe_inet.h \
 			       content_pipe_file.c content_pipe_file.h \

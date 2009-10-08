@@ -1884,7 +1884,7 @@ OMX_ERRORTYPE omx_base_component_EmptyThisBuffer(
   }
   err = pPort->Port_SendBufferFunction(pPort, pBuffer);
   if (err != OMX_ErrorNone) {
-	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %s\n", __func__, (int)hComponent, errorName(err));
 	  return err;
   }
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
@@ -1915,7 +1915,7 @@ OMX_ERRORTYPE omx_base_component_FillThisBuffer(
   }
   err = pPort->Port_SendBufferFunction(pPort,  pBuffer);
   if (err != OMX_ErrorNone) {
-	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %s\n", __func__, (int)hComponent, errorName(err));
 	  return err;
   }
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
@@ -1949,68 +1949,6 @@ OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
   }
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
   return OMX_ErrorNone;
-}
-
-char *stateName(OMX_STATETYPE state) {
-	char *nameString;
-	switch(state) {
-	case 0:
-		nameString = "OMX_StateInvalid";
-		break;
-	case 1:
-		nameString = "OMX_StateLoaded";
-		break;
-	case 2:
-		nameString = "OMX_StateIdle";
-		break;
-	case 3:
-		nameString = "OMX_StateExecuting";
-		break;
-	case 4:
-		nameString = "OMX_StatePause";
-		break;
-	case 5:
-		nameString = "OMX_StateWaitForResources";
-		break;
-	default: nameString = '\0';
-	}
-	return nameString;
-}
-
-
-char *transientStateName(OMX_TRANS_STATETYPE state) {
-	char *nameString;
-	switch(state) {
-	case 0:
-		nameString = "OMX_StateInvalid";
-		break;
-	case 1:
-		nameString = "OMX_TransStateLoadedToIdle";
-		break;
-	case 2:
-		nameString = "OMX_TransStateIdleToPause";
-		break;
-	case 3:
-		nameString = "OMX_TransStatePauseToExecuting";
-		break;
-	case 4:
-		nameString = "OMX_TransStateIdleToExecuting";
-		break;
-	case 5:
-		nameString = "OMX_TransStateExecutingToIdle";
-		break;
-	case 6:
-		nameString = "OMX_TransStateExecutingToPause";
-		break;
-	case 7:
-		nameString = "OMX_TransStatePauseToIdle";
-		break;
-	case 8:
-		nameString = "OMX_TransStateIdleToLoaded";
-		break;
-	default: nameString = '\0';
-	}
-	return nameString;
 }
 
 #ifdef __cplusplus
