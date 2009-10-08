@@ -31,6 +31,7 @@ include_extradir = $(includedir)/bellagio
 
 include_extra_HEADERS = $(srcdir)/omxcore.h \
 			$(srcdir)/queue.h \
+			$(srcdir)/utils.h \
 			$(srcdir)/component_loader.h \
 			$(srcdir)/st_static_component_loader.h \
 			$(srcdir)/tsemaphore.h \
