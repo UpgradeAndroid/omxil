@@ -24,7 +24,7 @@ libomxil_bellagio_la_SOURCES = component_loader.h \
 			       omx_reference_resource_manager.h
 
 libomxil_bellagio_la_CFLAGS = -I$(top_srcdir)/include -I$(srcdir)/base -DINSTALL_PATH_STR=\"$(plugindir)\"
-libomxil_bellagio_la_LIBADD = base/libomxbase.la
+libomxil_bellagio_la_LIBADD = base/libomxbase.la -lpthread
 libomxil_bellagio_la_LDFLAGS = -version-info @SHARED_VERSION_INFO@
 
 include_extradir = $(includedir)/bellagio

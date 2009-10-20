@@ -44,7 +44,7 @@ static CPresult Create( CPhandle *hContent, CPstring szURI )
   flags = O_WRONLY | O_CREAT;
 
   if(0 == err) {
-    ret = open(pathname, flags);
+    ret = open(pathname, flags, 0);
     if(-1 != ret) {
       pFilePipe->fd = ret;
     } else {

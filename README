@@ -91,6 +91,14 @@ Usage: omxaudiomixertest [-o outfile] [-gi gain] -t -r 44100 -n 2 filename1 file
        -h        : Displays this help
 
 
+The omxvolcontroltest and omxaudiomixertest receive as input an audio decompressed stream.
+If an output file is produced yet another uncompressed audio stream is written.
+The purpose of these tests is to verify the correct behavior of audio effects volume control ands audio mixer.
+If any developer is interested in a full multimedia chain with codecs also please refer to the external components 
+and relates tests. A set of application using many components is also provided as a separate package.
+For further details go to the download page of the Bellagio web pages:
+
+http://omxil.sourceforge.net/downloads.html
 
 =============================
  BUILD RPM
@@ -99,9 +107,9 @@ Usage: omxaudiomixertest [-o outfile] [-gi gain] -t -r 44100 -n 2 filename1 file
 - To build RPM:
 
  make dist
- sudo cp libomxil-bellagio-0.9.2.tar.gz /usr/src/redhat/SOURCES/
- sudo rpmbuild -ba libomxil-bellagio.spec
-
+ cp libomxil-bellagio-0.9.2.tar.gz $HOME/rpmbuild/SOURCES/
+ rpmbuild -bb libomxil-bellagio.spec
+ 
 =============================
  BUILD DEB
 =============================

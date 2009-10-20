@@ -80,6 +80,7 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 	int index;
 	char* currentpath = componentspath;
 	char* actual;
+	int err;
 	nameList *allNames = NULL;
 	nameList *currentName = NULL;
 	nameList *tempName = NULL;
@@ -149,8 +150,8 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 							stComponents[i] = calloc(1,sizeof(stLoaderComponentType));
 						}
 						fptr(stComponents);
-						fwrite(lib_absolute_path, 1, strlen(lib_absolute_path), omxregistryfp);
-						fwrite("\n", 1, 1, omxregistryfp);
+						err = fwrite(lib_absolute_path, 1, strlen(lib_absolute_path), omxregistryfp);
+						err = fwrite("\n", 1, 1, omxregistryfp);
 
 
 						for (i = 0; i<num_of_comp; i++) {
@@ -215,7 +216,7 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 								}
 							}
 							strcat(buffer, "\n");
-							fwrite(buffer, 1, strlen(buffer), omxregistryfp);
+							err = fwrite(buffer, 1, strlen(buffer), omxregistryfp);
 							ncomponents++;
 						}
 						for (i = 0; i < num_of_comp; i++) {

@@ -5,7 +5,7 @@ AM_INIT_AUTOMAKE([tar-ustar])
 AC_PREREQ([2.59])
 
 AC_CONFIG_HEADERS([config.h])
-CFLAGS="${CFLAGS} -Werror"
+CFLAGS="${CFLAGS} -Wall -Werror"
 
 ################################################################################
 # Set the shared versioning info, according to section 6.3 of the libtool info #
@@ -125,17 +125,6 @@ fi
 ################################################################################
 # Check for libraries                                                          #
 ################################################################################
-
-# Check for POSIX thread support
-ACX_PTHREAD([
-                LIBS="$LIBS $PTHREAD_LIBS"
-	            CFLAGS="$CFLAGS $PTHREAD_CFLAGS -g -Wall"
-                CC="$PTHREAD_CC"
-                AC_SUBST([LIBS])
-                AC_SUBST([CFLAGS])
-                AC_SUBST([CC])
-            ],
-            [AC_MSG_ERROR([POSIX threads support is required])])
 
 # Check for libdl
 AC_SEARCH_LIBS([dlopen], [dl], [], [AC_MSG_ERROR([libdl is required])])
