@@ -112,14 +112,13 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 		}
 		/* Populate the registry file */
 		dirp = opendir(actual);
+		if (verbose) {
+			printf("\n Scanning directory %s\n", actual);
+		}
 		if(dirp == NULL){
-			int err = errno;
-			DEBUG(DEB_LEV_ERR, "Cannot open directory %s\n", actual);
-			return err;
-		} else {
-			if (verbose) {
-				printf("\n Scanning directory %s\n", actual);
-			}
+			free(actual);
+			DEBUG(DEB_LEV_SIMPLE_SEQ, "Cannot open directory %s\n", actual);
+			continue;
 		}
 		while((dp = readdir(dirp)) != NULL) {
 			int len = strlen(dp->d_name);
@@ -136,12 +135,12 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 					if((handle = dlopen(lib_absolute_path, RTLD_NOW)) == NULL) {
 						DEBUG(DEB_LEV_ERR, "could not load %s: %s\n", lib_absolute_path, dlerror());
 					} else {
+						if (verbose) {
+							printf("\n Scanning library %s\n", lib_absolute_path);
+						}
 						if ((fptr = dlsym(handle, "omx_component_library_Setup")) == NULL) {
 							DEBUG(DEB_LEV_SIMPLE_SEQ, "the library %s is not compatible with ST static component loader - %s\n", lib_absolute_path, dlerror());
 							continue;
-						}
-						if (verbose) {
-							printf("\n Scanning openMAX libary %s\n", lib_absolute_path);
 						}
 						num_of_libraries++;
 						num_of_comp = fptr(NULL);
