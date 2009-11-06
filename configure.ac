@@ -44,6 +44,7 @@ AC_CONFIG_FILES([
     include/Makefile
     src/Makefile
     src/base/Makefile
+    src/core_extensions/Makefile
     src/components/Makefile
     src/components/audio_effects/Makefile
     src/components/clocksrc/Makefile

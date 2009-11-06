@@ -209,6 +209,10 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
 	omx_base_component_Private->DoStateSet = &omx_base_component_DoStateSet;
 	omx_base_component_Private->messageHandler = omx_base_component_MessageHandler;
 	omx_base_component_Private->destructor = omx_base_component_Destructor;
+	omx_base_component_Private->getQualityLevel = omx_base_getQualityLevel;
+	omx_base_component_Private->setQualityLevel = omx_base_setQualityLevel;
+	omx_base_component_Private->currentQualityLevel = 0;
+	omx_base_component_Private->nqualitylevels = 0;
 	omx_base_component_Private->bufferMgmtThreadID = -1;
 	omx_base_component_Private->bellagioThreads = calloc(1, sizeof(OMX_PARAM_BELLAGIOTHREADS_ID));
 	if (omx_base_component_Private->bellagioThreads == NULL) {
@@ -1949,6 +1953,27 @@ OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
   }
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
   return OMX_ErrorNone;
+}
+
+OMX_ERRORTYPE omx_base_getQualityLevel(OMX_COMPONENTTYPE *openmaxStandComp, OMX_U32* pQualityLevel) {
+	omx_base_component_PrivateType* omx_base_component_Private = openmaxStandComp->pComponentPrivate;
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+	*pQualityLevel = omx_base_component_Private->currentQualityLevel;
+	return OMX_ErrorNone;
+}
+
+OMX_ERRORTYPE omx_base_setQualityLevel(OMX_COMPONENTTYPE *openmaxStandComp, OMX_U32 nQualityLevel) {
+	omx_base_component_PrivateType* omx_base_component_Private = openmaxStandComp->pComponentPrivate;
+	/* this change is done regardless to the state. When the way to change effectively quality in a component is known
+	 * change this function adding state checks
+	 */
+	DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s setting %i of %i\n", __func__, (int)nQualityLevel, (int)omx_base_component_Private->nqualitylevels);
+	if ((nQualityLevel > 0) && (nQualityLevel <= omx_base_component_Private->nqualitylevels)) {
+		omx_base_component_Private->currentQualityLevel = nQualityLevel;
+		return OMX_ErrorNone;
+	} else {
+		return OMX_ErrorBadParameter;
+	}
 }
 
 #ifdef __cplusplus

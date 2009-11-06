@@ -39,6 +39,7 @@
 #include <asm/unistd.h>
 
 #include "omxcore.h"
+#include "OMXComponentRMExt.h"
 #include "tsemaphore.h"
 #include "queue.h"
 #include "omx_classmagic.h"
@@ -149,7 +150,12 @@ CLASS(omx_base_component_PrivateType)
 	void* (*BufferMgmtFunction)(void* param); /** @param BufferMgmtFunction This function processes input output buffers */ \
 	OMX_ERRORTYPE (*messageHandler)(OMX_COMPONENTTYPE*,internalRequestMessageType*);/** This function receives messages from the message queue. It is needed for each Linux ST OpenMAX component */ \
 	OMX_ERRORTYPE (*DoStateSet)(OMX_COMPONENTTYPE *openmaxStandComp, OMX_U32); /**< @param DoStateSet internal function called when a generic state transition is requested*/ \
-	OMX_ERRORTYPE (*destructor)(OMX_COMPONENTTYPE *openmaxStandComp); /** Component Destructor*/
+	OMX_ERRORTYPE (*destructor)(OMX_COMPONENTTYPE *openmaxStandComp); /** Component Destructor*/ \
+	OMX_ERRORTYPE (*getQualityLevel)(OMX_COMPONENTTYPE *openmaxStandComp, OMX_U32* pQualityLevel); /** RM entry point. By default is not implemented */ \
+	OMX_ERRORTYPE (*setQualityLevel)(OMX_COMPONENTTYPE *openmaxStandComp, OMX_U32 nQualityLevel); /** RM entry point. By default is not implemented */ \
+	OMX_U32 nqualitylevels;/**< number of available quality levels */ \
+	multiResourceDescriptor** multiResourceLevel; \
+	int currentQualityLevel; /** if supported the current quality level set for this component */
 ENDCLASS(omx_base_component_PrivateType)
 
 void base_constructor_remove_garbage_collected(omx_base_component_PrivateType* omx_base_component_Private);
@@ -180,6 +186,9 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
  * @param openmaxStandComp the ST OpenMAX component to be disposed
  */
 OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp);
+
+OMX_ERRORTYPE omx_base_getQualityLevel(OMX_COMPONENTTYPE *openmaxStandComp, OMX_U32* pQualityLevel);
+OMX_ERRORTYPE omx_base_setQualityLevel(OMX_COMPONENTTYPE *openmaxStandComp, OMX_U32 nQualityLevel);
 
 /** Changes the state of a component taking proper actions depending on
  * the transition requested. This base function cover only the state

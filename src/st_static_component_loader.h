@@ -30,6 +30,7 @@
 #define __ST_STATIC_COMPONENT_LOADER_H__
 
 #include "omxcore.h"
+#include "extension_struct.h"
 
 /** @brief the private data structure handled by the ST static loader that described
  * an OpenMAX component
@@ -46,6 +47,8 @@ typedef struct stLoaderComponentType{
   char** role_specific; /**< Strings those represent the names of the specific format components */
   char* name_requested; /**< This parameter is used to send to the component the string requested by the IL Client */
   OMX_ERRORTYPE (*constructor)(OMX_COMPONENTTYPE*,OMX_STRING cComponentName); /**< constructor function pointer for each Linux ST OpenMAX component */
+  OMX_U32 nqualitylevels;/**< number of available quality levels */
+  multiResourceDescriptor** multiResourceLevel;
 } stLoaderComponentType;
 
 /** @brief The initialization of the ST specific component loader.

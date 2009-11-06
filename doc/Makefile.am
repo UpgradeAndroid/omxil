@@ -17,37 +17,6 @@ doxygen-build.stamp:
 	touch doxygen-build.stamp
 endif
 
-#dist_docdir = $(distdir)/$(PACKAGE)
-
-#dist-hook:
-#	if test -d $(PACKAGE); then \
-#	  mkdir $(dist_docdir); \
-#	  for dir in $(PACKAGE)/*; do \
-#	    b=`basename $$dir`; \
-#	    if test -d $$dir; then \
-#	      mkdir $(dist_docdir)/$$b; \
-#	      for f in $$dir/*; do \
-#	        cp -p $$f $(dist_docdir)/$$b; \
-#	      done \
-#	    fi \
-#	  done \
-#	fi
-
-
-#install-data-local: doxygen-build.stamp
-#	$(mkinstalldirs) $(DESTDIR)$(docdir)
-#	if test -d $(PACKAGE); then \
-#	  for dir in $(PACKAGE)/*; do \
-#	    if test -d $$dir; then \
-#	      b=`basename $$dir`; \
-#	      $(mkinstalldirs) $(DESTDIR)$(docdir)/$$b; \
-#	      for f in $$dir/*; do \
-#	        $(INSTALL_DATA) $$f $(DESTDIR)$(docdir)/$$b; \
-#	      done \
-#	    fi \
-#	  done \
-#	fi
-
 uninstall-local:
 	rm -rf $(DESTDIR)$(docdir)
 

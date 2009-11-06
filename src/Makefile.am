@@ -1,6 +1,6 @@
 # Build order is important
 # First base, then core, finally components
-SUBDIRS = base . components
+SUBDIRS = base core_extensions . components
 
 bin_PROGRAMS = omxregister-bellagio
 omxregister_bellagio_SOURCES = omxregister.c common.c common.h
@@ -23,8 +23,8 @@ libomxil_bellagio_la_SOURCES = component_loader.h \
 			       omx_reference_resource_manager.c \
 			       omx_reference_resource_manager.h
 
-libomxil_bellagio_la_CFLAGS = -I$(top_srcdir)/include -I$(srcdir)/base -DINSTALL_PATH_STR=\"$(plugindir)\"
-libomxil_bellagio_la_LIBADD = base/libomxbase.la -lpthread
+libomxil_bellagio_la_CFLAGS = -I$(top_srcdir)/include -I$(srcdir)/base -I$(srcdir)/core_extensions -DINSTALL_PATH_STR=\"$(plugindir)\"
+libomxil_bellagio_la_LIBADD = base/libomxbase.la core_extensions/libomxcoreext.la -lpthread
 libomxil_bellagio_la_LDFLAGS = -version-info @SHARED_VERSION_INFO@
 
 include_extradir = $(includedir)/bellagio
@@ -47,5 +47,7 @@ include_extra_HEADERS = $(srcdir)/omxcore.h \
 			$(srcdir)/base/omx_classmagic.h \
 			$(srcdir)/base/omx_base_clock_port.h \
 			$(srcdir)/base/omx_base_image_port.h \
-			$(srcdir)/extension_struct.h
+			$(srcdir)/extension_struct.h \
+			$(srcdir)/base/OMXComponentRMExt.h \
+			$(srcdir)/core_extensions/OMXCoreRMExt.h
 

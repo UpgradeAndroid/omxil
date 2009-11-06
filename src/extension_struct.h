@@ -41,4 +41,9 @@ typedef struct OMX_PARAM_BELLAGIOTHREADS_ID {
 	long int nThreadMessageID; /**< @param nThreadMessageID the linux thread ID of the message handler thread*/\
 } OMX_PARAM_BELLAGIOTHREADS_ID;
 
+typedef struct multiResourceDescriptor {
+	int CPUResourceRequested;
+	int MemoryResourceRequested;
+} multiResourceDescriptor;
+
 #endif

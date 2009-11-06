@@ -34,9 +34,9 @@
 	51 Franklin St, Fifth Floor, Boston, MA
 	02110-1301  USA
 
-	$Date$
-	Revision $Rev$
-	Author $Author$
+	$Date: 2009-09-29 15:24:06 +0200 (Tue, 29 Sep 2009) $
+	Revision $Rev: 534 $
+	Author $Author: GiulioUrlini $
 
 */
 
@@ -56,6 +56,16 @@
  */
 static const char arrow[] =  " ==> ";
 
+int int2strlen(int value) {
+	int ret = 0;
+	if (value<0) return -1;
+	while(value>0) {
+		value = value/10;
+		ret++;
+	}
+	return ret;
+}
+
 /** @brief Creates a list of components on a registry file
  *
  * This function
@@ -68,7 +78,7 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
   DIR *dirp;
 	struct dirent *dp;
 	void *handle = NULL;
-	int i, num_of_comp, k;
+	int i, num_of_comp, k, qi;
 	int num_of_libraries = 0;
 	unsigned int j;
 	char *buffer = NULL;
@@ -80,14 +90,18 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 	int index;
 	char* currentpath = componentspath;
 	char* actual;
-	int err;
+		int err;
 	nameList *allNames = NULL;
 	nameList *currentName = NULL;
 	nameList *tempName = NULL;
+	char* qualityString = NULL;
+	int index_string;
 	/* the componentpath contains a single or multiple directories
 	 * and is is colon separated like env variables in Linux
 	 */
 
+	qualityString = malloc(4096);
+	buffer = malloc(8192);
 	while (!pathconsumed) {
 		index = 0;
 		currentgiven = 0;
@@ -147,6 +161,8 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 						stComponents = malloc(num_of_comp * sizeof(stLoaderComponentType*));
 						for (i = 0; i<num_of_comp; i++) {
 							stComponents[i] = calloc(1,sizeof(stLoaderComponentType));
+							stComponents[i]->nqualitylevels = 0;
+							stComponents[i]->multiResourceLevel = NULL;
 						}
 						fptr(stComponents);
 						err = fwrite(lib_absolute_path, 1, strlen(lib_absolute_path), omxregistryfp);
@@ -187,16 +203,23 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 								stComponents[i]->componentVersion.s.nStep,
 								lib_absolute_path);
 							if (verbose) {
-								printf("Component %s registered\n", stComponents[i]->name);
+								printf("Component %s registered with %i quality levels\n", stComponents[i]->name, (int)stComponents[i]->nqualitylevels);
 							}
-							// allocate max memory
-							len = sizeof(arrow)                 /* arrow */
-							+strlen(stComponents[i]->name) /* component name */
-							+sizeof(arrow)                 /* arrow */
-							+1                             /* '\n' */
-							+1                             /* '\0' */;
-							buffer = realloc(buffer, len);
-
+							if (stComponents[i]->nqualitylevels > 0) {
+								index_string = 0;
+								sprintf((qualityString + index_string), "%i ", (int)stComponents[i]->nqualitylevels);
+								index_string = index_string + int2strlen(stComponents[i]->nqualitylevels) + 1;
+								for (qi=0; qi<stComponents[i]->nqualitylevels; qi++) {
+									sprintf((qualityString + index_string), "%i,%i ",
+											stComponents[i]->multiResourceLevel[qi]->CPUResourceRequested,
+											stComponents[i]->multiResourceLevel[qi]->MemoryResourceRequested);
+									index_string = index_string + 2 +
+										int2strlen(stComponents[i]->multiResourceLevel[qi]->CPUResourceRequested) +
+										int2strlen(stComponents[i]->multiResourceLevel[qi]->MemoryResourceRequested);
+								}
+								index_string--;
+								*(qualityString + index_string) = '\0';
+							}
 							// insert first of all the name of the library
 							strcpy(buffer, arrow);
 							strcat(buffer, stComponents[i]->name);
@@ -207,13 +230,16 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 									if (verbose) {
 										printf("  Specific role %s registered\n", stComponents[i]->name_specific[j]);
 									}
-									len += strlen(stComponents[i]->name_specific[j]) /* specific role */
-									+1                                         /* ':' */;
-									buffer = realloc(buffer, len);
 									strcat(buffer, stComponents[i]->name_specific[j]);
 									strcat(buffer, ":");
 								}
 							}
+
+							if ((qualityString != NULL) && (qualityString[0] != '\0')) {
+								strcat(buffer, arrow);
+								strcat(buffer, qualityString);
+							}
+							qualityString[0] = '\0';
 							strcat(buffer, "\n");
 							err = fwrite(buffer, 1, strlen(buffer), omxregistryfp);
 							ncomponents++;
@@ -227,6 +253,12 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 							if (stComponents[i]->name_specific_length > 0) {
 								free(stComponents[i]->name_specific);
 								free(stComponents[i]->role_specific);
+							}
+							for (k=0; k<stComponents[i]->nqualitylevels; k++) {
+								free(stComponents[i]->multiResourceLevel[k]);
+							}
+							if (stComponents[i]->multiResourceLevel) {
+								free(stComponents[i]->multiResourceLevel);
 							}
 							free(stComponents[i]);
 						}
@@ -243,8 +275,8 @@ static int buildComponentsList(FILE* omxregistryfp, char *componentspath, int ve
 	} else {
 		DEBUG(DEB_LEV_SIMPLE_SEQ, "\n %i OpenMAX IL ST static components with %i roles in %i libraries succesfully scanned\n", ncomponents, nroles, num_of_libraries);
 	}
+	free(qualityString);
 	free(buffer);
-
 	return 0;
 }
 
