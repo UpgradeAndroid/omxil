@@ -22,9 +22,6 @@
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
 
-  $Date$
-  Revision $Rev$
-  Author $Author$
 */
 
 #ifndef __COMPONENT_LOADER_H__

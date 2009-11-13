@@ -21,9 +21,6 @@
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
 
-  $Date$
-  Revision $Rev$
-  Author $Author$
 */
 
 #ifndef __CONTENT_PIPE_FILE_H__

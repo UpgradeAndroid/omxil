@@ -35,10 +35,6 @@
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
 
-  $Date$
-  Revision $Rev$
-  Author $Author$
-
 */
 #ifndef OMX_CLASSMAGIC_H_
 #define OMX_CLASSMAGIC_H_
