@@ -94,6 +94,9 @@ OMX_ERRORTYPE OMX_Init() {
   OMX_ERRORTYPE err;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+#ifdef CONFIG_DEBUG_LEVEL
+  DEBUG(DEB_LEV_ERR, "In %s\n", __func__);
+#endif
   if(initialized == 0) {
     initialized = 1;
 
