@@ -143,9 +143,9 @@ AC_SUBST(PLUGIN_LDFLAGS)
 AX_SET_PLUGINDIR
 
 # Define components default ldflags (man ld)
-CFG_DEBUG_LEVEL=0
+CFG_DEBUG_LEVEL=255
 AC_SUBST(CFG_DEBUG_LEVEL)
-
+CFLAGS="${CFLAGS} -DCONFIG_DEBUG_LEVEL=$CFG_DEBUG_LEVEL"
 ################################################################################
 # Check for header files                                                       #
 ################################################################################
