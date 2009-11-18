@@ -1,4 +1,4 @@
-AC_INIT([OpenMAX Bellagio], [0.9.2], [], [libomxil-bellagio])
+AC_INIT([OpenMAX Bellagio], [0.9.2], [giulio.urlini@st.com], [libomxil-bellagio])
 AM_INIT_AUTOMAKE([tar-ustar])
 
 # Prerequisite autoconf version
@@ -105,6 +105,14 @@ AC_ARG_ENABLE(
     [with_doc=$enableval],
     [with_doc=yes])
 
+AC_ARG_ENABLE(
+    [debug],
+    [AC_HELP_STRING(
+        [--enable-debug],
+        [whether to enable an x debug level])],
+    [with_debug_level=$enableval],
+    [with_debug_level=$no])
+
 ################################################################################
 # Check for programs                                                           #
 ################################################################################
@@ -127,6 +135,8 @@ fi
 # Check for libraries                                                          #
 ################################################################################
 
+AC_CHECK_LIB([pthread], [pthread_create])
+
 # Check for libdl
 AC_SEARCH_LIBS([dlopen], [dl], [], [AC_MSG_ERROR([libdl is required])])
 
@@ -142,13 +152,22 @@ AC_SUBST(PLUGIN_LDFLAGS)
 
 AX_SET_PLUGINDIR
 
-# Define components default ldflags (man ld)
-CFG_DEBUG_LEVEL=255
+CFG_DEBUG_LEVEL=0
+# Define debug messages level
+if test "x$debug_level" = "xno"; then
+ CFG_DEBUG_LEVEL=0
+fi
+if test "x$debug_level" = "xyes"; then
+ CFG_DEBUG_LEVEL=255
+fi
+
 AC_SUBST(CFG_DEBUG_LEVEL)
 CFLAGS="${CFLAGS} -DCONFIG_DEBUG_LEVEL=$CFG_DEBUG_LEVEL"
 ################################################################################
 # Check for header files                                                       #
 ################################################################################
+
+AC_CHECK_HEADERS([fcntl.h malloc.h netdb.h netinet/in.h stdlib.h string.h strings.h sys/socket.h sys/time.h unistd.h])
 
 ################################################################################
 # Check for pkg-config modules                                                 #
@@ -176,7 +195,9 @@ CFLAGS="${CFLAGS} -DCONFIG_DEBUG_LEVEL=$CFG_DEBUG_LEVEL"
 # Check for library functions                                                  #
 ################################################################################
 
-# unused
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_CHECK_FUNCS([gethostbyname gettimeofday memset mkdir socket strdup strerror strndup strrchr])
 
 ################################################################################
 # Check for system services                                                    #
