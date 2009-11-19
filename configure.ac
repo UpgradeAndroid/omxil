@@ -111,15 +111,20 @@ AC_ARG_ENABLE(
         [--enable-debug],
         [whether to enable an x debug level])],
     [with_debug_level=$enableval],
-    [with_debug_level=$no])
+    [with_debug_level=no])
 
 ################################################################################
 # Check for programs                                                           #
 ################################################################################
 
 # Check for a working C compiler
+AC_PROG_CXX
 AC_PROG_CC
 AM_PROG_CC_C_O
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
 
 # Check for libtool
 AM_PROG_LIBTOOL
@@ -154,10 +159,28 @@ AX_SET_PLUGINDIR
 
 CFG_DEBUG_LEVEL=0
 # Define debug messages level
-if test "x$debug_level" = "xno"; then
+if test "x$with_debug_level" = "xno"; then
  CFG_DEBUG_LEVEL=0
 fi
-if test "x$debug_level" = "xyes"; then
+if test "x$with_debug_level" = "xyes"; then
+ CFG_DEBUG_LEVEL=255
+fi
+if test "x$with_debug_level" = "x1"; then
+ CFG_DEBUG_LEVEL=2
+fi
+if test "x$with_debug_level" = "x2"; then
+ CFG_DEBUG_LEVEL=4
+fi
+if test "x$with_debug_level" = "x3"; then
+ CFG_DEBUG_LEVEL=8
+fi
+if test "x$with_debug_level" = "x4"; then
+ CFG_DEBUG_LEVEL=16
+fi
+if test "x$with_debug_level" = "x5"; then
+ CFG_DEBUG_LEVEL=32
+fi
+if test "x$with_debug_level" = "x6"; then
  CFG_DEBUG_LEVEL=255
 fi
 
@@ -177,7 +200,8 @@ AC_CHECK_HEADERS([fcntl.h malloc.h netdb.h netinet/in.h stdlib.h string.h string
 # Check for types                                                              #
 ################################################################################
 
-# unused
+AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
 
 ################################################################################
 # Check for structures                                                         #
