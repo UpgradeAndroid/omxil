@@ -1,4 +1,4 @@
-AC_INIT([OpenMAX Bellagio], [0.9.2], [], [libomxil-bellagio])
+AC_INIT([OpenMAX Bellagio], [0.9.2], [giulio.urlini@st.com], [libomxil-bellagio])
 AM_INIT_AUTOMAKE([tar-ustar])
 
 # Prerequisite autoconf version
@@ -105,13 +105,26 @@ AC_ARG_ENABLE(
     [with_doc=$enableval],
     [with_doc=yes])
 
+AC_ARG_ENABLE(
+    [debug],
+    [AC_HELP_STRING(
+        [--enable-debug],
+        [whether to enable an x debug level])],
+    [with_debug_level=$enableval],
+    [with_debug_level=no])
+
 ################################################################################
 # Check for programs                                                           #
 ################################################################################
 
 # Check for a working C compiler
+AC_PROG_CXX
 AC_PROG_CC
 AM_PROG_CC_C_O
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
 
 # Check for libtool
 AM_PROG_LIBTOOL
@@ -126,6 +139,8 @@ fi
 ################################################################################
 # Check for libraries                                                          #
 ################################################################################
+
+AC_CHECK_LIB([pthread], [pthread_create])
 
 # Check for libdl
 AC_SEARCH_LIBS([dlopen], [dl], [], [AC_MSG_ERROR([libdl is required])])
@@ -142,9 +157,40 @@ AC_SUBST(PLUGIN_LDFLAGS)
 
 AX_SET_PLUGINDIR
 
+CFG_DEBUG_LEVEL=0
+# Define debug messages level
+if test "x$with_debug_level" = "xno"; then
+ CFG_DEBUG_LEVEL=0
+fi
+if test "x$with_debug_level" = "xyes"; then
+ CFG_DEBUG_LEVEL=255
+fi
+if test "x$with_debug_level" = "x1"; then
+ CFG_DEBUG_LEVEL=2
+fi
+if test "x$with_debug_level" = "x2"; then
+ CFG_DEBUG_LEVEL=4
+fi
+if test "x$with_debug_level" = "x3"; then
+ CFG_DEBUG_LEVEL=8
+fi
+if test "x$with_debug_level" = "x4"; then
+ CFG_DEBUG_LEVEL=16
+fi
+if test "x$with_debug_level" = "x5"; then
+ CFG_DEBUG_LEVEL=32
+fi
+if test "x$with_debug_level" = "x6"; then
+ CFG_DEBUG_LEVEL=255
+fi
+
+AC_SUBST(CFG_DEBUG_LEVEL)
+CFLAGS="${CFLAGS} -DCONFIG_DEBUG_LEVEL=$CFG_DEBUG_LEVEL"
 ################################################################################
 # Check for header files                                                       #
 ################################################################################
+
+AC_CHECK_HEADERS([fcntl.h malloc.h netdb.h netinet/in.h stdlib.h string.h strings.h sys/socket.h sys/time.h unistd.h])
 
 ################################################################################
 # Check for pkg-config modules                                                 #
@@ -154,7 +200,8 @@ AX_SET_PLUGINDIR
 # Check for types                                                              #
 ################################################################################
 
-# unused
+AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
 
 ################################################################################
 # Check for structures                                                         #
@@ -172,7 +219,9 @@ AX_SET_PLUGINDIR
 # Check for library functions                                                  #
 ################################################################################
 
-# unused
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_CHECK_FUNCS([gethostbyname gettimeofday memset mkdir socket strdup strerror strndup strrchr])
 
 ################################################################################
 # Check for system services                                                    #
