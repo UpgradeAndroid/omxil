@@ -29,6 +29,15 @@ CLOCK
   fast forward and rewind.
 
 =============================
+IMPORTANT NOTE
+=============================
+All the other components preent in the old versions of Bellagio
+are distributed from the 0.9.2 on as external packages maintainaed separately.
+If you need more details you can check the download page in the Bellagio web site:
+
+http://omxil.sourceforge.net/downloads.html
+
+=============================
  BUILD the bellagio library
 =============================
 
