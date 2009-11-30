@@ -1,7 +1,7 @@
 /**
   src/core_extensions/OMXCoreRMExt.h
 
-  THis extension of the core provides functions for the resoruce manager used to retrieve
+  This extension of the core provides functions for the resoruce manager used to retrieve
 	the quality levels of the components available.
 
   Copyright (C) 2007-2009 ???
@@ -27,9 +27,6 @@
 	 Implementation of the Interface IOmxCoreExt
 	 Original author: Edwin Detrez
 
-	$Date: 2009-03-24 11:03:16 +0100 (Tue, 24 Mar 2009) $
-  Revision $Rev: 464 $
-  Author $Author: GiulioUrlini $
 */
 
 #ifndef __OMXCORERMEXT_H__

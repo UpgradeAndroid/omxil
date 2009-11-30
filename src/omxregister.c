@@ -34,10 +34,6 @@
 	51 Franklin St, Fifth Floor, Boston, MA
 	02110-1301  USA
 
-	$Date: 2009-09-29 15:24:06 +0200 (Tue, 29 Sep 2009) $
-	Revision $Rev: 534 $
-	Author $Author: GiulioUrlini $
-
 */
 
 #include <dlfcn.h>

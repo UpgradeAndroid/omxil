@@ -21,9 +21,6 @@
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
 
-	$Date: 2009-10-01 14:33:25 +0200 (Thu, 01 Oct 2009) $
-  Revision $Rev: 536 $
-  Author $Author: GiulioUrlini $
 */
 
 #include "omxcore.h"

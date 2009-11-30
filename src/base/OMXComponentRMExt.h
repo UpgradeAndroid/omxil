@@ -27,9 +27,6 @@
 	 Implementation of the Interface IOmxComponentExt
 	 Original author: Edwin Detrez
 
-	$Date: 2009-05-28 09:12:47 +0200 (Thu, 28 May 2009) $
-  Revision $Rev: 500 $
-  Author $Author: GiulioUrlini $
 */
 
 #ifndef __OMXCOMPONENTRMEXT_H__
