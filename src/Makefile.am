@@ -5,7 +5,8 @@ SUBDIRS = base core_extensions . components
 bin_PROGRAMS = omxregister-bellagio
 omxregister_bellagio_SOURCES = omxregister.c common.c common.h
 omxregister_bellagio_CFLAGS = -DOMXILCOMPONENTSPATH=\"$(plugindir)/\" \
-			      -I$(top_srcdir)/include -lomxil-bellagio
+			      -I$(top_srcdir)/include
+omxregister_bellagio_LDFLAGS = -L$(builddir) -lomxil-bellagio
 
 lib_LTLIBRARIES = libomxil-bellagio.la
 libomxil_bellagio_la_SOURCES = component_loader.h \
