@@ -4,7 +4,7 @@
   This extension of the core provides functions for the resource manager used to retrieve
 	the quality levels of the components available.
 
-  Copyright (C) 2007-2009 STMicroelectronics
+  Copyright (C) 2009-2010 STMicroelectronics
 
   This library is free software; you can redistribute it and/or modify it under
   the terms of the GNU Lesser General Public License as published by the Free
@@ -20,12 +20,6 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-
-	Originally automatically created:
- 	IOmxComponentExt.h
-	 Created on: 22-okt-2008 8:00:18
-	 Implementation of the Interface IOmxComponentExt
-	 Original author: Edwin Detrez
 
 */
 

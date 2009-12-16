@@ -4,7 +4,7 @@
   This extension of the core provides functions for the resoruce manager used to retrieve
 	the quality levels of the components available.
 
-  Copyright (C) 2007-2009 STMicroelectronics
+  Copyright (C) 2009-2010 STMicroelectronics
 
   This library is free software; you can redistribute it and/or modify it under
   the terms of the GNU Lesser General Public License as published by the Free
