@@ -120,6 +120,16 @@ OMX_ERRORTYPE omx_video_scheduler_component_Constructor(OMX_COMPONENTTYPE *openm
   openmaxStandComp->SetParameter  = omx_video_scheduler_component_SetParameter;
   openmaxStandComp->GetParameter  = omx_video_scheduler_component_GetParameter;
 
+  /* resource management special section */
+  omx_video_scheduler_component_Private->nqualitylevels = VIDEOSCHED_QUALITY_LEVELS;
+  omx_video_scheduler_component_Private->currentQualityLevel = 1;
+  omx_video_scheduler_component_Private->multiResourceLevel = malloc(sizeof(multiResourceDescriptor *) * VIDEOSCHED_QUALITY_LEVELS);
+  for (i = 0; i<VIDEOSCHED_QUALITY_LEVELS; i++) {
+	  omx_video_scheduler_component_Private->multiResourceLevel[i] = malloc(sizeof(multiResourceDescriptor));
+	  omx_video_scheduler_component_Private->multiResourceLevel[i]->CPUResourceRequested = videoSchedQualityLevels[i * 2];
+	  omx_video_scheduler_component_Private->multiResourceLevel[i]->MemoryResourceRequested = videoSchedQualityLevels[i * 2 + 1];
+  }
+
   return err;
 }
 

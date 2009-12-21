@@ -1,10 +1,10 @@
 /**
   src/core_extensions/OMXCoreRMExt.h
 
-  This extension of the core provides functions for the resoruce manager used to retrieve
+  This extension of the core provides functions for the resource manager used to retrieve
 	the quality levels of the components available.
 
-  Copyright (C) 2007-2009 ???
+  Copyright (C) 2008-2010 STMicroelectronics
 
   This library is free software; you can redistribute it and/or modify it under
   the terms of the GNU Lesser General Public License as published by the Free
@@ -20,12 +20,6 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   51 Franklin St, Fifth Floor, Boston, MA
   02110-1301  USA
-
-	Originally automatically created:
- 	IOmxCoreExt.h
-	 Created on: 22-okt-2008 8:00:12
-	 Implementation of the Interface IOmxCoreExt
-	 Original author: Edwin Detrez
 
 */
 

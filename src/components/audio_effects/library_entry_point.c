@@ -87,6 +87,14 @@ int omx_component_library_Setup(stLoaderComponentType **stComponents) {
   strcpy(stComponents[0]->name_specific[0], "OMX.st.volume.component");
   strcpy(stComponents[0]->role_specific[0], "volume.component");
 
+  stComponents[0]->nqualitylevels = VOLUME_QUALITY_LEVELS;
+  stComponents[0]->multiResourceLevel = malloc(stComponents[0]->nqualitylevels * sizeof(multiResourceDescriptor *));
+  for (i=0; i<stComponents[0]->nqualitylevels; i++) {
+	  stComponents[0]->multiResourceLevel[i] = malloc(sizeof(multiResourceDescriptor));
+	  stComponents[0]->multiResourceLevel[i]->CPUResourceRequested = volumeQualityLevels[i * 2];
+	  stComponents[0]->multiResourceLevel[i]->MemoryResourceRequested = volumeQualityLevels[i * 2 + 1];
+  }
+
   /** component 2 - audio mixer component */
   stComponents[1]->componentVersion.s.nVersionMajor = 1;
   stComponents[1]->componentVersion.s.nVersionMinor = 1;
@@ -119,6 +127,14 @@ int omx_component_library_Setup(stLoaderComponentType **stComponents) {
 
   strcpy(stComponents[1]->name_specific[0], "OMX.st.audio.mixer");
   strcpy(stComponents[1]->role_specific[0], "audio.mixer");
+
+  stComponents[1]->nqualitylevels = MIXER_QUALITY_LEVELS;
+  stComponents[1]->multiResourceLevel = malloc(stComponents[1]->nqualitylevels * sizeof(multiResourceDescriptor *));
+  for (i=0; i<stComponents[1]->nqualitylevels; i++) {
+	  stComponents[1]->multiResourceLevel[i] = malloc(sizeof(multiResourceDescriptor));
+	  stComponents[1]->multiResourceLevel[i]->CPUResourceRequested = mixerQualityLevels[i * 2];
+	  stComponents[1]->multiResourceLevel[i]->MemoryResourceRequested = mixerQualityLevels[i * 2 + 1];
+  }
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s \n",__func__);
   return 2;
