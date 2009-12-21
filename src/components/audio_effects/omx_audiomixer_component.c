@@ -120,6 +120,16 @@ OMX_ERRORTYPE omx_audio_mixer_component_Constructor(OMX_COMPONENTTYPE *openmaxSt
   omx_audio_mixer_component_Private->BufferMgmtCallback = omx_audio_mixer_component_BufferMgmtCallback;
   omx_audio_mixer_component_Private->BufferMgmtFunction = omx_audio_mixer_BufferMgmtFunction;
 
+  /* resource management special section */
+  omx_audio_mixer_component_Private->nqualitylevels = MIXER_QUALITY_LEVELS;
+  omx_audio_mixer_component_Private->currentQualityLevel = 1;
+  omx_audio_mixer_component_Private->multiResourceLevel = malloc(sizeof(multiResourceDescriptor *) * MIXER_QUALITY_LEVELS);
+  for (i = 0; i<MIXER_QUALITY_LEVELS; i++) {
+	  omx_audio_mixer_component_Private->multiResourceLevel[i] = malloc(sizeof(multiResourceDescriptor));
+	  omx_audio_mixer_component_Private->multiResourceLevel[i]->CPUResourceRequested = mixerQualityLevels[i * 2];
+	  omx_audio_mixer_component_Private->multiResourceLevel[i]->MemoryResourceRequested = mixerQualityLevels[i * 2 + 1];
+  }
+
   return err;
 }
 

@@ -101,6 +101,16 @@ OMX_ERRORTYPE omx_volume_component_Constructor(OMX_COMPONENTTYPE *openmaxStandCo
 	openmaxStandComp->SetConfig = omx_volume_component_SetConfig;
 	omx_volume_component_Private->BufferMgmtCallback = omx_volume_component_BufferMgmtCallback;
 
+  /* resource management special section */
+  omx_volume_component_Private->nqualitylevels = VOLUME_QUALITY_LEVELS;
+  omx_volume_component_Private->currentQualityLevel = 1;
+  omx_volume_component_Private->multiResourceLevel = malloc(sizeof(multiResourceDescriptor *) * VOLUME_QUALITY_LEVELS);
+  for (i = 0; i<VOLUME_QUALITY_LEVELS; i++) {
+	  omx_volume_component_Private->multiResourceLevel[i] = malloc(sizeof(multiResourceDescriptor));
+	  omx_volume_component_Private->multiResourceLevel[i]->CPUResourceRequested = volumeQualityLevels[i * 2];
+	  omx_volume_component_Private->multiResourceLevel[i]->MemoryResourceRequested = volumeQualityLevels[i * 2 + 1];
+  }
+
 	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);
 	return OMX_ErrorNone;
 }

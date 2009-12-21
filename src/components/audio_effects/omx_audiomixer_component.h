@@ -34,6 +34,9 @@
 #include <omx_base_filter.h>
 #include <omx_base_audio_port.h>
 
+#define MIXER_QUALITY_LEVELS 1
+static int mixerQualityLevels []={50, 60000, 10, 40000};
+
 #define MAX_PORTS   5 // Maximum number of ports supported by the mixer. 4 input and 1 output
 #define MAX_CHANNEL 6 // Maximum number of channels supported in a single stream 5.1
 

@@ -33,6 +33,9 @@
 #include <omx_base_video_port.h>
 #include <omx_base_clock_port.h>
 
+#define VIDEOSCHED_QUALITY_LEVELS 2
+static int videoSchedQualityLevels []={1, 456192, 1, 304128};
+
 /** video scheduler component private structure.
   * @param xScale the scale of the media clock
   * @param eState the state of the media clock

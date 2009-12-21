@@ -33,6 +33,9 @@
 #include <string.h>
 #include <omx_base_filter.h>
 
+#define VOLUME_QUALITY_LEVELS 2
+static int volumeQualityLevels []={1, 65536, 1, 32768};
+
 /** Twoport component private structure.
 * see the define above
 */
