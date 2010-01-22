@@ -67,10 +67,11 @@ typedef struct OMX_VENDOR_PROP_TUNNELSETUPTYPE  {
 /** this is the list of custom vendor index */
 typedef enum OMX_INDEXVENDORTYPE {
 	/** only one index for file reader component input file */
-	OMX_IndexVendorInputFilename          = 0xFF000001,
-	OMX_IndexVendorOutputFilename         = 0xFF000002,
-	OMX_IndexVendorCompPropTunnelFlags    = 0xFF000003, /* Will use OMX_TUNNELSETUPTYPE structure*/
-	OMX_IndexParameterThreadsID           = 0xFF000004
+	OMX_IndexVendorInputFilename = OMX_IndexVendorStartUnused+1,
+	OMX_IndexVendorOutputFilename,
+	OMX_IndexVendorCompPropTunnelFlags, /* Will use OMX_TUNNELSETUPTYPE structure*/
+	OMX_IndexParameterThreadsID,
+	OMX_VIDEO_CodingTheora
 } OMX_INDEXVENDORTYPE;
 
 /** This enum defines the transition states of the Component*/
