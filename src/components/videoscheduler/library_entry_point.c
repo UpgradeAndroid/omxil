@@ -88,7 +88,7 @@ int omx_component_library_Setup(stLoaderComponentType **stComponents) {
 	strcpy(stComponents[0]->role_specific[0], "video.scheduler");
 
 	stComponents[0]->nqualitylevels = VIDEOSCHED_QUALITY_LEVELS;
-	stComponents[0]->multiResourceLevel = malloc(stComponents[1]->nqualitylevels * sizeof(multiResourceDescriptor *));
+	stComponents[0]->multiResourceLevel = malloc(stComponents[0]->nqualitylevels * sizeof(multiResourceDescriptor *));
 	for (i=0; i<stComponents[0]->nqualitylevels; i++) {
 		stComponents[0]->multiResourceLevel[i] = malloc(sizeof(multiResourceDescriptor));
 		stComponents[0]->multiResourceLevel[i]->CPUResourceRequested = videoSchedQualityLevels[i * 2];
