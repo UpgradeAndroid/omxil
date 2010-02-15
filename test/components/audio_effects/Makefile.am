@@ -1,6 +1,6 @@
 check_PROGRAMS = omxvolcontroltest omxaudiomixertest
 
-bellagio_LDADD = -lomxil-bellagio
+bellagio_LDADD = $(OMXIL_LIBS)
 common_CFLAGS = -I$(top_srcdir)/test/components/common -I$(includedir)
 
 omxvolcontroltest_SOURCES = omxvolcontroltest.c omxvolcontroltest.h

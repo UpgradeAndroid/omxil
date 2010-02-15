@@ -1,6 +1,6 @@
 check_PROGRAMS = omxrmtest
 
-bellagio_LDADD = -lomxil-bellagio
+bellagio_LDADD = $(OMXIL_LIBS)
 common_CFLAGS = -I$(top_srcdir)/test/components/common -I$(includedir)
 
 omxrmtest_SOURCES = omxrmtest.c omxrmtest.h
