@@ -76,7 +76,7 @@
 #if DEBUG_LEVEL > 0
 #define DEBUG(n, fmt, args...) do { if (DEBUG_LEVEL & (n)){fprintf(stderr, "OMX-" fmt, ##args);} } while (0)
 #else
-#define DEBUG(n, fmt, args...)
+#define DEBUG(n, fmt, args...) {}
 #endif
 
 #endif

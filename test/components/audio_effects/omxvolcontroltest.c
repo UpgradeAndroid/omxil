@@ -289,9 +289,9 @@ int main(int argc, char** argv) {
   inBuffer2->nFilledLen = data_read2;
   filesize -= data_read2;
 
-  DEBUG(DEB_LEV_PARAMS, "Empty first  buffer %x\n", (int)inBuffer1);
+  DEBUG(DEB_LEV_PARAMS, "Empty first  buffer %p\n", inBuffer1);
   err = OMX_EmptyThisBuffer(handle, inBuffer1);
-  DEBUG(DEB_LEV_PARAMS, "Empty second buffer %x\n", (int)inBuffer2);
+  DEBUG(DEB_LEV_PARAMS, "Empty second buffer %p\n", inBuffer2);
   err = OMX_EmptyThisBuffer(handle, inBuffer2);
 
   /** Schedule a couple of buffers to be filled on the output port
@@ -412,7 +412,7 @@ OMX_ERRORTYPE volcEmptyBufferDone(
     return OMX_ErrorNone;
   }
   if(!bEOS) {
-    DEBUG(DEB_LEV_FULL_SEQ, "Empty buffer %x\n", (int)pBuffer);
+    DEBUG(DEB_LEV_FULL_SEQ, "Empty buffer %p\n", pBuffer);
     err = OMX_EmptyThisBuffer(hComponent, pBuffer);
   }else {
     DEBUG(DEB_LEV_FULL_SEQ, "In %s Dropping Empty This buffer to Audio Dec\n", __func__);

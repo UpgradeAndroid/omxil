@@ -176,7 +176,7 @@ OMX_ERRORTYPE rmEventHandler(
   OMX_U32 Data2,
   OMX_PTR pEventData) {
 
-  DEBUG(DEB_LEV_ERR, "Hi there, I am in the %s callback for %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_ERR, "Hi there, I am in the %s callback for %p\n", __func__, hComponent);
   if(eEvent == OMX_EventCmdComplete) {
     if (Data1 == OMX_CommandStateSet) {
       DEBUG(DEFAULT_MESSAGES, "Volume Component %x State changed in ", (int)hComponent);

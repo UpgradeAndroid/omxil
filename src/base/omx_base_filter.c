@@ -35,7 +35,7 @@ OMX_ERRORTYPE omx_base_filter_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OM
   OMX_ERRORTYPE err;
   omx_base_filter_PrivateType* omx_base_filter_Private;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %p\n", __func__, openmaxStandComp);
   if (openmaxStandComp->pComponentPrivate) {
     omx_base_filter_Private = (omx_base_filter_PrivateType*)openmaxStandComp->pComponentPrivate;
   } else {
@@ -59,19 +59,19 @@ OMX_ERRORTYPE omx_base_filter_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OM
 
   omx_base_filter_Private->BufferMgmtFunction = omx_base_filter_BufferMgmtFunction;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %p\n", __func__, openmaxStandComp);
   return OMX_ErrorNone;
 }
 
 OMX_ERRORTYPE omx_base_filter_Destructor(OMX_COMPONENTTYPE *openmaxStandComp) {
 	OMX_ERRORTYPE err;
-	  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %x\n", __func__, (int)openmaxStandComp);
+	  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %p\n", __func__, openmaxStandComp);
 	  err = omx_base_component_Destructor(openmaxStandComp);
 	  if (err != OMX_ErrorNone) {
 		  DEBUG(DEB_LEV_ERR, "The base component destructor failed\n");
 		  return err;
 	  }
-	  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %x\n", __func__, (int)openmaxStandComp);
+	  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %p\n", __func__, openmaxStandComp);
 	  return OMX_ErrorNone;
 }
 
@@ -95,7 +95,7 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
   int inBufExchanged=0,outBufExchanged=0;
 
   omx_base_filter_Private->bellagioThreads->nThreadBufferMngtID = (long int)syscall(__NR_gettid);
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %p\n", __func__, openmaxStandComp);
   DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s the thread ID is %i\n", __func__, (int)omx_base_filter_Private->bellagioThreads->nThreadBufferMngtID);
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
@@ -277,6 +277,6 @@ void* omx_base_filter_BufferMgmtFunction (void* param) {
       isInputBufferNeeded=OMX_TRUE;
     }
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s of component %p\n", __func__, openmaxStandComp);
   return NULL;
 }

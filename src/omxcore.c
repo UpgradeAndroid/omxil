@@ -188,7 +188,7 @@ OMX_ERRORTYPE OMX_GetHandle(OMX_HANDLETYPE* pHandle,
 OMX_ERRORTYPE OMX_FreeHandle(OMX_HANDLETYPE hComponent) {
 	int i;
     OMX_ERRORTYPE err;
-    DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for %x\n", __func__, (int)hComponent);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for %p\n", __func__, hComponent);
 
     for (i = 0; i < bosa_loaders; i++) {
     	err = loadersList[i]->BOSA_DestroyComponent(
@@ -267,8 +267,8 @@ OMX_ERRORTYPE OMX_SetupTunnel(
   OMX_COMPONENTTYPE* component;
   OMX_TUNNELSETUPTYPE* tunnelSetup;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s the output port is:%x/%i, the input port is %x/%i\n",
-		  __func__, (int)hOutput, (int)nPortOutput, (int)hInput, (int)nPortInput);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s the output port is:%p/%i, the input port is %p/%i\n",
+		  __func__, hOutput, (int)nPortOutput, hInput, (int)nPortInput);
   tunnelSetup = malloc(sizeof(OMX_TUNNELSETUPTYPE));
   component = (OMX_COMPONENTTYPE*)hOutput;
   tunnelSetup->nTunnelFlags = 0;

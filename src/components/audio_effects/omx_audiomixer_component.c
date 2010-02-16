@@ -51,7 +51,7 @@ OMX_ERRORTYPE omx_audio_mixer_component_Constructor(OMX_COMPONENTTYPE *openmaxSt
       return OMX_ErrorInsufficientResources;
     }
   } else {
-    DEBUG(DEB_LEV_FUNCTION_NAME, "In %s, Error Component %x Already Allocated\n", __func__, (int)openmaxStandComp->pComponentPrivate);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "In %s, Error Component %p Already Allocated\n", __func__, openmaxStandComp->pComponentPrivate);
   }
 
   omx_audio_mixer_component_Private = openmaxStandComp->pComponentPrivate;
@@ -521,7 +521,7 @@ void* omx_audio_mixer_BufferMgmtFunction (void* param) {
           }
 
           if((pBuffer[i]->nFlags & OMX_BUFFERFLAG_EOS) == OMX_BUFFERFLAG_EOS && pBuffer[i]->nFilledLen==0) {
-            DEBUG(DEB_LEV_FULL_SEQ, "Detected EOS flags in input buffer %x of %i filled len=%d\n", (int)pBuffer[i], (int)i, (int)pBuffer[i]->nFilledLen);
+            DEBUG(DEB_LEV_FULL_SEQ, "Detected EOS flags in input buffer %p of %i filled len=%d\n", pBuffer[i], (int)i, (int)pBuffer[i]->nFilledLen);
             pBuffer[nOutputPortIndex]->nFlags = pBuffer[i]->nFlags;
             pBuffer[i]->nFlags=0;
             (*(omx_audio_mixer_component_Private->callbacks->EventHandler))

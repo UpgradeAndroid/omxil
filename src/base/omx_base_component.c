@@ -97,7 +97,7 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
 	OMX_U32 i;
 	int err;
 
-	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, openmaxStandComp);
 
 	if (openmaxStandComp->pComponentPrivate) {
 		omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
@@ -257,7 +257,7 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
 		base_constructor_remove_garbage_collected(omx_base_component_Private);
 		return OMX_ErrorInsufficientResources;
 	}
-	DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s for component %x\n", __func__, (int)openmaxStandComp);
+	DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s for component %p\n", __func__, openmaxStandComp);
 	return OMX_ErrorNone;
 }
 
@@ -271,7 +271,7 @@ OMX_ERRORTYPE omx_base_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp
 OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp) {
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
   int err;
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, openmaxStandComp);
   omx_base_component_Private->state = OMX_StateInvalid;
   omx_base_component_Private->callbacks=NULL;
 
@@ -331,7 +331,7 @@ OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp)
     omx_base_component_Private->flush_condition=NULL;
   }
 
-  DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s for component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s for component %p\n", __func__, openmaxStandComp);
   return OMX_ErrorNone;
 }
 
@@ -347,13 +347,13 @@ OMX_ERRORTYPE omx_base_component_ComponentDeInit(
   OMX_HANDLETYPE hComponent) {
   OMX_COMPONENTTYPE *openmaxStandComp = (OMX_COMPONENTTYPE *)hComponent;
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
-  DEBUG(DEB_LEV_FUNCTION_NAME,"In %s for component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME,"In %s for component %p\n", __func__, openmaxStandComp);
 
   omx_base_component_Private->destructor(openmaxStandComp);
 
   free(openmaxStandComp->pComponentPrivate);
   openmaxStandComp->pComponentPrivate=NULL;
-  DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s for component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME,"Out of %s for component %p\n", __func__, openmaxStandComp);
   return OMX_ErrorNone;
 }
 
@@ -374,7 +374,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
   OMX_ERRORTYPE err=OMX_ErrorNone;
   OMX_BOOL bExit = OMX_FALSE;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, openmaxStandComp);
   DEBUG(DEB_LEV_PARAMS, "Changing state from %i to %i\n", omx_base_component_Private->state, (int)destinationState);
 
   if (omx_base_component_Private->state == OMX_StateLoaded && destinationState == OMX_StateIdle) {
@@ -459,7 +459,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
     	err = OMX_ErrorIncorrectStateTransition;
       break;
     }
-    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p with err %i\n", __func__, openmaxStandComp, err);
     return err;
   }
 
@@ -480,7 +480,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
     	err = OMX_ErrorIncorrectStateTransition;
       break;
     }
-    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p with err %i\n", __func__, openmaxStandComp, err);
     return err;
   }
 
@@ -587,7 +587,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
-    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p with err %i\n", __func__, openmaxStandComp, err);
     return err;
   }
 
@@ -609,7 +609,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p with err %i\n", __func__, openmaxStandComp, err);
     return err;
   }
 
@@ -674,7 +674,7 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorIncorrectStateTransition;
       break;
     }
-    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p with err %i\n", __func__, openmaxStandComp, err);
     return err;
   }
 
@@ -699,10 +699,10 @@ OMX_ERRORTYPE omx_base_component_DoStateSet(OMX_COMPONENTTYPE *openmaxStandComp,
       err = OMX_ErrorInvalidState;
       break;
     }
-    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x with err %i\n", __func__, (int)openmaxStandComp, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p with err %i\n", __func__, openmaxStandComp, err);
     return err;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, openmaxStandComp);
   return OMX_ErrorNone;
 }
 
@@ -765,7 +765,7 @@ OMX_ERRORTYPE omx_base_component_ParameterSanityCheck(OMX_HANDLETYPE hComponent,
   int nNumPorts;
   OMX_ERRORTYPE err;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
   nNumPorts = omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
               omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
               omx_base_component_Private->sPortTypesParam[OMX_PortDomainImage].nPorts +
@@ -790,7 +790,7 @@ OMX_ERRORTYPE omx_base_component_ParameterSanityCheck(OMX_HANDLETYPE hComponent,
 	  DEBUG(DEB_LEV_ERR, "In %s failing the checkHeader with err %i\n", __func__, (int)err);
 	  return err;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return OMX_ErrorNone;
 }
 
@@ -809,7 +809,7 @@ OMX_ERRORTYPE omx_base_component_GetComponentVersion(OMX_HANDLETYPE hComponent,
 
   OMX_U32 uuid[3];
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
   /* Fill component name */
   strcpy(pComponentName, omx_base_component_Private->name);
 
@@ -829,7 +829,7 @@ OMX_ERRORTYPE omx_base_component_GetComponentVersion(OMX_HANDLETYPE hComponent,
   uuid[2] = getuid();
   memcpy(*pComponentUUID, uuid, 3*sizeof(uuid));
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return OMX_ErrorNone;
 }
 
@@ -864,7 +864,7 @@ OMX_ERRORTYPE omx_base_component_SetCallbacks(
   omx_base_PortType *pPort;
   OMX_U32 i,j;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
   omx_base_component_Private->callbacks = pCallbacks;
   omx_base_component_Private->callbackData = pAppData;
 
@@ -881,7 +881,7 @@ OMX_ERRORTYPE omx_base_component_SetCallbacks(
       }
     }
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return OMX_ErrorNone;
 }
 
@@ -909,7 +909,7 @@ OMX_ERRORTYPE omx_base_component_GetParameter(
   OMX_VENDOR_PROP_TUNNELSETUPTYPE *pPropTunnelSetup;
   OMX_PARAM_BELLAGIOTHREADS_ID *threadID;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
   DEBUG(DEB_LEV_PARAMS, "Getting parameter %i\n", nParamIndex);
   if (ComponentParameterStructure == NULL) {
     return OMX_ErrorBadParameter;
@@ -1011,7 +1011,7 @@ OMX_ERRORTYPE omx_base_component_GetParameter(
     err = OMX_ErrorUnsupportedIndex;
     break;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return err;
 }
 
@@ -1036,7 +1036,7 @@ OMX_ERRORTYPE omx_base_component_SetParameter(
   OMX_PARAM_BUFFERSUPPLIERTYPE *pBufferSupplier;
   omx_base_PortType *pPort;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
   DEBUG(DEB_LEV_PARAMS, "Setting parameter %x\n", nParamIndex);
   if (ComponentParameterStructure == NULL) {
     DEBUG(DEB_LEV_ERR, "In %s parameter provided is null! err = %x\n", __func__, err);
@@ -1214,7 +1214,7 @@ OMX_ERRORTYPE omx_base_component_SetParameter(
     err = OMX_ErrorUnsupportedIndex;
     break;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return err;
 }
 
@@ -1256,13 +1256,13 @@ OMX_ERRORTYPE omx_base_component_GetExtensionIndex(
   OMX_STRING cParameterName,
   OMX_INDEXTYPE* pIndexType) {
 
-	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
 	if(strcmp(cParameterName,"OMX.st.index.param.BellagioThreadsID") == 0) {
 		*pIndexType = OMX_IndexParameterThreadsID;
 	} else {
 		return OMX_ErrorBadParameter;
 	}
-	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
 	return OMX_ErrorNone;
 }
 
@@ -1275,9 +1275,9 @@ OMX_ERRORTYPE omx_base_component_GetState(
   OMX_STATETYPE* pState) {
   OMX_COMPONENTTYPE *omxcomponent = (OMX_COMPONENTTYPE*)hComponent;
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)omxcomponent->pComponentPrivate;
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
   *pState = omx_base_component_Private->state;
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return OMX_ErrorNone;
 }
 
@@ -1300,7 +1300,7 @@ OMX_ERRORTYPE omx_base_component_SendCommand(
   omx_base_PortType *pPort;
   OMX_ERRORTYPE err = OMX_ErrorNone;
   int errQue;
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
 
   messageQueue = omx_base_component_Private->messageQueue;
   messageSem = omx_base_component_Private->messageSem;
@@ -1425,7 +1425,7 @@ OMX_ERRORTYPE omx_base_component_SendCommand(
       }
       tsem_up(messageSem);
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return err;
 }
 
@@ -1440,7 +1440,7 @@ void* compMessageHandlerFunction(void* param) {
   omx_base_component_PrivateType* omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
   internalRequestMessageType *message;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, openmaxStandComp);
   omx_base_component_Private->bellagioThreads->nThreadMessageID = (long int)syscall(__NR_gettid);
   DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s the thread ID is %i\n", __func__, (int)omx_base_component_Private->bellagioThreads->nThreadMessageID);
 
@@ -1469,7 +1469,7 @@ void* compMessageHandlerFunction(void* param) {
     free(message);
     message = NULL;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, openmaxStandComp);
   return NULL;
 }
 
@@ -1490,7 +1490,7 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
   OMX_ERRORTYPE                   err = OMX_ErrorNone;
   omx_base_PortType*              pPort;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x with message %i\n", __func__, (int)openmaxStandComp, message->messageType);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p with message %i\n", __func__, openmaxStandComp, message->messageType);
 
   /* Dealing with a SendCommand call.
   * -messageType contains the command to execute
@@ -1763,7 +1763,7 @@ OMX_ERRORTYPE omx_base_component_MessageHandler(OMX_COMPONENTTYPE *openmaxStandC
     DEBUG(DEB_LEV_ERR, "In %s: Unrecognized command %i\n", __func__, message->messageType);
   break;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, openmaxStandComp);
   return OMX_ErrorNone;
 }
 
@@ -1777,7 +1777,7 @@ OMX_ERRORTYPE omx_base_component_AllocateBuffer(
   omx_base_PortType *pPort;
   OMX_ERRORTYPE err;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
 
   if (nPortIndex >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                      omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
@@ -1789,10 +1789,10 @@ OMX_ERRORTYPE omx_base_component_AllocateBuffer(
   pPort = omx_base_component_Private->ports[nPortIndex];
   err = pPort->Port_AllocateBuffer(pPort, ppBuffer, nPortIndex, pAppPrivate, nSizeBytes);
   if (err != OMX_ErrorNone) {
-	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %p with err %i\n", __func__, hComponent, (int)err);
 	  return err;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return OMX_ErrorNone;
 }
 
@@ -1807,7 +1807,7 @@ OMX_ERRORTYPE omx_base_component_UseBuffer(
   omx_base_PortType *pPort;
   OMX_ERRORTYPE err;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
   if (nPortIndex >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                      omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
                      omx_base_component_Private->sPortTypesParam[OMX_PortDomainImage].nPorts +
@@ -1818,10 +1818,10 @@ OMX_ERRORTYPE omx_base_component_UseBuffer(
   pPort = omx_base_component_Private->ports[nPortIndex];
   err = pPort->Port_UseBuffer(pPort, ppBufferHdr, nPortIndex, pAppPrivate, nSizeBytes, pBuffer);
   if (err != OMX_ErrorNone) {
-	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %p with err %i\n", __func__, hComponent, (int)err);
 	  return err;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return OMX_ErrorNone;
 }
 
@@ -1842,7 +1842,7 @@ OMX_ERRORTYPE omx_base_component_FreeBuffer(
   omx_base_PortType *pPort;
   OMX_ERRORTYPE err;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
   if (nPortIndex >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                      omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
                      omx_base_component_Private->sPortTypesParam[OMX_PortDomainImage].nPorts +
@@ -1854,10 +1854,10 @@ OMX_ERRORTYPE omx_base_component_FreeBuffer(
   pPort = omx_base_component_Private->ports[nPortIndex];
   err = pPort->Port_FreeBuffer(pPort, nPortIndex, pBuffer);
   if (err != OMX_ErrorNone) {
-	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %p with err %i\n", __func__, hComponent, (int)err);
 	  return err;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return OMX_ErrorNone;
 }
 
@@ -1868,7 +1868,7 @@ OMX_ERRORTYPE omx_base_component_EmptyThisBuffer(
   omx_base_PortType *pPort;
   OMX_ERRORTYPE err;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
 
   if (pBuffer->nInputPortIndex >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                                    omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
@@ -1884,10 +1884,10 @@ OMX_ERRORTYPE omx_base_component_EmptyThisBuffer(
   }
   err = pPort->Port_SendBufferFunction(pPort, pBuffer);
   if (err != OMX_ErrorNone) {
-	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %s\n", __func__, (int)hComponent, errorName(err));
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %p with err %s\n", __func__, hComponent, errorName(err));
 	  return err;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return OMX_ErrorNone;
 }
 
@@ -1899,7 +1899,7 @@ OMX_ERRORTYPE omx_base_component_FillThisBuffer(
   omx_base_PortType *pPort;
   OMX_ERRORTYPE err;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
   if (pBuffer->nOutputPortIndex >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                                     omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
                                     omx_base_component_Private->sPortTypesParam[OMX_PortDomainImage].nPorts +
@@ -1909,16 +1909,16 @@ OMX_ERRORTYPE omx_base_component_FillThisBuffer(
   }
   pPort = omx_base_component_Private->ports[pBuffer->nOutputPortIndex];
   if (pPort->sPortParam.eDir != OMX_DirOutput) {
-	  DEBUG(DEB_LEV_ERR, "In %s: wrong port(%d) direction(%x) pBuffer=%x in Component %s\n", __func__,
-			  (int)pBuffer->nOutputPortIndex, (int)pPort->sPortParam.eDir,(int)pBuffer,omx_base_component_Private->name);
+	  DEBUG(DEB_LEV_ERR, "In %s: wrong port(%d) direction(%x) pBuffer=%p in Component %s\n", __func__,
+			  (int)pBuffer->nOutputPortIndex, (int)pPort->sPortParam.eDir, pBuffer, omx_base_component_Private->name);
     return OMX_ErrorBadPortIndex;
   }
   err = pPort->Port_SendBufferFunction(pPort,  pBuffer);
   if (err != OMX_ErrorNone) {
-	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %s\n", __func__, (int)hComponent, errorName(err));
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %p with err %s\n", __func__, hComponent, errorName(err));
 	  return err;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return OMX_ErrorNone;
 }
 
@@ -1933,7 +1933,7 @@ OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
   omx_base_PortType *pPort;
   OMX_ERRORTYPE err;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, hComponent);
   if (nPort >= (omx_base_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts +
                 omx_base_component_Private->sPortTypesParam[OMX_PortDomainVideo].nPorts +
                 omx_base_component_Private->sPortTypesParam[OMX_PortDomainImage].nPorts +
@@ -1944,10 +1944,10 @@ OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
   pPort = omx_base_component_Private->ports[nPort];
   err = pPort->ComponentTunnelRequest(pPort, hTunneledComp, nTunneledPort, pTunnelSetup);
   if (err != OMX_ErrorNone) {
-	  DEBUG(DEB_LEV_ERR, "Out of %s for component %x with err %i\n", __func__, (int)hComponent, (int)err);
+	  DEBUG(DEB_LEV_ERR, "Out of %s for component %p with err %i\n", __func__, hComponent, (int)err);
 	  return err;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %x\n", __func__, (int)hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
   return OMX_ErrorNone;
 }
 

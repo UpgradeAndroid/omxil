@@ -142,7 +142,7 @@ OMX_ERRORTYPE removeElemFromList(ComponentListType **list, OMX_COMPONENTTYPE *op
 	ComponentListType *componentPrev;
 	OMX_BOOL bFound = OMX_FALSE;
 
-	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s list %x\n", __func__, (int)*list);
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s list %p\n", __func__, *list);
 	if (!*list) {
 		DEBUG(DEB_LEV_ERR, "In %s, the resource manager is not initialized\n", __func__);
 		return OMX_ErrorUndefined;
@@ -336,7 +336,7 @@ OMX_ERRORTYPE RM_getResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 		if (numElemInList(volumeComponentList) >= MAX_RESOURCE_VOLUME) {
 			candidates = searchLowerPriority(volumeComponentList, omx_base_component_Private->nGroupPriority, &componentCandidate);
 			if (candidates) {
-				DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %x\n", __func__, candidates, (int)componentCandidate->openmaxStandComp);
+				DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %p\n", __func__, candidates, componentCandidate->openmaxStandComp);
 				err = preemptComponent(componentCandidate->openmaxStandComp);
 				if (err != OMX_ErrorNone) {
 					DEBUG(DEB_LEV_ERR, "In %s the component cannot be preempted\n", __func__);
@@ -360,7 +360,7 @@ OMX_ERRORTYPE RM_getResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 		if (numElemInList(mixerComponentList) >= MAX_RESOURCE_MIXER) {
 			candidates = searchLowerPriority(mixerComponentList, omx_base_component_Private->nGroupPriority, &componentCandidate);
 			if (candidates) {
-				DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %x\n", __func__, candidates, (int)componentCandidate->openmaxStandComp);
+				DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %p\n", __func__, candidates, componentCandidate->openmaxStandComp);
 				err = preemptComponent(componentCandidate->openmaxStandComp);
 				if (err != OMX_ErrorNone) {
 					DEBUG(DEB_LEV_ERR, "In %s the component cannot be preempted\n", __func__);
@@ -384,7 +384,7 @@ OMX_ERRORTYPE RM_getResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 		if (numElemInList(videoschedComponentList) >= MAX_RESOURCE_VIDEOSCHED) {
 			candidates = searchLowerPriority(videoschedComponentList, omx_base_component_Private->nGroupPriority, &componentCandidate);
 			if (candidates) {
-				DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %x\n", __func__, candidates, (int)componentCandidate->openmaxStandComp);
+				DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %p\n", __func__, candidates, componentCandidate->openmaxStandComp);
 				err = preemptComponent(componentCandidate->openmaxStandComp);
 				if (err != OMX_ErrorNone) {
 					DEBUG(DEB_LEV_ERR, "In %s the component cannot be preempted\n", __func__);
@@ -408,7 +408,7 @@ OMX_ERRORTYPE RM_getResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 		if (numElemInList(clockComponentList) >= MAX_RESOURCE_CLOCK) {
 			candidates = searchLowerPriority(clockComponentList, omx_base_component_Private->nGroupPriority, &componentCandidate);
 			if (candidates) {
-				DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %x\n", __func__, candidates, (int)componentCandidate->openmaxStandComp);
+				DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s candidates %i winner %p\n", __func__, candidates, componentCandidate->openmaxStandComp);
 				err = preemptComponent(componentCandidate->openmaxStandComp);
 				if (err != OMX_ErrorNone) {
 					DEBUG(DEB_LEV_ERR, "In %s the component cannot be preempted\n", __func__);
