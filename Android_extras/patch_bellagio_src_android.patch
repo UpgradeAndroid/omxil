@@ -1,0 +1,28 @@
+diff --git a/src/common.c b/src/common.c
+index 8c8b2b4..503d5cc 100644
+--- a/src/common.c
++++ b/src/common.c
+@@ -63,8 +63,8 @@ char* componentsRegistryGetFilename() {
+     strcat(omxregistryfile, "/");
+     strcat(omxregistryfile, REGISTRY_FILENAME);
+   } else {
+-    omxregistryfile  = malloc(strlen("/tmp/") + strlen(REGISTRY_FILENAME) + 2);
+-    strcpy(omxregistryfile, "/tmp/");
++    omxregistryfile  = malloc(strlen("/data/omx/") + strlen(REGISTRY_FILENAME) + 2);
++    strcpy(omxregistryfile, "/data/omx/");
+     strcat(omxregistryfile, REGISTRY_FILENAME);
+   }
+   return omxregistryfile;
+diff --git a/src/omx_create_loaders_linux.c b/src/omx_create_loaders_linux.c
+index 07f33ec..04b61af 100644
+--- a/src/omx_create_loaders_linux.c
++++ b/src/omx_create_loaders_linux.c
+@@ -106,7 +106,7 @@ int createComponentLoaders() {
+ 			return OMX_ErrorInsufficientResources;
+ 	}
+ 	// dlopen all loaders defined in .omxloaders file
+-	while((read = getline(&libraryFileName, &len, loaderFP)) != -1) {
++	while((read = fscanf(loaderFP, "%s\n",libraryFileName)) != 0) {
+ 
+ 		// strip delimeter, the dlopen doesn't like it
+ 		if(libraryFileName[read-1] == '\n') {

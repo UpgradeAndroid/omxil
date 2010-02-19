@@ -63,8 +63,8 @@ char* componentsRegistryGetFilename() {
     strcat(omxregistryfile, "/");
     strcat(omxregistryfile, REGISTRY_FILENAME);
   } else {
-    omxregistryfile  = malloc(strlen("/tmp/") + strlen(REGISTRY_FILENAME) + 2);
-    strcpy(omxregistryfile, "/tmp/");
+    omxregistryfile  = malloc(strlen("/data/omx/") + strlen(REGISTRY_FILENAME) + 2);
+    strcpy(omxregistryfile, "/data/omx/");
     strcat(omxregistryfile, REGISTRY_FILENAME);
   }
   return omxregistryfile;
