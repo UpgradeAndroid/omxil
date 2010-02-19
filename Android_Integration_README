@@ -1,5 +1,5 @@
 1) Place this omxil directory in the {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/ folder.
-2) Apply the patch patch_bellagio_src_android.patch in the Android_extras directory on the omxil sources for Android porting.
+2) Apply the patch patch_bellagio_src_android.patch in the Android_extras directory on the omxil sources for Android porting (this is needed if you are not on Android Integration branch).
 2) Get the OMX components source from bellagio/components.git and place the components folder again in the {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/ folder.
 3) The ffmpeg (or ffmpeg-mt) libraries can be downloaded from git://gitorious.org/~astrange/ffmpeg/ffmpeg-mt.git. Make the android specific changes (by applying the patch ffmpeg-mt_Android_porting.patch)  and then place in the {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/lib/ folder.
 4) For the omxil sources and ffmpeg library sources run the configure script on a PC and copy the config.h file over here in the src directory.
