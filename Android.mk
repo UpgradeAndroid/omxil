@@ -68,26 +68,5 @@ LOCAL_C_INCLUDES := \
 
 include $(BUILD_STATIC_LIBRARY)
 
-#Building omxvideodectest binary which will be placed in the /system/bin folder
-include $(CLEAR_VARS)
-
-LOCAL_SRC_FILES :=	src/test/omxvideodectest.c
-
-LOCAL_MODULE := omxvideodectest
-
-LOCAL_SHARED_LIBRARIES := \
-	libomxil-bellagio_sharedlibrary \
-	libutils
-
-LOCAL_C_INCLUDES := \
-	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src \
-	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src/base \
-	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src/test \
-	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src/test/include 
-
-LOCAL_ARM_MODE := arm
-
-include $(BUILD_EXECUTABLE)
-
 include $(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/components/ffmpeg-dist/Android.mk
 include $(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/lib/ffmpeg-mt/Android.mk
