@@ -36,31 +36,6 @@
 static int globalTimestamp = 0;
 
 /**
- * Components specific section
- * Each component that has some resources to be handled by this
- * resource manager should add some fields here
- */
-/* Max allowable volume component instance */
-static ComponentListType *volumeComponentList = NULL;
-static ComponentListType *volumeWaitingList = NULL;
-#define MAX_RESOURCE_VOLUME 10
-
-/* Max allowable mixer component instance */
-static ComponentListType *mixerComponentList = NULL;
-static ComponentListType *mixerWaitingList = NULL;
-#define MAX_RESOURCE_MIXER 10
-
-/* Max allowable video scheduler component instance */
-static ComponentListType *videoschedComponentList = NULL;
-static ComponentListType *videoschedWaitingList = NULL;
-#define MAX_RESOURCE_VIDEOSCHED 10
-
-/* Max allowable video scheduler component instance */
-static ComponentListType *clockComponentList = NULL;
-static ComponentListType *clockWaitingList = NULL;
-#define MAX_RESOURCE_CLOCK 5
-
-/**
  * This function initializes the Resource manager. In the current implementation
  * it does not perform any operation
  */

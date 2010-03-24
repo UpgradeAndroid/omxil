@@ -38,6 +38,27 @@ struct ComponentListType {
 	ComponentListType* next;
 };
 
+/* Max allowable volume component instance */
+ComponentListType *volumeComponentList;
+ComponentListType *volumeWaitingList;
+#define MAX_RESOURCE_VOLUME 10
+
+/* Max allowable mixer component instance */
+ComponentListType *mixerComponentList;
+ComponentListType *mixerWaitingList;
+#define MAX_RESOURCE_MIXER 10
+
+/* Max allowable video scheduler component instance */
+ComponentListType *videoschedComponentList;
+ComponentListType *videoschedWaitingList;
+#define MAX_RESOURCE_VIDEOSCHED 10
+
+/* Max allowable video scheduler component instance */
+ComponentListType *clockComponentList;
+ComponentListType *clockWaitingList;
+#define MAX_RESOURCE_CLOCK 5
+
+
 OMX_ERRORTYPE addElemToList(ComponentListType **list, OMX_COMPONENTTYPE *openmaxStandComp);
 OMX_ERRORTYPE removeElemFromList(ComponentListType **list, OMX_COMPONENTTYPE *openmaxStandComp);
 int numElemInList(ComponentListType *list);
