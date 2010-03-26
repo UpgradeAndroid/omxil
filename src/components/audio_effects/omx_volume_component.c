@@ -32,8 +32,6 @@
 /* gain value */
 #define GAIN_VALUE 100.0f
 
-#define VOLUME_COMP_ROLE "volume.component"
-
 OMX_ERRORTYPE omx_volume_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp, OMX_STRING cComponentName) {
 	OMX_ERRORTYPE err;
 	omx_volume_component_PrivateType* omx_volume_component_Private;
@@ -41,6 +39,7 @@ OMX_ERRORTYPE omx_volume_component_Constructor(OMX_COMPONENTTYPE *openmaxStandCo
 
 	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n",__func__);
 
+	RM_RegisterComponent(VOLUME_COMP_NAME, MAX_VOLUME_COMPONENTS);
 	if (!openmaxStandComp->pComponentPrivate) {
 		openmaxStandComp->pComponentPrivate = calloc(1, sizeof(omx_volume_component_PrivateType));
 		DEBUG(DEB_LEV_FUNCTION_NAME, "In %s allocated private structure %p for std component %p\n",

@@ -63,7 +63,7 @@ int omx_component_library_Setup(stLoaderComponentType **stComponents) {
 	if (stComponents[0]->name == NULL) {
 		return OMX_ErrorInsufficientResources;
 	}
-	strcpy(stComponents[0]->name, "OMX.st.video.scheduler");
+	strcpy(stComponents[0]->name, VIDEO_SCHEDULER_COMP_NAME);
 	stComponents[0]->name_specific_length = 1;
 	stComponents[0]->constructor =  omx_video_scheduler_component_Constructor;
 
@@ -84,8 +84,8 @@ int omx_component_library_Setup(stLoaderComponentType **stComponents) {
 		}
 	}
 
-	strcpy(stComponents[0]->name_specific[0], "OMX.st.video.scheduler");
-	strcpy(stComponents[0]->role_specific[0], "video.scheduler");
+	strcpy(stComponents[0]->name_specific[0], VIDEO_SCHEDULER_COMP_NAME);
+	strcpy(stComponents[0]->role_specific[0], VIDEO_SCHEDULER_COMP_ROLE);
 
 	stComponents[0]->nqualitylevels = VIDEOSCHED_QUALITY_LEVELS;
 	stComponents[0]->multiResourceLevel = malloc(stComponents[0]->nqualitylevels * sizeof(multiResourceDescriptor *));

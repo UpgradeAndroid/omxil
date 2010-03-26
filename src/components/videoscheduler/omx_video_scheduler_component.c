@@ -26,7 +26,6 @@
 #include <omxcore.h>
 #include <omx_video_scheduler_component.h>
 
-#define VIDEO_SCHEDULER_COMP_ROLE "video.schduler"
 #define DEFAULT_WIDTH   352
 #define DEFAULT_HEIGHT  288
 #define CLOCKPORT_INDEX 2
@@ -44,6 +43,8 @@ OMX_ERRORTYPE omx_video_scheduler_component_Constructor(OMX_COMPONENTTYPE *openm
   omx_base_video_PortType       *inPort,*outPort;
   OMX_U32                                      i;
 
+
+	RM_RegisterComponent(VIDEO_SCHEDULER_COMP_NAME, MAX_VIDEOSCHED_COMPONENTS);
   if (!openmaxStandComp->pComponentPrivate) {
     DEBUG(DEB_LEV_FUNCTION_NAME, "In %s, allocating component\n", __func__);
     openmaxStandComp->pComponentPrivate = calloc(1, sizeof(omx_video_scheduler_component_PrivateType));

@@ -41,6 +41,7 @@
 #include "omx_classmagic.h"
 #include "omx_base_port.h"
 #include "extension_struct.h"
+#include "omx_reference_resource_manager.h"
 
 /** Default size of the internal input buffer */
 #define DEFAULT_IN_BUFFER_SIZE  4 * 1024
