@@ -39,6 +39,7 @@ include_extra_HEADERS = $(srcdir)/omxcore.h \
 			$(srcdir)/tsemaphore.h \
 			$(srcdir)/omx_comp_debug_levels.h \
 			$(srcdir)/common.h \
+			$(srcdir)/omx_reference_resource_manager.h \
 			$(srcdir)/base/omx_base_component.h \
 			$(srcdir)/base/omx_base_port.h \
 			$(srcdir)/base/omx_base_audio_port.h \
