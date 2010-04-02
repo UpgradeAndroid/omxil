@@ -64,10 +64,10 @@ OMX_ERRORTYPE RM_RegisterComponent(char *name, int max_components) {
 	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 	while (listOfcomponentRegistered[i].component_name != NULL) {
 		if (!strcmp(listOfcomponentRegistered[i].component_name, name)) {
-			DEBUG(DEB_LEV_ERR, "component already registered\n");
+			DEBUG(DEB_LEV_FUNCTION_NAME, "In %s component already registered\n", __func__);
 			return OMX_ErrorNone;
-			i++;
 		}
+		i++;
 	}
 	listOfcomponentRegistered[i].component_name = calloc(1, OMX_MAX_STRINGNAME_SIZE);
 	if (listOfcomponentRegistered[i].component_name == NULL) {
@@ -110,7 +110,7 @@ OMX_ERRORTYPE addElemToList(ComponentListType **list, OMX_COMPONENTTYPE *openmax
 	ComponentListType *componentTemp;
 	ComponentListType *componentNext;
 	omx_base_component_PrivateType* omx_base_component_Private;
-	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+	DEBUG(DEB_LEV_FUNCTION_NAME, "In %s is waiting %i\n", __func__, bIsWaiting);
 	omx_base_component_Private = (omx_base_component_PrivateType*)openmaxStandComp->pComponentPrivate;
 	if (!*list) {
 		*list = malloc(sizeof(ComponentListType));
@@ -381,7 +381,7 @@ OMX_ERRORTYPE RM_getResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 				}
 			}
 		} else {
-			DEBUG(DEB_LEV_ERR, "Out of %s\n", __func__);
+			DEBUG(DEB_LEV_ERR, "Out of %s with insufficient resources\n", __func__);
 			return OMX_ErrorInsufficientResources;
 		}
 
@@ -460,7 +460,7 @@ OMX_ERRORTYPE RM_waitForResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 	while(listOfcomponentRegistered[i].component_name != NULL ) {
 		if (!strcmp(listOfcomponentRegistered[i].component_name, omx_base_component_Private->name)) {
 			// found component in the list of the resource manager
-			addElemToList(&globalComponentList[indexComponent], openmaxStandComp, listOfcomponentRegistered[i].index, OMX_TRUE);
+			indexComponent = listOfcomponentRegistered[i].index;
 			break;
 		}
 		i++;
@@ -470,6 +470,9 @@ OMX_ERRORTYPE RM_waitForResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 		DEBUG(DEB_LEV_ERR, "In %s No resource to be handled\n", __func__);
 		return OMX_ErrorNone;
 	}
+
+	addElemToList(&globalWaitingComponentList[indexComponent], openmaxStandComp, listOfcomponentRegistered[i].index, OMX_TRUE);
+
 	DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
 	return OMX_ErrorNone;
 }

@@ -1,12 +1,11 @@
 /**
-  test/components/resource_manager/omxrmtest.c
+  test/components/resource_manager/omxprioritytest.c
 
   This simple test application tests the functionalities of the simple resource
   manager provided with Bellagio components that implements the basic support defined in OpenMAX
   for resource management.
 
-  Copyright (C) 2007-2009 STMicroelectronics
-  Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
+  Copyright (C) 2010 STMicroelectronics
 
   This library is free software; you can redistribute it and/or modify it under
   the terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +24,7 @@
 
 */
 
-#include "omxrmtest.h"
+#include "omxprioritytest.h"
 #include <string.h>
 #include <bellagio/extension_struct.h>
 
@@ -40,6 +39,17 @@ OMX_CALLBACKTYPE callbacks = { .EventHandler = rmEventHandler,
                                .EmptyBufferDone = rmEmptyBufferDone,
                                .FillBufferDone = rmFillBufferDone,
 };
+
+static void setHeader(OMX_PTR header, OMX_U32 size) {
+  OMX_VERSIONTYPE* ver = (OMX_VERSIONTYPE*)(header + sizeof(OMX_U32));
+  *((OMX_U32*)header) = size;
+
+  ver->s.nVersionMajor = VERSIONMAJOR;
+  ver->s.nVersionMinor = VERSIONMINOR;
+  ver->s.nRevision = VERSIONREVISION;
+  ver->s.nStep = VERSIONSTEP;
+}
+
 
 int convertStr2Int(char* str) {
 	int val = 0;
@@ -57,7 +67,7 @@ int convertStr2Int(char* str) {
 
 void display_help() {
   printf("\n");
-  printf("Usage: omxrmtest OMX_name [-i max_comp]\n");
+  printf("Usage: omxprioritytest OMX_name [-i max_comp]\n");
   printf("\n");
   exit(1);
 }
@@ -71,6 +81,8 @@ int main(int argc, char** argv) {
 	int num_of_components;
   OMX_STATETYPE state;
 	char* componentName;
+	OMX_PRIORITYMGMTTYPE oPriority;
+
 	max_value = 0;
 	if(argc < 2){
 		display_help();
@@ -140,14 +152,14 @@ int main(int argc, char** argv) {
 		}
 		tsem_down(eventSem);
 		if (bResourceErrorReceived) {
+		/** the priority of the component which fails to go to idle is reaised
+				so taht another component is preempted to leave room to this component */
 			DEBUG(DEFAULT_MESSAGES, "The resources are exhausted\n");
-			DEBUG(DEFAULT_MESSAGES, "Send component %i to WaitForResources\n", i);
-			err = OMX_SendCommand(handle[i], OMX_CommandStateSet, OMX_StateWaitForResources, NULL);
-			tsem_down(eventSem);
-			DEBUG(DEFAULT_MESSAGES, "Send component %i to Loaded\n", i-1);
-			err = OMX_SendCommand(handle[i-1], OMX_CommandStateSet, OMX_StateLoaded, NULL);
-			tsem_down(eventSem);
-			DEBUG(DEFAULT_MESSAGES, "Wait for component %i to go to Idle\n", i);
+			DEBUG(DEFAULT_MESSAGES, "Raising the priority of component %i\n", i);
+			setHeader(&oPriority, sizeof(OMX_PRIORITYMGMTTYPE));
+			oPriority.nGroupPriority = 1;
+			err = OMX_SetParameter(handle[i], OMX_IndexParamPriorityMgmt, &oPriority);
+			err = OMX_SendCommand(handle[i], OMX_CommandStateSet, OMX_StateIdle, NULL);
 			tsem_down(eventSem);
 			DEBUG(DEFAULT_MESSAGES, "##################################\n");
 			DEBUG(DEFAULT_MESSAGES, "The resource manager has operated!\n");

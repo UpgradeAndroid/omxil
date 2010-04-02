@@ -54,28 +54,6 @@ NameIndexType *listOfcomponentRegistered;
 ComponentListType **globalComponentList;
 ComponentListType **globalWaitingComponentList;
 
-/* Max allowable volume component instance */
-//ComponentListType *volumeComponentList;
-//ComponentListType *volumeWaitingList;
-//#define MAX_RESOURCE_VOLUME 10
-/* Max allowable mixer component instance */
-//ComponentListType *mixerComponentList;
-//ComponentListType *mixerWaitingList;
-//#define MAX_RESOURCE_MIXER 10
-//#define nIndex_mixerComponent 1
-
-/* Max allowable video scheduler component instance */
-//ComponentListType *videoschedComponentList;
-//ComponentListType *videoschedWaitingList;
-//#define MAX_RESOURCE_VIDEOSCHED 10
-//#define nIndex_videoschedComponent 2
-
-/* Max allowable video scheduler component instance */
-//ComponentListType *clockComponentList;
-//ComponentListType *clockWaitingList;
-//#define MAX_RESOURCE_CLOCK 5
-//#define nIndex_clockComponent 3
-
 OMX_ERRORTYPE RM_RegisterComponent(char *name, int max_components);
 OMX_ERRORTYPE addElemToList(ComponentListType **list, OMX_COMPONENTTYPE *openmaxStandComp, int index, OMX_BOOL bIsWaiting);
 OMX_ERRORTYPE removeElemFromList(ComponentListType **list, OMX_COMPONENTTYPE *openmaxStandComp);
