@@ -211,7 +211,7 @@ int main(int argc, char** argv) {
 			DEBUG(DEB_LEV_SIMPLE_SEQ, "The component %i is set to Idle\n", i);
 
 			if (bResourceErrorReceived) {
-			/** the priority of the component which fails to go to idle is reaised
+			/** the priority of the component which fails to go to idle is raised
 					so that another component is preempted to leave room to this component */
 				DEBUG(DEB_LEV_SIMPLE_SEQ, "The resources are exhausted\n");
 				DEBUG(DEB_LEV_SIMPLE_SEQ, "Raising the priority of component %i\n", i);
