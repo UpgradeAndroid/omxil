@@ -60,6 +60,36 @@ void tsem_deinit(tsem_t* tsem) {
 }
 
 /** Decreases the value of the semaphore. Blocks if the semaphore
+ * value is zero. If the timeout is reached the function exits with
+ * error ETIMEDOUT
+ *
+ * @param tsem the semaphore to decrease
+ * @param timevalue the value of delay for the timeout
+ */
+int tsem_timed_down(tsem_t* tsem, unsigned int milliSecondsDelay) {
+	int err = 0;
+    struct timespec final_time;
+    struct timeval currentTime;
+    long int microdelay;
+
+    gettimeofday(&currentTime, NULL);
+    /** convert timeval to timespec and add delay in milliseconds for the timeout */
+    microdelay = ((milliSecondsDelay * 1000 + currentTime.tv_usec));
+	final_time.tv_sec = currentTime.tv_sec + (microdelay / 1000000);
+	final_time.tv_nsec = (microdelay % 1000000) * 1000;
+	pthread_mutex_lock(&tsem->mutex);
+	while (tsem->semval == 0) {
+		err = pthread_cond_timedwait(&tsem->condition, &tsem->mutex, &final_time);
+		if (err != 0) {
+			tsem->semval--;
+		}
+	}
+	tsem->semval--;
+	pthread_mutex_unlock(&tsem->mutex);
+	return err;
+}
+
+/** Decreases the value of the semaphore. Blocks if the semaphore
  * value is zero.
  *
  * @param tsem the semaphore to decrease

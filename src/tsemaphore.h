@@ -56,6 +56,15 @@ void tsem_deinit(tsem_t* tsem);
  */
 void tsem_down(tsem_t* tsem);
 
+/** Decreases the value of the semaphore. Blocks if the semaphore
+ * value is zero. If the timeout is reached the function exits with
+ * error ETIMEDOUT
+ *
+ * @param tsem the semaphore to decrease
+ * @param timevalue the value of delay for the timeout
+ */
+int tsem_timed_down(tsem_t* tsem, unsigned int milliSecondsDelay);
+
 /** Increases the value of the semaphore
  *
  * @param tsem the semaphore to increase
