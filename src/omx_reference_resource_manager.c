@@ -381,7 +381,7 @@ OMX_ERRORTYPE RM_getResource(OMX_COMPONENTTYPE *openmaxStandComp) {
 				}
 			}
 		} else {
-			DEBUG(DEB_LEV_ERR, "Out of %s with insufficient resources\n", __func__);
+			DEBUG(DEB_LEV_SIMPLE_SEQ, "Out of %s with insufficient resources\n", __func__);
 			return OMX_ErrorInsufficientResources;
 		}
 

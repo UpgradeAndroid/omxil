@@ -38,7 +38,7 @@ OMX_ERRORTYPE omx_audio_mixer_component_Constructor(OMX_COMPONENTTYPE *openmaxSt
   omx_audio_mixer_component_PortType *pPort;//,*inPort1, *outPort;
   OMX_U32 i;
 
-	RM_RegisterComponent(MIXER_COMP_NAME, MAX_MIXER_COMPONENTS);
+  RM_RegisterComponent(MIXER_COMP_NAME, MAX_MIXER_COMPONENTS);
   if (!openmaxStandComp->pComponentPrivate) {
     DEBUG(DEB_LEV_FUNCTION_NAME, "In %s, allocating component\n",__func__);
     openmaxStandComp->pComponentPrivate = calloc(1, sizeof(omx_audio_mixer_component_PrivateType));
