@@ -278,12 +278,12 @@ OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *openmaxStandComp)
   /*Send Dummy signal to Component Message handler to exit*/
   tsem_up(omx_base_component_Private->messageSem);
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s before pthread_join\n", __func__);
-  err = pthread_join(omx_base_component_Private->messageHandlerThread, NULL);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s before pthread_detach\n", __func__);
+  err = pthread_detach(omx_base_component_Private->messageHandlerThread);
   if(err!=0) {
-    DEBUG(DEB_LEV_FUNCTION_NAME,"In %s pthread_join returned err=%d\n", __func__, err);
+    DEBUG(DEB_LEV_FUNCTION_NAME,"In %s pthread_detach returned err=%d\n", __func__, err);
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s after pthread_join\n", __func__);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s after pthread_detach\n", __func__);
   /*Deinitialize and free message queue*/
   if(omx_base_component_Private->messageQueue) {
     queue_deinit(omx_base_component_Private->messageQueue);
@@ -1450,9 +1450,10 @@ void* compMessageHandlerFunction(void* param) {
       break;
     }
     tsem_down(omx_base_component_Private->messageSem);
-    DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+    DEBUG(DEB_LEV_FUNCTION_NAME, "In %s new message\n", __func__);
     /*Destructor has been called. So exit from the loop*/
     if(omx_base_component_Private->state == OMX_StateInvalid) {
+        DEBUG(DEB_LEV_FUNCTION_NAME, "In %s Destructor has been called. So exit from the loop\n", __func__);
       break;
     }
     /* Dequeue it */
@@ -1462,7 +1463,7 @@ void* compMessageHandlerFunction(void* param) {
       break;
     }
     /* Process it by calling component's message handler method */
-    omx_base_component_Private->messageHandler(openmaxStandComp,message);
+    omx_base_component_Private->messageHandler(openmaxStandComp, message);
     /* Message ownership has been transferred to us
     * so we gonna free it when finished.
     */
