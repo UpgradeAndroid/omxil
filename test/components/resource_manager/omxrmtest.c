@@ -30,9 +30,9 @@
 #include <bellagio/extension_struct.h>
 
 #define MAX_COMPONENTS 5
+#define TIMEOUT 500
 /* Application private date: should go in the component field (segs...) */
 
-OMX_ERRORTYPE err;
 
 OMX_HANDLETYPE *handle;
 
@@ -69,8 +69,10 @@ int main(int argc, char** argv) {
 	int argn_dec = 1;
 	int i;
 	int num_of_components;
-  OMX_STATETYPE state;
+	OMX_STATETYPE state;
 	char* componentName;
+	int global_err = 0;
+	OMX_ERRORTYPE err;
 	max_value = 0;
 	if(argc < 2){
 		display_help();
@@ -123,7 +125,7 @@ int main(int argc, char** argv) {
 	for (i = 0; i<max_value; i++) {
 		err = OMX_GetHandle(&handle[i], componentName, NULL, &callbacks);
 		if(err != OMX_ErrorNone) {
-			DEBUG(DEB_LEV_ERR, "OMX_GetHandle [%i] failed\n", i);
+			DEBUG(DEB_LEV_ERR, "OMX_GetHandle [%i] of component %s failed\n", i, componentName);
 			exit(1);
 		}
 		DEBUG(DEFAULT_MESSAGES, "OMX_GetHandle() %i\n", i);
@@ -135,24 +137,33 @@ int main(int argc, char** argv) {
 		err = OMX_SendCommand(handle[i], OMX_CommandPortDisable, 1, 0);
 		err = OMX_SendCommand(handle[i], OMX_CommandStateSet, OMX_StateIdle, NULL);
 		if(err != OMX_ErrorNone) {
-			DEBUG(DEB_LEV_ERR, "The component can't go to Idle\n");
+			DEBUG(DEB_LEV_ERR, "The component %s can't go to Idle\n", componentName);
 			break;
 		}
-		tsem_down(eventSem);
-		if (bResourceErrorReceived) {
-			DEBUG(DEFAULT_MESSAGES, "The resources are exhausted\n");
-			DEBUG(DEFAULT_MESSAGES, "Send component %i to WaitForResources\n", i);
-			err = OMX_SendCommand(handle[i], OMX_CommandStateSet, OMX_StateWaitForResources, NULL);
-			tsem_down(eventSem);
-			DEBUG(DEFAULT_MESSAGES, "Send component %i to Loaded\n", i-1);
-			err = OMX_SendCommand(handle[i-1], OMX_CommandStateSet, OMX_StateLoaded, NULL);
-			tsem_down(eventSem);
-			DEBUG(DEFAULT_MESSAGES, "Wait for component %i to go to Idle\n", i);
-			tsem_down(eventSem);
+		global_err = tsem_timed_down(eventSem, TIMEOUT);
+		if (global_err != 0) {
 			DEBUG(DEFAULT_MESSAGES, "##################################\n");
-			DEBUG(DEFAULT_MESSAGES, "The resource manager has operated!\n");
+			DEBUG(DEFAULT_MESSAGES, "The resource manager does not handle component %s %i\n", componentName, i);
 			DEBUG(DEFAULT_MESSAGES, "##################################\n");
 			break;
+		} else {
+			DEBUG(DEB_LEV_ERR, "The component %i is set to Idle\n", i);
+
+			if (bResourceErrorReceived) {
+				DEBUG(DEFAULT_MESSAGES, "The resources are exhausted\n");
+				DEBUG(DEFAULT_MESSAGES, "Send component %i to WaitForResources\n", i);
+				err = OMX_SendCommand(handle[i], OMX_CommandStateSet, OMX_StateWaitForResources, NULL);
+				tsem_down(eventSem);
+				DEBUG(DEFAULT_MESSAGES, "Send component %i to Loaded\n", i-1);
+				err = OMX_SendCommand(handle[i-1], OMX_CommandStateSet, OMX_StateLoaded, NULL);
+				tsem_down(eventSem);
+				DEBUG(DEFAULT_MESSAGES, "Wait for component %i to go to Idle\n", i);
+				tsem_down(eventSem);
+				DEBUG(DEFAULT_MESSAGES, "##################################\n");
+				DEBUG(DEFAULT_MESSAGES, "The resource manager has operated!\n");
+				DEBUG(DEFAULT_MESSAGES, "##################################\n");
+				break;
+			}
 		}
 	}
 
@@ -169,6 +180,7 @@ int main(int argc, char** argv) {
 			DEBUG(DEFAULT_MESSAGES, "Component %i in the wrong state!\n", i);
 		}
 	}
+	DEBUG(DEFAULT_MESSAGES, "All to loaded\n");
 
 	for (i = 0; i<max_value; i++) {
 		err = OMX_FreeHandle(handle[i]);

@@ -42,4 +42,5 @@ src/omxregister-bellagio
 test/components/audio_effects/omxaudiomixertest
 test/components/audio_effects/omxvolcontroltest
 test/components/resource_manager/omxrmtest
+test/components/resource_manager/omxprioritytest
 
