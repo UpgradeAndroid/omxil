@@ -140,7 +140,7 @@ OMX_ERRORTYPE omx_video_scheduler_component_Destructor(OMX_COMPONENTTYPE *openma
   omx_video_scheduler_component_PrivateType*   omx_video_scheduler_component_Private = openmaxStandComp->pComponentPrivate;
   OMX_U32                                      i;
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Destructor of video scheduler component is called\n");
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 
   /* frees port/s */
   if (omx_video_scheduler_component_Private->ports) {
@@ -154,6 +154,7 @@ OMX_ERRORTYPE omx_video_scheduler_component_Destructor(OMX_COMPONENTTYPE *openma
   }
 
   omx_base_filter_Destructor(openmaxStandComp);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
 
   return OMX_ErrorNone;
 }

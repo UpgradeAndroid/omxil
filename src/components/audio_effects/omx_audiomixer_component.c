@@ -32,10 +32,6 @@
 /* Gain value */
 #define GAIN_VALUE 100.0f
 
-/** Maximum Number of AudioMixer Component Instance*/
-static OMX_U32 noAudioMixerCompInstance = 0;
-
-
 OMX_ERRORTYPE omx_audio_mixer_component_Constructor(OMX_COMPONENTTYPE *openmaxStandComp, OMX_STRING cComponentName) {
   OMX_ERRORTYPE err = OMX_ErrorNone;
   omx_audio_mixer_component_PrivateType* omx_audio_mixer_component_Private;
@@ -140,6 +136,7 @@ OMX_ERRORTYPE omx_audio_mixer_component_Destructor(OMX_COMPONENTTYPE *openmaxSta
   omx_audio_mixer_component_PrivateType* omx_audio_mixer_component_Private = openmaxStandComp->pComponentPrivate;
   OMX_U32 i;
 
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
   /* frees port/s */
   if (omx_audio_mixer_component_Private->ports) {
     for (i=0; i < omx_audio_mixer_component_Private->sPortTypesParam[OMX_PortDomainAudio].nPorts; i++) {
@@ -150,9 +147,9 @@ OMX_ERRORTYPE omx_audio_mixer_component_Destructor(OMX_COMPONENTTYPE *openmaxSta
     omx_audio_mixer_component_Private->ports=NULL;
   }
 
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Destructor of audiodecoder component is called\n");
   omx_base_filter_Destructor(openmaxStandComp);
-  noAudioMixerCompInstance--;
+
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s\n", __func__);
 
   return OMX_ErrorNone;
 }
