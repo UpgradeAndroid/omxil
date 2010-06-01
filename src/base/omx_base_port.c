@@ -542,7 +542,7 @@ OMX_ERRORTYPE base_port_UseBuffer(
 /** @brief Called by the standard function.
  *
  * It frees the buffer header and in case also the buffer itself, if needed.
- * When all the bufers are done, the variable bIsEmptyOfBuffers is set to OMX_TRUE
+ * When all the buffers are done, the variable bIsEmptyOfBuffers is set to OMX_TRUE
  */
 OMX_ERRORTYPE base_port_FreeBuffer(
   omx_base_PortType *openmaxStandPort,
