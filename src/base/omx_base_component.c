@@ -1115,7 +1115,7 @@ OMX_ERRORTYPE omx_base_component_SetParameter(
         omx_base_component_Private->state == OMX_StatePause  ||
         omx_base_component_Private->state == OMX_StateExecuting) &&
         (pPortParam->nBufferCountActual > old_nBufferCountActual)) {
-
+// todo check if here it is not better != instead of >
         pPort = omx_base_component_Private->ports[pPortDef->nPortIndex];
         if(pPort->pInternalBufferStorage) {
           pPort->pInternalBufferStorage = realloc(pPort->pInternalBufferStorage,pPort->sPortParam.nBufferCountActual*sizeof(OMX_BUFFERHEADERTYPE *));
