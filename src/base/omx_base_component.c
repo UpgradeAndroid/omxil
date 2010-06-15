@@ -1793,7 +1793,7 @@ OMX_ERRORTYPE omx_base_component_AllocateBuffer(
 	  DEBUG(DEB_LEV_ERR, "Out of %s for component %p with err %i\n", __func__, hComponent, (int)err);
 	  return err;
   }
-  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p\n", __func__, hComponent);
+  DEBUG(DEB_LEV_FUNCTION_NAME, "Out of %s for component %p buffer %p\n", __func__, hComponent, ppBuffer);
   return OMX_ErrorNone;
 }
 
