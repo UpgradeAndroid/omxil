@@ -34,6 +34,12 @@
 
 #define REGISTRY_FILENAME ".omxregister"
 
+#ifdef ANDROID_COMPILATION
+#define TMP_DATA_DIRECTORY "/data/omx/"
+#else
+#define TMP_DATA_DIRECTORY "/tmp/"
+#endif
+
 /** @brief Get registry filename
  * This function returns the name of the registry file for the components loaded with the default component loader.
  */
@@ -63,8 +69,8 @@ char* componentsRegistryGetFilename() {
     strcat(omxregistryfile, "/");
     strcat(omxregistryfile, REGISTRY_FILENAME);
   } else {
-    omxregistryfile  = malloc(strlen("/tmp/") + strlen(REGISTRY_FILENAME) + 2);
-    strcpy(omxregistryfile, "/tmp/");
+    omxregistryfile  = malloc(strlen(TMP_DATA_DIRECTORY) + strlen(REGISTRY_FILENAME) + 2);
+    strcpy(omxregistryfile, TMP_DATA_DIRECTORY);
     strcat(omxregistryfile, REGISTRY_FILENAME);
   }
   return omxregistryfile;
@@ -90,8 +96,8 @@ char* loadersRegistryGetFilename(char* registry_name) {
 		strcat(omxregistryfile, "/");
 		strcat(omxregistryfile, registry_name);
 	} else {
-		omxregistryfile  = malloc(strlen("/tmp/") + strlen(registry_name) + 2);
-		strcpy(omxregistryfile, "/tmp/");
+		omxregistryfile  = malloc(strlen(TMP_DATA_DIRECTORY) + strlen(registry_name) + 2);
+		strcpy(omxregistryfile, TMP_DATA_DIRECTORY);
 		strcat(omxregistryfile, registry_name);
 	}
 	return omxregistryfile;

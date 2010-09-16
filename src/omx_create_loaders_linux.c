@@ -106,7 +106,11 @@ int createComponentLoaders() {
 			return OMX_ErrorInsufficientResources;
 	}
 	// dlopen all loaders defined in .omxloaders file
-	while((read = getline(&libraryFileName, &len, loaderFP)) != -1) {
+#ifdef ANDROID_COMPILATION
+ 	while((read = fscanf(loaderFP, "%s\n",libraryFileName)) != 0) {
+#else
+  while((read = getline(&libraryFileName, &len, loaderFP)) != -1) {
+#endif
 
 		// strip delimeter, the dlopen doesn't like it
 		if(libraryFileName[read-1] == '\n') {

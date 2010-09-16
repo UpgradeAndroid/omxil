@@ -1,0 +1,1882 @@
+diff -Naur ./ffmpeg-mt_orig/Android.mk ./ffmpeg-mt/Android.mk
+--- ./ffmpeg-mt_orig/Android.mk	1970-01-01 05:30:00.000000000 +0530
++++ ./ffmpeg-mt/Android.mk	2009-09-03 09:23:49.029366000 +0530
+@@ -0,0 +1,599 @@
++LOCAL_PATH := $(call my-dir)
++
++# Building libavutil_mt
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := \
++	libavutil/adler32.c \
++	libavutil/aes.c \
++	libavutil/avstring.c \
++	libavutil/base64.c \
++	libavutil/crc.c \
++	libavutil/des.c \
++	libavutil/fifo.c \
++	libavutil/intfloat_readwrite.c \
++	libavutil/lfg.c \
++	libavutil/lls.c \
++	libavutil/log.c \
++	libavutil/lzo.c \
++	libavutil/mathematics.c \
++	libavutil/md5.c \
++	libavutil/mem.c \
++	libavutil/random_seed.c \
++	libavutil/rational.c \
++	libavutil/rc4.c \
++	libavutil/sha.c \
++	libavutil/tree.c \
++	libavutil/utils.c
++
++LOCAL_MODULE := libavutil_mt
++LOCAL_PRELINK_MODULE := false
++
++LOCAL_CFLAGS := -DHAVE_AV_CONFIG_H -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno $(PV_CFLAGS)
++
++LOCAL_ARM_MODE := arm
++
++LOCAL_SHARED_LIBRARIES := \
++	libz
++
++LOCAL_C_INCLUDES := \
++	$(PV_TOP)/codecs_v2/omx/omx_mastercore/src \
++ 	$(PV_TOP)/codecs_v2/omx/omx_mastercore/include \
++ 	$(PV_TOP)/codecs_v2/omx/omx_common/include \
++ 	$(PV_TOP)/extern_libs_v2/khronos/openmax/include \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libavcodec \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libavutil \
++	$(PV_TOP)/../../external/qemu/distrib/zlib-1.2.3/ \
++ 	$(PV_INCLUDES)
++
++include $(BUILD_SHARED_LIBRARY)
++
++# Building libavcodec_mt
++include $(CLEAR_VARS)
++LOCAL_SRC_FILES := \
++	libavcodec/4xm.c \
++	libavcodec/8bps.c \
++	libavcodec/8svx.c \
++	libavcodec/aac.c \
++	libavcodec/aac_ac3_parser.c \
++	libavcodec/aac_adtstoasc_bsf.c \
++	libavcodec/aac_parser.c \
++	libavcodec/aactab.c \
++	libavcodec/aandcttab.c \
++	libavcodec/aasc.c \
++	libavcodec/ac3.c \
++	libavcodec/ac3_parser.c \
++	libavcodec/ac3enc.c \
++	libavcodec/ac3tab.c \
++	libavcodec/acelp_vectors.c \
++	libavcodec/adpcm.c \
++	libavcodec/adxdec.c \
++	libavcodec/adxenc.c \
++	libavcodec/alac.c \
++	libavcodec/alacenc.c \
++	libavcodec/allcodecs.c \
++	libavcodec/apedec.c \
++	libavcodec/asv1.c \
++	libavcodec/atrac3.c \
++	libavcodec/audioconvert.c \
++	libavcodec/avpacket.c \
++	libavcodec/avs.c \
++	libavcodec/bethsoftvideo.c \
++	libavcodec/bfi.c \
++	libavcodec/bitstream.c \
++	libavcodec/bitstream_filter.c \
++	libavcodec/bmp.c \
++	libavcodec/bmpenc.c \
++	libavcodec/c93.c \
++	libavcodec/cabac.c \
++	libavcodec/cavs.c \
++	libavcodec/cavs_parser.c \
++	libavcodec/cavsdec.c \
++	libavcodec/cavsdsp.c \
++	libavcodec/celp_filters.c \
++	libavcodec/celp_math.c \
++	libavcodec/cga_data.c \
++	libavcodec/cinepak.c \
++	libavcodec/cljr.c \
++	libavcodec/cook.c \
++	libavcodec/cscd.c \
++	libavcodec/cyuv.c \
++	libavcodec/dca.c \
++	libavcodec/dca_parser.c \
++	libavcodec/dirac_parser.c \
++	libavcodec/dnxhd_parser.c \
++	libavcodec/dnxhddata.c \
++	libavcodec/dnxhddec.c \
++	libavcodec/dnxhdenc.c \
++	libavcodec/dpcm.c \
++	libavcodec/dpx.c \
++	libavcodec/dsicinav.c \
++	libavcodec/dsputil.c \
++	libavcodec/dump_extradata_bsf.c \
++	libavcodec/dv.c \
++	libavcodec/dvbsub.c \
++	libavcodec/dvbsub_parser.c \
++	libavcodec/dvbsubdec.c \
++	libavcodec/dvdsub_parser.c \
++	libavcodec/dvdsubdec.c \
++	libavcodec/dvdsubenc.c \
++	libavcodec/dxa.c \
++	libavcodec/eacmv.c \
++	libavcodec/eaidct.c \
++	libavcodec/eamad.c \
++	libavcodec/eatgq.c \
++	libavcodec/eatgv.c \
++	libavcodec/eatqi.c \
++	libavcodec/elbg.c \
++	libavcodec/error_resilience.c \
++	libavcodec/escape124.c \
++	libavcodec/eval.c \
++	libavcodec/faandct.c \
++	libavcodec/faanidct.c \
++	libavcodec/faxcompr.c \
++	libavcodec/fft.c \
++	libavcodec/ffv1.c \
++	libavcodec/flac.c \
++	libavcodec/flacdata.c \
++	libavcodec/flacdec.c \
++	libavcodec/flacenc.c \
++	libavcodec/flashsv.c \
++	libavcodec/flashsvenc.c \
++	libavcodec/flicvideo.c \
++	libavcodec/fraps.c \
++	libavcodec/g726.c \
++	libavcodec/gif.c \
++	libavcodec/gifdec.c \
++	libavcodec/golomb.c \
++	libavcodec/h261.c \
++	libavcodec/h261_parser.c \
++	libavcodec/h261dec.c \
++	libavcodec/h261enc.c \
++	libavcodec/h263.c \
++	libavcodec/h263_parser.c \
++	libavcodec/h263dec.c \
++	libavcodec/h264.c \
++	libavcodec/h264_mp4toannexb_bsf.c \
++	libavcodec/h264_parser.c \
++	libavcodec/h264idct.c \
++	libavcodec/h264pred.c \
++	libavcodec/huffman.c \
++	libavcodec/huffyuv.c \
++	libavcodec/idcinvideo.c \
++	libavcodec/imc.c \
++	libavcodec/imgconvert.c \
++	libavcodec/imx_dump_header_bsf.c \
++	libavcodec/indeo2.c \
++	libavcodec/indeo3.c \
++	libavcodec/interplayvideo.c \
++	libavcodec/intrax8.c \
++	libavcodec/intrax8dsp.c \
++	libavcodec/jfdctfst.c \
++	libavcodec/jfdctint.c \
++	libavcodec/jpegls.c \
++	libavcodec/jpeglsdec.c \
++	libavcodec/jpeglsenc.c \
++	libavcodec/jrevdct.c \
++	libavcodec/kmvc.c \
++	libavcodec/lcldec.c \
++	libavcodec/lclenc.c \
++	libavcodec/ljpegenc.c \
++	libavcodec/loco.c \
++	libavcodec/lpc.c \
++	libavcodec/lzw.c \
++	libavcodec/lzwenc.c \
++	libavcodec/mace.c \
++	libavcodec/mdct.c \
++	libavcodec/mdec.c \
++	libavcodec/mimic.c \
++	libavcodec/mjpeg.c \
++	libavcodec/mjpeg_parser.c \
++	libavcodec/mjpega_dump_header_bsf.c \
++	libavcodec/mjpegbdec.c \
++	libavcodec/mjpegdec.c \
++	libavcodec/mjpegenc.c \
++	libavcodec/mlp.c \
++	libavcodec/mlp_parser.c \
++	libavcodec/mlpdec.c \
++	libavcodec/mlpdsp.c \
++	libavcodec/mmvideo.c \
++	libavcodec/motion_est.c \
++	libavcodec/motionpixels.c \
++	libavcodec/movsub_bsf.c \
++	libavcodec/mp3_header_compress_bsf.c \
++	libavcodec/mp3_header_decompress_bsf.c \
++	libavcodec/mpc.c \
++	libavcodec/mpc7.c \
++	libavcodec/mpc8.c \
++	libavcodec/mpeg12.c \
++	libavcodec/mpeg12data.c \
++	libavcodec/mpeg12enc.c \
++	libavcodec/mpeg4audio.c \
++	libavcodec/mpeg4video_parser.c \
++	libavcodec/mpegaudio.c \
++	libavcodec/mpegaudio_parser.c \
++	libavcodec/mpegaudiodata.c \
++	libavcodec/mpegaudiodec.c \
++	libavcodec/mpegaudiodecheader.c \
++	libavcodec/mpegaudioenc.c \
++	libavcodec/mpegvideo.c \
++	libavcodec/mpegvideo_enc.c \
++	libavcodec/mpegvideo_parser.c \
++	libavcodec/msmpeg4.c \
++	libavcodec/msmpeg4data.c \
++	libavcodec/msrle.c \
++	libavcodec/msrledec.c \
++	libavcodec/msvideo1.c \
++	libavcodec/nellymoser.c \
++	libavcodec/nellymoserdec.c \
++	libavcodec/nellymoserenc.c \
++	libavcodec/noise_bsf.c \
++	libavcodec/nuv.c \
++	libavcodec/opt.c \
++	libavcodec/options.c \
++	libavcodec/parser.c \
++	libavcodec/pcm.c \
++	libavcodec/pcx.c \
++	libavcodec/pcxenc.c \
++	libavcodec/png.c \
++	libavcodec/pngdec.c \
++	libavcodec/pngenc.c \
++	libavcodec/pnm.c \
++	libavcodec/pnm_parser.c \
++	libavcodec/pnmenc.c \
++	libavcodec/pthread.c \
++	libavcodec/ptx.c \
++	libavcodec/qcelp_lsp.c \
++	libavcodec/qcelpdec.c \
++	libavcodec/qdm2.c \
++	libavcodec/qdrw.c \
++	libavcodec/qpeg.c \
++	libavcodec/qtrle.c \
++	libavcodec/qtrleenc.c \
++	libavcodec/ra144.c \
++	libavcodec/ra288.c \
++	libavcodec/rangecoder.c \
++	libavcodec/ratecontrol.c \
++	libavcodec/raw.c \
++	libavcodec/rawdec.c \
++	libavcodec/rawenc.c \
++	libavcodec/rdft.c \
++	libavcodec/remove_extradata_bsf.c \
++	libavcodec/resample.c \
++	libavcodec/resample2.c \
++	libavcodec/rl2.c \
++	libavcodec/rle.c \
++	libavcodec/roqaudioenc.c \
++	libavcodec/roqvideo.c \
++	libavcodec/roqvideodec.c \
++	libavcodec/roqvideoenc.c \
++	libavcodec/rpza.c \
++	libavcodec/rtjpeg.c \
++	libavcodec/rv10.c \
++	libavcodec/rv30.c \
++	libavcodec/rv30dsp.c \
++	libavcodec/rv34.c \
++	libavcodec/rv40.c \
++	libavcodec/rv40dsp.c \
++	libavcodec/s3tc.c \
++	libavcodec/sgidec.c \
++	libavcodec/sgienc.c \
++	libavcodec/shorten.c \
++	libavcodec/simple_idct.c \
++	libavcodec/smacker.c \
++	libavcodec/smc.c \
++	libavcodec/snow.c \
++	libavcodec/sonic.c \
++	libavcodec/sp5xdec.c \
++	libavcodec/sunrast.c \
++	libavcodec/svq1.c \
++	libavcodec/svq1dec.c \
++	libavcodec/svq1enc.c \
++	libavcodec/targa.c \
++	libavcodec/targaenc.c \
++	libavcodec/tiertexseqv.c \
++	libavcodec/tiff.c \
++	libavcodec/tiffenc.c \
++	libavcodec/tmv.c \
++	libavcodec/truemotion1.c \
++	libavcodec/truemotion2.c \
++	libavcodec/truespeech.c \
++	libavcodec/tscc.c \
++	libavcodec/tta.c \
++	libavcodec/txd.c \
++	libavcodec/ulti.c \
++	libavcodec/utils.c \
++	libavcodec/v210enc.c \
++	libavcodec/v210dec.c \
++	libavcodec/v210x.c \
++	libavcodec/vb.c \
++	libavcodec/vc1.c \
++	libavcodec/vc1_parser.c \
++	libavcodec/vc1data.c \
++	libavcodec/vc1dec.c \
++	libavcodec/vc1dsp.c \
++	libavcodec/vcr1.c \
++	libavcodec/vmdav.c \
++	libavcodec/vmnc.c \
++	libavcodec/vorbis.c \
++	libavcodec/vorbis_data.c \
++	libavcodec/vorbis_dec.c \
++	libavcodec/vorbis_enc.c \
++	libavcodec/vp3.c \
++	libavcodec/vp3_parser.c \
++	libavcodec/vp3dsp.c \
++	libavcodec/vp5.c \
++	libavcodec/vp56.c \
++	libavcodec/vp56data.c \
++	libavcodec/vp6.c \
++	libavcodec/vp6dsp.c \
++	libavcodec/vqavideo.c \
++	libavcodec/wavpack.c \
++	libavcodec/wma.c \
++	libavcodec/wmadec.c \
++	libavcodec/wmaenc.c \
++	libavcodec/wmv2.c \
++	libavcodec/wmv2dec.c \
++	libavcodec/wmv2enc.c \
++	libavcodec/wnv1.c \
++	libavcodec/ws-snd1.c \
++	libavcodec/xan.c \
++	libavcodec/xiph.c \
++	libavcodec/xl.c \
++	libavcodec/xsubdec.c \
++	libavcodec/xsubenc.c \
++	libavcodec/zmbv.c \
++	libavcodec/zmbvenc.c \
++
++LOCAL_MODULE := libavcodec_mt
++LOCAL_PRELINK_MODULE := false
++
++LOCAL_CFLAGS := -DHAVE_AV_CONFIG_H -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno $(PV_CFLAGS)
++
++LOCAL_SHARED_LIBRARIES := \
++	libavutil_mt \
++	libz \
++	libutils
++
++LOCAL_ARM_MODE := arm
++
++LOCAL_C_INCLUDES := \
++	$(PV_TOP)/codecs_v2/omx/omx_mastercore/src \
++ 	$(PV_TOP)/codecs_v2/omx/omx_mastercore/include \
++ 	$(PV_TOP)/codecs_v2/omx/omx_common/include \
++ 	$(PV_TOP)/extern_libs_v2/khronos/openmax/include \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libavcodec \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libavutil \
++	$(PV_TOP)/../../external/qemu/distrib/zlib-1.2.3/ \
++	$(PV_INCLUDES)
++
++include $(BUILD_SHARED_LIBRARY)
++
++
++# Building libavformat_mt
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := \
++	libavformat/4xm.c \
++	libavformat/adtsenc.c \
++	libavformat/aiff.c \
++	libavformat/allformats.c \
++	libavformat/amr.c \
++	libavformat/apc.c \
++	libavformat/ape.c \
++	libavformat/asf.c \
++	libavformat/asfcrypt.c \
++	libavformat/asfdec.c \
++	libavformat/asfenc.c \
++	libavformat/assdec.c \
++	libavformat/assenc.c \
++	libavformat/au.c \
++	libavformat/audiointerleave.c \
++	libavformat/avc.c \
++	libavformat/avidec.c \
++	libavformat/avienc.c \
++	libavformat/avio.c \
++	libavformat/aviobuf.c \
++	libavformat/avs.c \
++	libavformat/bethsoftvid.c \
++	libavformat/bfi.c \
++	libavformat/c93.c \
++	libavformat/crcenc.c \
++	libavformat/cutils.c \
++	libavformat/daud.c \
++	libavformat/dsicin.c \
++	libavformat/dv.c \
++	libavformat/dvenc.c \
++	libavformat/dxa.c \
++	libavformat/eacdata.c \
++	libavformat/electronicarts.c \
++	libavformat/ffmdec.c \
++	libavformat/ffmenc.c \
++	libavformat/file.c \
++	libavformat/flacdec.c \
++	libavformat/flacenc.c \
++	libavformat/flic.c \
++	libavformat/flvdec.c \
++	libavformat/flvenc.c \
++	libavformat/framecrcenc.c \
++	libavformat/gif.c \
++	libavformat/gopher.c \
++	libavformat/gxf.c \
++	libavformat/gxfenc.c \
++	libavformat/http.c \
++	libavformat/id3v2.c \
++	libavformat/idcin.c \
++	libavformat/idroq.c \
++	libavformat/iff.c \
++	libavformat/img2.c \
++	libavformat/ipmovie.c \
++	libavformat/isom.c \
++	libavformat/iss.c \
++	libavformat/lmlm4.c \
++	libavformat/matroska.c \
++	libavformat/matroskadec.c \
++	libavformat/matroskaenc.c \
++	libavformat/metadata.c \
++	libavformat/metadata_compat.c \
++	libavformat/mm.c \
++	libavformat/mmf.c \
++	libavformat/mov.c \
++	libavformat/movenc.c \
++	libavformat/mp3.c \
++	libavformat/mpc.c \
++	libavformat/mpc8.c \
++	libavformat/mpeg.c \
++	libavformat/mpegenc.c \
++	libavformat/mpegts.c \
++	libavformat/mpegtsenc.c \
++	libavformat/mpjpeg.c \
++	libavformat/msnwc_tcp.c \
++	libavformat/mtv.c \
++	libavformat/mvi.c \
++	libavformat/mxf.c \
++	libavformat/mxfdec.c \
++	libavformat/mxfenc.c \
++	libavformat/ncdec.c \
++	libavformat/nsvdec.c \
++	libavformat/nut.c \
++	libavformat/nutdec.c \
++	libavformat/nutenc.c \
++	libavformat/nuv.c \
++	libavformat/oggdec.c \
++	libavformat/oggenc.c \
++	libavformat/oggparseflac.c \
++	libavformat/oggparseogm.c \
++	libavformat/oggparsespeex.c \
++	libavformat/oggparsetheora.c \
++	libavformat/oggparsevorbis.c \
++	libavformat/oma.c \
++	libavformat/options.c \
++	libavformat/os_support.c \
++	libavformat/psxstr.c \
++	libavformat/pva.c \
++	libavformat/qcp.c \
++	libavformat/r3d.c \
++	libavformat/raw.c \
++	libavformat/rdt.c \
++	libavformat/riff.c \
++	libavformat/rl2.c \
++	libavformat/rm.c \
++	libavformat/rmdec.c \
++	libavformat/rmenc.c \
++	libavformat/rpl.c \
++	libavformat/rtp.c \
++	libavformat/rtp_aac.c \
++	libavformat/rtp_asf.c \
++	libavformat/rtp_h264.c \
++	libavformat/rtp_mpv.c \
++	libavformat/rtpdec.c \
++	libavformat/rtpenc.c \
++	libavformat/rtpenc_h264.c \
++	libavformat/rtpproto.c \
++	libavformat/rtsp.c \
++	libavformat/sdp.c \
++	libavformat/segafilm.c \
++	libavformat/sierravmd.c \
++	libavformat/siff.c \
++	libavformat/smacker.c \
++	libavformat/sol.c \
++	libavformat/swfdec.c \
++	libavformat/swfenc.c \
++	libavformat/tcp.c \
++	libavformat/thp.c \
++	libavformat/tiertexseq.c \
++	libavformat/tta.c \
++	libavformat/txd.c \
++	libavformat/udp.c \
++	libavformat/utils.c \
++	libavformat/vc1test.c \
++	libavformat/vc1testenc.c \
++	libavformat/voc.c \
++	libavformat/vocdec.c \
++	libavformat/vocenc.c \
++	libavformat/vqf.c \
++	libavformat/wav.c \
++	libavformat/wc3movie.c \
++	libavformat/westwood.c \
++	libavformat/wv.c \
++	libavformat/xa.c \
++	libavformat/yuv4mpeg.c \
++	libavformat/soxenc.c \
++	libavformat/soxdec.c \
++	libavformat/tmv.c \
++	libavformat/avlanguage.c \
++	libavformat/id3v1.c \
++	libavformat/rtp_vorbis.c \
++	libavformat/rtp_amr.c \
++	libavformat/rtp_h263.c
++
++
++LOCAL_MODULE := libavformat_mt
++LOCAL_PRELINK_MODULE := false
++
++LOCAL_CFLAGS := -DHAVE_AV_CONFIG_H -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno $(PV_CFLAGS)
++
++LOCAL_ARM_MODE := arm
++
++LOCAL_SHARED_LIBRARIES := \
++	libavutil_mt  \
++	libavcodec_mt \
++	libz  \
++	libutils
++
++LOCAL_C_INCLUDES := \
++	$(PV_TOP)/codecs_v2/omx/omx_mastercore/src \
++ 	$(PV_TOP)/codecs_v2/omx/omx_mastercore/include \
++ 	$(PV_TOP)/codecs_v2/omx/omx_common/include \
++ 	$(PV_TOP)/extern_libs_v2/khronos/openmax/include \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libavcodec \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libavutil \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libavformat \
++	$(PV_TOP)/../../external/qemu/distrib/zlib-1.2.3/ \
++ 	$(PV_INCLUDES)
++
++include $(BUILD_SHARED_LIBRARY)
++
++
++# Building libswscale_mt
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := \
++	libswscale/rgb2rgb.c \
++	libswscale/swscale.c \
++	libswscale/swscale_avoption.c \
++	libswscale/yuv2rgb.c
++
++LOCAL_MODULE := libswscale_mt
++LOCAL_PRELINK_MODULE := false
++
++LOCAL_CFLAGS := -DHAVE_AV_CONFIG_H -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno $(PV_CFLAGS)
++
++LOCAL_ARM_MODE := arm
++
++LOCAL_SHARED_LIBRARIES := \
++	libavutil_mt
++
++LOCAL_C_INCLUDES := \
++	$(PV_TOP)/codecs_v2/omx/omx_mastercore/src \
++ 	$(PV_TOP)/codecs_v2/omx/omx_mastercore/include \
++ 	$(PV_TOP)/codecs_v2/omx/omx_common/include \
++ 	$(PV_TOP)/extern_libs_v2/khronos/openmax/include \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libavcodec \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libavutil \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libavformat \
++	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/bellagio_interface/src/components/ffmpeg-mt-android/libswscale \
++	$(PV_TOP)/../../external/qemu/distrib/zlib-1.2.3/ \
++ 	$(PV_INCLUDES)
++
++include $(BUILD_SHARED_LIBRARY)
++
++
+diff -Naur ./ffmpeg-mt_orig/config.h ./ffmpeg-mt/config.h
+--- ./ffmpeg-mt_orig/config.h	1970-01-01 05:30:00.000000000 +0530
++++ ./ffmpeg-mt/config.h	2009-09-02 17:14:37.031098000 +0530
+@@ -0,0 +1,773 @@
++/* Automatically generated by configure - do not modify! */
++#ifndef FFMPEG_CONFIG_H
++#define FFMPEG_CONFIG_H
++#define FFMPEG_CONFIGURATION "--cross-prefix=/home/astn/ast_noida_share/ext_git_repos/official_android_package/ast_android/prebuilt/linux-x86/toolchain/arm-eabi-4.2.1/bin/arm-eabi- --enable-cross-compile --arch=ARM --enable-shared --extra-ldflags='-nostdlib -Wl,-T,/home/astn/ast_noida_share/ext_git_repos/official_android_package/ast_android/build/core/armelf.xsc -Wl,--gc-sections -Wl,-shared,-Bsymbolic -L/home/astn/ast_noida_share/ext_git_repos/official_android_package/ast_android/out/target/product/generic/obj/lib /home/astn/ast_noida_share/ext_git_repos/official_android_package/ast_android/out/target/product/generic/obj/STATIC_LIBRARIES/libcutils_intermediates/libcutils.a /home/astn/ast_noida_share/ext_git_repos/official_android_package/ast_android/out/target/product/generic/obj/STATIC_LIBRARIES/libc_intermediates/libc.a /home/astn/ast_noida_share/ext_git_repos/official_android_package/ast_android/prebuilt/linux-x86/toolchain/arm-eabi-4.2.1/bin/../lib/gcc/arm-eabi/4.2.1/interwork/libgcc.a -L/home/astn/ast_noida_share/ext_git_repos/official_android_package/ast_android/out/target/product/generic/obj/lib/libm.so -ldl -lc -licuuc -llog -landroid_runtime -lhardware -lui -lcutils -lutils' --extra-cflags='-I /opt/STM/STLinux-2.3/devkit/arm/target/usr/include/ -I /home/deepakg/downloads/android/android-ndk-1.5_r1/build/platforms/android-1.5/arch-arm/usr/include -I /home/deepakg/downloads/android/android-ndk-1.5_r1/build/platforms/android-1.5/common/include -I /home/deepakg/downloads/android/android-ndk-1.5_r1/build/prebuilt/linux-x86/arm-eabi-4.2.1/lib/gcc/arm-eabi/4.2.1/include' --prefix=/home/deepakg/OMX/ffmpeg_installed"
++#define FFMPEG_DATADIR "/home/deepakg/OMX/ffmpeg_installed/share/ffmpeg"
++#define ARCH_ALPHA 0
++#define ARCH_ARM 0
++#define ARCH_BFIN 0
++#define ARCH_IA64 0
++#define ARCH_M68K 0
++#define ARCH_MIPS 0
++#define ARCH_PARISC 0
++#define ARCH_PPC 0
++#define ARCH_S390 0
++#define ARCH_SH4 0
++#define ARCH_SPARC 0
++#define ARCH_SPARC64 0
++#define ARCH_X86 0
++#define ARCH_X86_32 0
++#define ARCH_X86_64 0
++#define HAVE_ALTIVEC 0
++#define HAVE_AMD3DNOW 0
++#define HAVE_AMD3DNOWEXT 0
++#define HAVE_ARMV5TE 0
++#define HAVE_ARMV6 0
++#define HAVE_ARMV6T2 0
++#define HAVE_ARMVFP 0
++#define HAVE_IWMMXT 0
++#define HAVE_MMI 0
++#define HAVE_MMX 0
++#define HAVE_MMX2 0
++#define HAVE_NEON 0
++#define HAVE_PPC4XX 0
++#define HAVE_SSE 0
++#define HAVE_SSSE3 0
++#define HAVE_VIS 0
++#define HAVE_BEOSTHREADS 0
++#define HAVE_OS2THREADS 0
++#define HAVE_PTHREADS 1
++#define HAVE_W32THREADS 0
++#define HAVE_ALSA_ASOUNDLIB_H 0
++#define HAVE_ALTIVEC_H 0
++#define HAVE_ARPA_INET_H 1
++#define HAVE_BSWAP 0
++#define HAVE_CLOSESOCKET 0
++#define HAVE_CMOV 0
++#define HAVE_CONIO_H 0
++#define HAVE_DCBZL 0
++#define HAVE_DEV_BKTR_IOCTL_BT848_H 0
++#define HAVE_DEV_BKTR_IOCTL_METEOR_H 0
++#define HAVE_DEV_IC_BT8XX_H 0
++#define HAVE_DEV_VIDEO_METEOR_IOCTL_METEOR_H 0
++#define HAVE_DEV_VIDEO_BKTR_IOCTL_BT848_H 0
++#define HAVE_DLFCN_H 1
++#define HAVE_DLOPEN 1
++#define HAVE_DOS_PATHS 0
++#define HAVE_EBP_AVAILABLE 0
++#define HAVE_EBX_AVAILABLE 0
++#define HAVE_FAST_64BIT 0
++#define HAVE_FAST_CMOV 0
++#define HAVE_FAST_UNALIGNED 0
++#define HAVE_FORK 1
++#define HAVE_GETHRTIME 0
++#define HAVE_GETPROCESSTIMES 0
++#define HAVE_GETRUSAGE 1
++#define HAVE_INET_ATON 1
++#define HAVE_INLINE_ASM 1
++#define HAVE_LIBDC1394_1 0
++#define HAVE_LIBDC1394_2 0
++#define HAVE_LLRINT 1
++#define HAVE_LRINT 1
++#define HAVE_LRINTF 1
++#define HAVE_MACHINE_IOCTL_BT848_H 0
++#define HAVE_MACHINE_IOCTL_METEOR_H 0
++#define HAVE_MALLOC_H 1
++#define HAVE_MEMALIGN 1
++#define HAVE_MKSTEMP 1
++#define HAVE_PLD 0
++#define HAVE_POSIX_MEMALIGN 0
++#define HAVE_PPC64 0
++#define HAVE_ROUND 1
++#define HAVE_ROUNDF 1
++#define HAVE_SDL 0
++#define HAVE_SDL_VIDEO_SIZE 0
++#define HAVE_SETMODE 0
++#define HAVE_SOCKLEN_T 1
++#define HAVE_SOUNDCARD_H 0
++#define HAVE_POLL_H 1
++#define HAVE_SYS_MMAN_H 1
++#define HAVE_SYS_RESOURCE_H 1
++#define HAVE_SYS_SELECT_H 1
++#define HAVE_SYS_SOUNDCARD_H 1
++#define HAVE_SYS_VIDEOIO_H 0
++#define HAVE_TEN_OPERANDS 0
++#define HAVE_TERMIOS_H 1
++#define HAVE_THREADS 1
++#define HAVE_TRUNCF 1
++#define HAVE_VIRTUALALLOC 0
++#define HAVE_WINSOCK2_H 0
++#define HAVE_YASM 0
++#define CONFIG_BSFS 1
++#define CONFIG_DECODERS 1
++#define CONFIG_DEMUXERS 1
++#define CONFIG_ENCODERS 1
++#define CONFIG_FILTERS 1
++#define CONFIG_INDEVS 0
++#define CONFIG_MUXERS 1
++#define CONFIG_OUTDEVS 0
++#define CONFIG_PARSERS 0
++#define CONFIG_PROTOCOLS 1
++#define CONFIG_AANDCT 1
++#define CONFIG_AVFILTER 0
++#define CONFIG_AVFILTER_LAVF 0
++#define CONFIG_AVISYNTH 0
++#define CONFIG_BEOS_NETSERVER 0
++#define CONFIG_BZLIB 0
++#define CONFIG_FASTDIV 1
++#define CONFIG_FFMPEG 1
++#define CONFIG_FFPLAY 0
++#define CONFIG_FFSERVER 1
++#define CONFIG_FFT 1
++#define CONFIG_GOLOMB 1
++#define CONFIG_GPL 0
++#define CONFIG_GPROF 0
++#define CONFIG_GRAY 0
++#define CONFIG_HARDCODED_TABLES 0
++#define CONFIG_IPV6 1
++#define CONFIG_LIBAMR_NB 0
++#define CONFIG_LIBAMR_WB 0
++#define CONFIG_LIBDC1394 0
++#define CONFIG_LIBDIRAC 0
++#define CONFIG_LIBFAAC 0
++#define CONFIG_LIBFAAD 0
++#define CONFIG_LIBFAADBIN 0
++#define CONFIG_LIBGSM 0
++#define CONFIG_LIBMP3LAME 0
++#define CONFIG_LIBNUT 0
++#define CONFIG_LIBOPENJPEG 0
++#define CONFIG_LIBSCHROEDINGER 0
++#define CONFIG_LIBSPEEX 0
++#define CONFIG_LIBTHEORA 0
++#define CONFIG_LIBVORBIS 0
++#define CONFIG_LIBX264 0
++#define CONFIG_LIBXVID 0
++#define CONFIG_MDCT 1
++#define CONFIG_MEMALIGN_HACK 0
++#define CONFIG_MLIB 0
++#define CONFIG_MPEGAUDIO_HP 1
++#define CONFIG_NETWORK 1
++#define CONFIG_NONFREE 0
++#define CONFIG_POSTPROC 0
++#define CONFIG_POWERPC_PERF 0
++#define CONFIG_RDFT 1
++#define CONFIG_SHARED 1
++#define CONFIG_SMALL 0
++#define CONFIG_STATIC 1
++#define CONFIG_SWSCALE_ALPHA 1
++#define CONFIG_X11GRAB 0
++#define CONFIG_ZLIB 1
++#define CONFIG_AASC_DECODER 1
++#define CONFIG_AMV_DECODER 1
++#define CONFIG_ASV1_DECODER 1
++#define CONFIG_ASV2_DECODER 1
++#define CONFIG_AVS_DECODER 1
++#define CONFIG_BETHSOFTVID_DECODER 1
++#define CONFIG_BFI_DECODER 1
++#define CONFIG_BMP_DECODER 1
++#define CONFIG_C93_DECODER 1
++#define CONFIG_CAVS_DECODER 1
++#define CONFIG_CINEPAK_DECODER 1
++#define CONFIG_CLJR_DECODER 1
++#define CONFIG_CSCD_DECODER 1
++#define CONFIG_CYUV_DECODER 1
++#define CONFIG_DNXHD_DECODER 1
++#define CONFIG_DPX_DECODER 1
++#define CONFIG_DSICINVIDEO_DECODER 1
++#define CONFIG_DVVIDEO_DECODER 1
++#define CONFIG_DXA_DECODER 1
++#define CONFIG_EACMV_DECODER 1
++#define CONFIG_EAMAD_DECODER 1
++#define CONFIG_EATGQ_DECODER 1
++#define CONFIG_EATGV_DECODER 1
++#define CONFIG_EATQI_DECODER 1
++#define CONFIG_EIGHTBPS_DECODER 1
++#define CONFIG_EIGHTSVX_EXP_DECODER 1
++#define CONFIG_EIGHTSVX_FIB_DECODER 1
++#define CONFIG_ESCAPE124_DECODER 1
++#define CONFIG_FFV1_DECODER 1
++#define CONFIG_FFVHUFF_DECODER 1
++#define CONFIG_FLASHSV_DECODER 1
++#define CONFIG_FLIC_DECODER 1
++#define CONFIG_FLV_DECODER 1
++#define CONFIG_FOURXM_DECODER 1
++#define CONFIG_FRAPS_DECODER 1
++#define CONFIG_GIF_DECODER 1
++#define CONFIG_H261_DECODER 1
++#define CONFIG_H263_DECODER 1
++#define CONFIG_H263I_DECODER 1
++#define CONFIG_H264_DECODER 1
++#define CONFIG_H264_VDPAU_DECODER 0
++#define CONFIG_HUFFYUV_DECODER 1
++#define CONFIG_IDCIN_DECODER 1
++#define CONFIG_INDEO2_DECODER 1
++#define CONFIG_INDEO3_DECODER 1
++#define CONFIG_INTERPLAY_VIDEO_DECODER 1
++#define CONFIG_JPEGLS_DECODER 1
++#define CONFIG_KMVC_DECODER 1
++#define CONFIG_LOCO_DECODER 1
++#define CONFIG_MDEC_DECODER 1
++#define CONFIG_MIMIC_DECODER 1
++#define CONFIG_MJPEG_DECODER 1
++#define CONFIG_MJPEGB_DECODER 1
++#define CONFIG_MMVIDEO_DECODER 1
++#define CONFIG_MOTIONPIXELS_DECODER 1
++#define CONFIG_MPEG_XVMC_DECODER 0
++#define CONFIG_MPEG1VIDEO_DECODER 1
++#define CONFIG_MPEG2VIDEO_DECODER 1
++#define CONFIG_MPEG4_DECODER 1
++#define CONFIG_MPEGVIDEO_DECODER 1
++#define CONFIG_MPEG_VDPAU_DECODER 0
++#define CONFIG_MPEG1_VDPAU_DECODER 0
++#define CONFIG_MSMPEG4V1_DECODER 1
++#define CONFIG_MSMPEG4V2_DECODER 1
++#define CONFIG_MSMPEG4V3_DECODER 1
++#define CONFIG_MSRLE_DECODER 1
++#define CONFIG_MSVIDEO1_DECODER 1
++#define CONFIG_MSZH_DECODER 1
++#define CONFIG_NUV_DECODER 1
++#define CONFIG_PAM_DECODER 1
++#define CONFIG_PBM_DECODER 1
++#define CONFIG_PCX_DECODER 1
++#define CONFIG_PGM_DECODER 1
++#define CONFIG_PGMYUV_DECODER 1
++#define CONFIG_PNG_DECODER 1
++#define CONFIG_PPM_DECODER 1
++#define CONFIG_PTX_DECODER 1
++#define CONFIG_QDRAW_DECODER 1
++#define CONFIG_QPEG_DECODER 1
++#define CONFIG_QTRLE_DECODER 1
++#define CONFIG_RAWVIDEO_DECODER 1
++#define CONFIG_RL2_DECODER 1
++#define CONFIG_ROQ_DECODER 1
++#define CONFIG_RPZA_DECODER 1
++#define CONFIG_RV10_DECODER 1
++#define CONFIG_RV20_DECODER 1
++#define CONFIG_RV30_DECODER 1
++#define CONFIG_RV40_DECODER 1
++#define CONFIG_SGI_DECODER 1
++#define CONFIG_SMACKER_DECODER 1
++#define CONFIG_SMC_DECODER 1
++#define CONFIG_SNOW_DECODER 1
++#define CONFIG_SP5X_DECODER 1
++#define CONFIG_SUNRAST_DECODER 1
++#define CONFIG_SVQ1_DECODER 1
++#define CONFIG_SVQ3_DECODER 1
++#define CONFIG_TARGA_DECODER 1
++#define CONFIG_THEORA_DECODER 1
++#define CONFIG_THP_DECODER 1
++#define CONFIG_TIERTEXSEQVIDEO_DECODER 1
++#define CONFIG_TIFF_DECODER 1
++#define CONFIG_TMV_DECODER 1
++#define CONFIG_TRUEMOTION1_DECODER 1
++#define CONFIG_TRUEMOTION2_DECODER 1
++#define CONFIG_TSCC_DECODER 1
++#define CONFIG_TXD_DECODER 1
++#define CONFIG_ULTI_DECODER 1
++#define CONFIG_V210_DECODER 1
++#define CONFIG_V210X_DECODER 1
++#define CONFIG_VB_DECODER 1
++#define CONFIG_VC1_DECODER 1
++#define CONFIG_VC1_VDPAU_DECODER 0
++#define CONFIG_VCR1_DECODER 1
++#define CONFIG_VMDVIDEO_DECODER 1
++#define CONFIG_VMNC_DECODER 1
++#define CONFIG_VP3_DECODER 1
++#define CONFIG_VP5_DECODER 1
++#define CONFIG_VP6_DECODER 1
++#define CONFIG_VP6A_DECODER 1
++#define CONFIG_VP6F_DECODER 1
++#define CONFIG_VQA_DECODER 1
++#define CONFIG_WMV1_DECODER 1
++#define CONFIG_WMV2_DECODER 1
++#define CONFIG_WMV3_DECODER 1
++#define CONFIG_WMV3_VDPAU_DECODER 0
++#define CONFIG_WNV1_DECODER 1
++#define CONFIG_XAN_WC3_DECODER 1
++#define CONFIG_XL_DECODER 1
++#define CONFIG_ZLIB_DECODER 1
++#define CONFIG_ZMBV_DECODER 1
++#define CONFIG_AAC_DECODER 1
++#define CONFIG_AC3_DECODER 0
++#define CONFIG_ALAC_DECODER 1
++#define CONFIG_APE_DECODER 1
++#define CONFIG_ATRAC3_DECODER 1
++#define CONFIG_COOK_DECODER 1
++#define CONFIG_DCA_DECODER 1
++#define CONFIG_DSICINAUDIO_DECODER 1
++#define CONFIG_EAC3_DECODER 0
++#define CONFIG_FLAC_DECODER 1
++#define CONFIG_IMC_DECODER 1
++#define CONFIG_MACE3_DECODER 1
++#define CONFIG_MACE6_DECODER 1
++#define CONFIG_MLP_DECODER 1
++#define CONFIG_MP1_DECODER 1
++#define CONFIG_MP2_DECODER 1
++#define CONFIG_MP3_DECODER 1
++#define CONFIG_MP3ADU_DECODER 1
++#define CONFIG_MP3ON4_DECODER 1
++#define CONFIG_MPC7_DECODER 1
++#define CONFIG_MPC8_DECODER 1
++#define CONFIG_NELLYMOSER_DECODER 1
++#define CONFIG_QCELP_DECODER 1
++#define CONFIG_QDM2_DECODER 1
++#define CONFIG_RA_144_DECODER 1
++#define CONFIG_RA_288_DECODER 1
++#define CONFIG_SHORTEN_DECODER 1
++#define CONFIG_SMACKAUD_DECODER 1
++#define CONFIG_SONIC_DECODER 1
++#define CONFIG_TRUEHD_DECODER 1
++#define CONFIG_TRUESPEECH_DECODER 1
++#define CONFIG_TTA_DECODER 1
++#define CONFIG_VMDAUDIO_DECODER 1
++#define CONFIG_VORBIS_DECODER 1
++#define CONFIG_WAVPACK_DECODER 1
++#define CONFIG_WMAV1_DECODER 1
++#define CONFIG_WMAV2_DECODER 1
++#define CONFIG_WS_SND1_DECODER 1
++#define CONFIG_PCM_ALAW_DECODER 1
++#define CONFIG_PCM_DVD_DECODER 1
++#define CONFIG_PCM_F32BE_DECODER 1
++#define CONFIG_PCM_F32LE_DECODER 1
++#define CONFIG_PCM_F64BE_DECODER 1
++#define CONFIG_PCM_F64LE_DECODER 1
++#define CONFIG_PCM_MULAW_DECODER 1
++#define CONFIG_PCM_S8_DECODER 1
++#define CONFIG_PCM_S16BE_DECODER 1
++#define CONFIG_PCM_S16LE_DECODER 1
++#define CONFIG_PCM_S16LE_PLANAR_DECODER 1
++#define CONFIG_PCM_S24BE_DECODER 1
++#define CONFIG_PCM_S24DAUD_DECODER 1
++#define CONFIG_PCM_S24LE_DECODER 1
++#define CONFIG_PCM_S32BE_DECODER 1
++#define CONFIG_PCM_S32LE_DECODER 1
++#define CONFIG_PCM_U8_DECODER 1
++#define CONFIG_PCM_U16BE_DECODER 1
++#define CONFIG_PCM_U16LE_DECODER 1
++#define CONFIG_PCM_U24BE_DECODER 1
++#define CONFIG_PCM_U24LE_DECODER 1
++#define CONFIG_PCM_U32BE_DECODER 1
++#define CONFIG_PCM_U32LE_DECODER 1
++#define CONFIG_PCM_ZORK_DECODER 1
++#define CONFIG_INTERPLAY_DPCM_DECODER 1
++#define CONFIG_ROQ_DPCM_DECODER 1
++#define CONFIG_SOL_DPCM_DECODER 1
++#define CONFIG_XAN_DPCM_DECODER 1
++#define CONFIG_ADPCM_4XM_DECODER 1
++#define CONFIG_ADPCM_ADX_DECODER 1
++#define CONFIG_ADPCM_CT_DECODER 1
++#define CONFIG_ADPCM_EA_DECODER 1
++#define CONFIG_ADPCM_EA_MAXIS_XA_DECODER 1
++#define CONFIG_ADPCM_EA_R1_DECODER 1
++#define CONFIG_ADPCM_EA_R2_DECODER 1
++#define CONFIG_ADPCM_EA_R3_DECODER 1
++#define CONFIG_ADPCM_EA_XAS_DECODER 1
++#define CONFIG_ADPCM_G726_DECODER 1
++#define CONFIG_ADPCM_IMA_AMV_DECODER 1
++#define CONFIG_ADPCM_IMA_DK3_DECODER 1
++#define CONFIG_ADPCM_IMA_DK4_DECODER 1
++#define CONFIG_ADPCM_IMA_EA_EACS_DECODER 1
++#define CONFIG_ADPCM_IMA_EA_SEAD_DECODER 1
++#define CONFIG_ADPCM_IMA_ISS_DECODER 1
++#define CONFIG_ADPCM_IMA_QT_DECODER 1
++#define CONFIG_ADPCM_IMA_SMJPEG_DECODER 1
++#define CONFIG_ADPCM_IMA_WAV_DECODER 1
++#define CONFIG_ADPCM_IMA_WS_DECODER 1
++#define CONFIG_ADPCM_MS_DECODER 1
++#define CONFIG_ADPCM_SBPRO_2_DECODER 1
++#define CONFIG_ADPCM_SBPRO_3_DECODER 1
++#define CONFIG_ADPCM_SBPRO_4_DECODER 1
++#define CONFIG_ADPCM_SWF_DECODER 1
++#define CONFIG_ADPCM_THP_DECODER 1
++#define CONFIG_ADPCM_XA_DECODER 1
++#define CONFIG_ADPCM_YAMAHA_DECODER 1
++#define CONFIG_DVBSUB_DECODER 1
++#define CONFIG_DVDSUB_DECODER 1
++#define CONFIG_XSUB_DECODER 1
++#define CONFIG_LIBAMR_NB_DECODER 0
++#define CONFIG_LIBAMR_WB_DECODER 0
++#define CONFIG_LIBDIRAC_DECODER 0
++#define CONFIG_LIBFAAD_DECODER 0
++#define CONFIG_LIBGSM_DECODER 0
++#define CONFIG_LIBGSM_MS_DECODER 0
++#define CONFIG_LIBOPENCORE_AMRNB_DECODER 0
++#define CONFIG_LIBOPENCORE_AMRWB_DECODER 0
++#define CONFIG_LIBOPENJPEG_DECODER 0
++#define CONFIG_LIBSCHROEDINGER_DECODER 0
++#define CONFIG_LIBSPEEX_DECODER 0
++#define CONFIG_ASV1_ENCODER 1
++#define CONFIG_ASV2_ENCODER 1
++#define CONFIG_BMP_ENCODER 1
++#define CONFIG_DNXHD_ENCODER 1
++#define CONFIG_DVVIDEO_ENCODER 1
++#define CONFIG_FFV1_ENCODER 1
++#define CONFIG_FFVHUFF_ENCODER 1
++#define CONFIG_FLASHSV_ENCODER 1
++#define CONFIG_FLV_ENCODER 1
++#define CONFIG_GIF_ENCODER 1
++#define CONFIG_H261_ENCODER 1
++#define CONFIG_H263_ENCODER 1
++#define CONFIG_H263P_ENCODER 1
++#define CONFIG_HUFFYUV_ENCODER 1
++#define CONFIG_JPEGLS_ENCODER 1
++#define CONFIG_LJPEG_ENCODER 1
++#define CONFIG_MJPEG_ENCODER 1
++#define CONFIG_MPEG1VIDEO_ENCODER 1
++#define CONFIG_MPEG2VIDEO_ENCODER 1
++#define CONFIG_MPEG4_ENCODER 1
++#define CONFIG_MSMPEG4V1_ENCODER 1
++#define CONFIG_MSMPEG4V2_ENCODER 1
++#define CONFIG_MSMPEG4V3_ENCODER 1
++#define CONFIG_PAM_ENCODER 1
++#define CONFIG_PBM_ENCODER 1
++#define CONFIG_PCX_ENCODER 1
++#define CONFIG_PGM_ENCODER 1
++#define CONFIG_PGMYUV_ENCODER 1
++#define CONFIG_PNG_ENCODER 1
++#define CONFIG_PPM_ENCODER 1
++#define CONFIG_QTRLE_ENCODER 1
++#define CONFIG_RAWVIDEO_ENCODER 1
++#define CONFIG_ROQ_ENCODER 1
++#define CONFIG_RV10_ENCODER 1
++#define CONFIG_RV20_ENCODER 1
++#define CONFIG_SGI_ENCODER 1
++#define CONFIG_SNOW_ENCODER 1
++#define CONFIG_SVQ1_ENCODER 1
++#define CONFIG_TARGA_ENCODER 1
++#define CONFIG_TIFF_ENCODER 1
++#define CONFIG_V210_ENCODER 1
++#define CONFIG_WMV1_ENCODER 1
++#define CONFIG_WMV2_ENCODER 1
++#define CONFIG_ZLIB_ENCODER 1
++#define CONFIG_ZMBV_ENCODER 1
++#define CONFIG_AAC_ENCODER 0
++#define CONFIG_AC3_ENCODER 1
++#define CONFIG_ALAC_ENCODER 1
++#define CONFIG_FLAC_ENCODER 1
++#define CONFIG_MP2_ENCODER 1
++#define CONFIG_NELLYMOSER_ENCODER 1
++#define CONFIG_SONIC_ENCODER 1
++#define CONFIG_SONIC_LS_ENCODER 1
++#define CONFIG_VORBIS_ENCODER 1
++#define CONFIG_WMAV1_ENCODER 1
++#define CONFIG_WMAV2_ENCODER 1
++#define CONFIG_PCM_ALAW_ENCODER 1
++#define CONFIG_PCM_F32BE_ENCODER 1
++#define CONFIG_PCM_F32LE_ENCODER 1
++#define CONFIG_PCM_F64BE_ENCODER 1
++#define CONFIG_PCM_F64LE_ENCODER 1
++#define CONFIG_PCM_MULAW_ENCODER 1
++#define CONFIG_PCM_S8_ENCODER 1
++#define CONFIG_PCM_S16BE_ENCODER 1
++#define CONFIG_PCM_S16LE_ENCODER 1
++#define CONFIG_PCM_S24BE_ENCODER 1
++#define CONFIG_PCM_S24DAUD_ENCODER 1
++#define CONFIG_PCM_S24LE_ENCODER 1
++#define CONFIG_PCM_S32BE_ENCODER 1
++#define CONFIG_PCM_S32LE_ENCODER 1
++#define CONFIG_PCM_U8_ENCODER 1
++#define CONFIG_PCM_U16BE_ENCODER 1
++#define CONFIG_PCM_U16LE_ENCODER 1
++#define CONFIG_PCM_U24BE_ENCODER 1
++#define CONFIG_PCM_U24LE_ENCODER 1
++#define CONFIG_PCM_U32BE_ENCODER 1
++#define CONFIG_PCM_U32LE_ENCODER 1
++#define CONFIG_PCM_ZORK_ENCODER 1
++#define CONFIG_ROQ_DPCM_ENCODER 1
++#define CONFIG_ADPCM_ADX_ENCODER 1
++#define CONFIG_ADPCM_G726_ENCODER 1
++#define CONFIG_ADPCM_IMA_QT_ENCODER 1
++#define CONFIG_ADPCM_IMA_WAV_ENCODER 1
++#define CONFIG_ADPCM_MS_ENCODER 1
++#define CONFIG_ADPCM_SWF_ENCODER 1
++#define CONFIG_ADPCM_YAMAHA_ENCODER 1
++#define CONFIG_DVBSUB_ENCODER 1
++#define CONFIG_DVDSUB_ENCODER 1
++#define CONFIG_XSUB_ENCODER 1
++#define CONFIG_LIBAMR_NB_ENCODER 0
++#define CONFIG_LIBAMR_WB_ENCODER 0
++#define CONFIG_LIBDIRAC_ENCODER 0
++#define CONFIG_LIBFAAC_ENCODER 0
++#define CONFIG_LIBGSM_ENCODER 0
++#define CONFIG_LIBGSM_MS_ENCODER 0
++#define CONFIG_LIBMP3LAME_ENCODER 0
++#define CONFIG_LIBOPENCORE_AMRNB_ENCODER 0
++#define CONFIG_LIBSCHROEDINGER_ENCODER 0
++#define CONFIG_LIBTHEORA_ENCODER 0
++#define CONFIG_LIBVORBIS_ENCODER 0
++#define CONFIG_LIBX264_ENCODER 0
++#define CONFIG_LIBXVID_ENCODER 0
++#define CONFIG_H263_VAAPI_HWACCEL 0
++#define CONFIG_MPEG2_VAAPI_HWACCEL 0
++#define CONFIG_MPEG4_VAAPI_HWACCEL 0
++#define CONFIG_VC1_VAAPI_HWACCEL 0
++#define CONFIG_WMV3_VAAPI_HWACCEL 0
++#define CONFIG_AAC_PARSER 1
++#define CONFIG_AC3_PARSER 1
++#define CONFIG_CAVSVIDEO_PARSER 1
++#define CONFIG_DCA_PARSER 1
++#define CONFIG_DIRAC_PARSER 1
++#define CONFIG_DNXHD_PARSER 1
++#define CONFIG_DVBSUB_PARSER 1
++#define CONFIG_DVDSUB_PARSER 1
++#define CONFIG_H261_PARSER 1
++#define CONFIG_H263_PARSER 1
++#define CONFIG_H264_PARSER 1
++#define CONFIG_MJPEG_PARSER 1
++#define CONFIG_MLP_PARSER 1
++#define CONFIG_MPEG4VIDEO_PARSER 1
++#define CONFIG_MPEGAUDIO_PARSER 1
++#define CONFIG_MPEGVIDEO_PARSER 1
++#define CONFIG_PNM_PARSER 1
++#define CONFIG_VC1_PARSER 1
++#define CONFIG_VP3_PARSER 1
++#define CONFIG_AAC_ADTSTOASC_BSF 1
++#define CONFIG_DUMP_EXTRADATA_BSF 1
++#define CONFIG_H264_MP4TOANNEXB_BSF 1
++#define CONFIG_IMX_DUMP_HEADER_BSF 1
++#define CONFIG_MJPEGA_DUMP_HEADER_BSF 1
++#define CONFIG_MP3_HEADER_COMPRESS_BSF 1
++#define CONFIG_MP3_HEADER_DECOMPRESS_BSF 1
++#define CONFIG_MOV2TEXTSUB_BSF 1
++#define CONFIG_NOISE_BSF 1
++#define CONFIG_REMOVE_EXTRADATA_BSF 1
++#define CONFIG_TEXT2MOVSUB_BSF 1
++#define CONFIG_AAC_DEMUXER 1
++#define CONFIG_AC3_DEMUXER 1
++#define CONFIG_AIFF_DEMUXER 1
++#define CONFIG_AMR_DEMUXER 1
++#define CONFIG_APC_DEMUXER 1
++#define CONFIG_APE_DEMUXER 1
++#define CONFIG_ASF_DEMUXER 1
++#define CONFIG_ASS_DEMUXER 1
++#define CONFIG_AU_DEMUXER 1
++#define CONFIG_AVI_DEMUXER 1
++#define CONFIG_AVISYNTH_DEMUXER 0
++#define CONFIG_AVS_DEMUXER 1
++#define CONFIG_BETHSOFTVID_DEMUXER 1
++#define CONFIG_BFI_DEMUXER 1
++#define CONFIG_C93_DEMUXER 1
++#define CONFIG_CAVSVIDEO_DEMUXER 1
++#define CONFIG_DAUD_DEMUXER 1
++#define CONFIG_DIRAC_DEMUXER 1
++#define CONFIG_DNXHD_DEMUXER 1
++#define CONFIG_DSICIN_DEMUXER 1
++#define CONFIG_DTS_DEMUXER 1
++#define CONFIG_DV_DEMUXER 1
++#define CONFIG_DXA_DEMUXER 1
++#define CONFIG_EA_DEMUXER 1
++#define CONFIG_EA_CDATA_DEMUXER 1
++#define CONFIG_EAC3_DEMUXER 1
++#define CONFIG_FFM_DEMUXER 1
++#define CONFIG_FLAC_DEMUXER 1
++#define CONFIG_FLIC_DEMUXER 1
++#define CONFIG_FLV_DEMUXER 1
++#define CONFIG_FOURXM_DEMUXER 1
++#define CONFIG_GSM_DEMUXER 1
++#define CONFIG_GXF_DEMUXER 1
++#define CONFIG_H261_DEMUXER 1
++#define CONFIG_H263_DEMUXER 1
++#define CONFIG_H264_DEMUXER 1
++#define CONFIG_IDCIN_DEMUXER 1
++#define CONFIG_IFF_DEMUXER 1
++#define CONFIG_IMAGE2_DEMUXER 1
++#define CONFIG_IMAGE2PIPE_DEMUXER 1
++#define CONFIG_INGENIENT_DEMUXER 1
++#define CONFIG_IPMOVIE_DEMUXER 1
++#define CONFIG_ISS_DEMUXER 1
++#define CONFIG_LMLM4_DEMUXER 1
++#define CONFIG_M4V_DEMUXER 1
++#define CONFIG_MATROSKA_DEMUXER 1
++#define CONFIG_MJPEG_DEMUXER 1
++#define CONFIG_MLP_DEMUXER 1
++#define CONFIG_MM_DEMUXER 1
++#define CONFIG_MMF_DEMUXER 1
++#define CONFIG_MOV_DEMUXER 1
++#define CONFIG_MP3_DEMUXER 1
++#define CONFIG_MPC_DEMUXER 1
++#define CONFIG_MPC8_DEMUXER 1
++#define CONFIG_MPEGPS_DEMUXER 1
++#define CONFIG_MPEGTS_DEMUXER 1
++#define CONFIG_MPEGTSRAW_DEMUXER 1
++#define CONFIG_MPEGVIDEO_DEMUXER 1
++#define CONFIG_MSNWC_TCP_DEMUXER 1
++#define CONFIG_MTV_DEMUXER 1
++#define CONFIG_MVI_DEMUXER 1
++#define CONFIG_MXF_DEMUXER 1
++#define CONFIG_NC_DEMUXER 1
++#define CONFIG_NSV_DEMUXER 1
++#define CONFIG_NUT_DEMUXER 1
++#define CONFIG_NUV_DEMUXER 1
++#define CONFIG_OGG_DEMUXER 1
++#define CONFIG_OMA_DEMUXER 1
++#define CONFIG_PCM_ALAW_DEMUXER 1
++#define CONFIG_PCM_MULAW_DEMUXER 1
++#define CONFIG_PCM_F64BE_DEMUXER 1
++#define CONFIG_PCM_F64LE_DEMUXER 1
++#define CONFIG_PCM_F32BE_DEMUXER 1
++#define CONFIG_PCM_F32LE_DEMUXER 1
++#define CONFIG_PCM_S32BE_DEMUXER 1
++#define CONFIG_PCM_S32LE_DEMUXER 1
++#define CONFIG_PCM_S24BE_DEMUXER 1
++#define CONFIG_PCM_S24LE_DEMUXER 1
++#define CONFIG_PCM_S16BE_DEMUXER 1
++#define CONFIG_PCM_S16LE_DEMUXER 1
++#define CONFIG_PCM_S8_DEMUXER 1
++#define CONFIG_PCM_U32BE_DEMUXER 1
++#define CONFIG_PCM_U32LE_DEMUXER 1
++#define CONFIG_PCM_U24BE_DEMUXER 1
++#define CONFIG_PCM_U24LE_DEMUXER 1
++#define CONFIG_PCM_U16BE_DEMUXER 1
++#define CONFIG_PCM_U16LE_DEMUXER 1
++#define CONFIG_PCM_U8_DEMUXER 1
++#define CONFIG_PVA_DEMUXER 1
++#define CONFIG_QCP_DEMUXER 1
++#define CONFIG_R3D_DEMUXER 1
++#define CONFIG_RAWVIDEO_DEMUXER 1
++#define CONFIG_REDIR_DEMUXER 1
++#define CONFIG_RL2_DEMUXER 1
++#define CONFIG_RM_DEMUXER 1
++#define CONFIG_ROQ_DEMUXER 1
++#define CONFIG_RPL_DEMUXER 1
++#define CONFIG_RTSP_DEMUXER 1
++#define CONFIG_SDP_DEMUXER 1
++#define CONFIG_SEGAFILM_DEMUXER 1
++#define CONFIG_SHORTEN_DEMUXER 1
++#define CONFIG_SIFF_DEMUXER 1
++#define CONFIG_SMACKER_DEMUXER 1
++#define CONFIG_SOL_DEMUXER 1
++#define CONFIG_SOX_DEMUXER 1
++#define CONFIG_STR_DEMUXER 1
++#define CONFIG_SWF_DEMUXER 1
++#define CONFIG_THP_DEMUXER 1
++#define CONFIG_TIERTEXSEQ_DEMUXER 1
++#define CONFIG_TMV_DEMUXER 1
++#define CONFIG_TRUEHD_DEMUXER 1
++#define CONFIG_TTA_DEMUXER 1
++#define CONFIG_TXD_DEMUXER 1
++#define CONFIG_VC1_DEMUXER 1
++#define CONFIG_VC1T_DEMUXER 1
++#define CONFIG_VMD_DEMUXER 1
++#define CONFIG_VOC_DEMUXER 1
++#define CONFIG_VQF_DEMUXER 1
++#define CONFIG_WAV_DEMUXER 1
++#define CONFIG_WC3_DEMUXER 1
++#define CONFIG_WSAUD_DEMUXER 1
++#define CONFIG_WSVQA_DEMUXER 1
++#define CONFIG_WV_DEMUXER 1
++#define CONFIG_XA_DEMUXER 1
++#define CONFIG_YUV4MPEGPIPE_DEMUXER 1
++#define CONFIG_LIBNUT_DEMUXER 0
++#define CONFIG_AC3_MUXER 1
++#define CONFIG_ADTS_MUXER 1
++#define CONFIG_AIFF_MUXER 1
++#define CONFIG_AMR_MUXER 1
++#define CONFIG_ASF_MUXER 1
++#define CONFIG_ASS_MUXER 1
++#define CONFIG_ASF_STREAM_MUXER 1
++#define CONFIG_AU_MUXER 1
++#define CONFIG_AVI_MUXER 1
++#define CONFIG_AVM2_MUXER 1
++#define CONFIG_CRC_MUXER 1
++#define CONFIG_DAUD_MUXER 1
++#define CONFIG_DIRAC_MUXER 1
++#define CONFIG_DNXHD_MUXER 1
++#define CONFIG_DTS_MUXER 1
++#define CONFIG_DV_MUXER 1
++#define CONFIG_EAC3_MUXER 1
++#define CONFIG_FFM_MUXER 1
++#define CONFIG_FLAC_MUXER 1
++#define CONFIG_FLV_MUXER 1
++#define CONFIG_FRAMECRC_MUXER 1
++#define CONFIG_GIF_MUXER 1
++#define CONFIG_GXF_MUXER 1
++#define CONFIG_H261_MUXER 1
++#define CONFIG_H263_MUXER 1
++#define CONFIG_H264_MUXER 1
++#define CONFIG_IMAGE2_MUXER 1
++#define CONFIG_IMAGE2PIPE_MUXER 1
++#define CONFIG_IPOD_MUXER 1
++#define CONFIG_M4V_MUXER 1
++#define CONFIG_MATROSKA_MUXER 1
++#define CONFIG_MATROSKA_AUDIO_MUXER 1
++#define CONFIG_MJPEG_MUXER 1
++#define CONFIG_MLP_MUXER 1
++#define CONFIG_MMF_MUXER 1
++#define CONFIG_MOV_MUXER 1
++#define CONFIG_MP2_MUXER 1
++#define CONFIG_MP3_MUXER 1
++#define CONFIG_MP4_MUXER 1
++#define CONFIG_MPEG1SYSTEM_MUXER 1
++#define CONFIG_MPEG1VCD_MUXER 1
++#define CONFIG_MPEG1VIDEO_MUXER 1
++#define CONFIG_MPEG2DVD_MUXER 1
++#define CONFIG_MPEG2SVCD_MUXER 1
++#define CONFIG_MPEG2VIDEO_MUXER 1
++#define CONFIG_MPEG2VOB_MUXER 1
++#define CONFIG_MPEGTS_MUXER 1
++#define CONFIG_MPJPEG_MUXER 1
++#define CONFIG_MXF_MUXER 1
++#define CONFIG_MXF_D10_MUXER 1
++#define CONFIG_NULL_MUXER 1
++#define CONFIG_NUT_MUXER 1
++#define CONFIG_OGG_MUXER 1
++#define CONFIG_PCM_ALAW_MUXER 1
++#define CONFIG_PCM_MULAW_MUXER 1
++#define CONFIG_PCM_F64BE_MUXER 1
++#define CONFIG_PCM_F64LE_MUXER 1
++#define CONFIG_PCM_F32BE_MUXER 1
++#define CONFIG_PCM_F32LE_MUXER 1
++#define CONFIG_PCM_S32BE_MUXER 1
++#define CONFIG_PCM_S32LE_MUXER 1
++#define CONFIG_PCM_S24BE_MUXER 1
++#define CONFIG_PCM_S24LE_MUXER 1
++#define CONFIG_PCM_S16BE_MUXER 1
++#define CONFIG_PCM_S16LE_MUXER 1
++#define CONFIG_PCM_S8_MUXER 1
++#define CONFIG_PCM_U32BE_MUXER 1
++#define CONFIG_PCM_U32LE_MUXER 1
++#define CONFIG_PCM_U24BE_MUXER 1
++#define CONFIG_PCM_U24LE_MUXER 1
++#define CONFIG_PCM_U16BE_MUXER 1
++#define CONFIG_PCM_U16LE_MUXER 1
++#define CONFIG_PCM_U8_MUXER 1
++#define CONFIG_PSP_MUXER 1
++#define CONFIG_RAWVIDEO_MUXER 1
++#define CONFIG_RM_MUXER 1
++#define CONFIG_ROQ_MUXER 1
++#define CONFIG_RTP_MUXER 1
++#define CONFIG_SOX_MUXER 1
++#define CONFIG_SWF_MUXER 1
++#define CONFIG_TG2_MUXER 1
++#define CONFIG_TGP_MUXER 1
++#define CONFIG_TRUEHD_MUXER 1
++#define CONFIG_VC1T_MUXER 1
++#define CONFIG_VOC_MUXER 1
++#define CONFIG_WAV_MUXER 1
++#define CONFIG_YUV4MPEGPIPE_MUXER 1
++#define CONFIG_LIBNUT_MUXER 0
++#define CONFIG_CROP_FILTER 1
++#define CONFIG_FILE_PROTOCOL 1
++#define CONFIG_GOPHER_PROTOCOL 1
++#define CONFIG_HTTP_PROTOCOL 1
++#define CONFIG_PIPE_PROTOCOL 1
++#define CONFIG_RTP_PROTOCOL 1
++#define CONFIG_TCP_PROTOCOL 1
++#define CONFIG_UDP_PROTOCOL 1
++#define CONFIG_ALSA_DEMUXER 0
++#define CONFIG_AUDIO_BEOS_DEMUXER 0
++#define CONFIG_BKTR_DEMUXER 0
++#define CONFIG_DV1394_DEMUXER 1
++#define CONFIG_OSS_DEMUXER 1
++#define CONFIG_V4L2_DEMUXER 1
++#define CONFIG_V4L_DEMUXER 1
++#define CONFIG_VFWCAP_DEMUXER 0
++#define CONFIG_X11_GRAB_DEVICE_DEMUXER 0
++#define CONFIG_LIBDC1394_DEMUXER 0
++#define CONFIG_ALSA_MUXER 0
++#define CONFIG_AUDIO_BEOS_MUXER 0
++#define CONFIG_OSS_MUXER 1
++#define restrict restrict
++#define ASMALIGN(ZEROBITS) ".align " #ZEROBITS "\n\t"
++#define EXTERN_PREFIX ""
++#endif /* FFMPEG_CONFIG_H */
+diff -Naur ./ffmpeg-mt_orig/libavcodec/alpha/dsputil_alpha.c ./ffmpeg-mt/libavcodec/alpha/dsputil_alpha.c
+--- ./ffmpeg-mt_orig/libavcodec/alpha/dsputil_alpha.c	2009-08-19 16:13:29.855951000 +0530
++++ ./ffmpeg-mt/libavcodec/alpha/dsputil_alpha.c	2009-08-31 14:10:19.664308000 +0530
+@@ -37,8 +37,8 @@
+ void (*add_pixels_clamped_axp_p)(const DCTELEM *block, uint8_t *pixels,
+                                  int line_size);
+ 
+-void get_pixels_mvi(DCTELEM *restrict block,
+-                    const uint8_t *restrict pixels, int line_size);
++void get_pixels_mvi(DCTELEM *block,  
++                    const uint8_t *pixels, int line_size); 
+ void diff_pixels_mvi(DCTELEM *block, const uint8_t *s1, const uint8_t *s2,
+                      int stride);
+ int pix_abs8x8_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h);
+@@ -230,7 +230,7 @@
+ 
+ #define MAKE_OP(OPNAME, SUFF, OPKIND, STORE)                                \
+ static void OPNAME ## _pixels ## SUFF ## _axp                               \
+-        (uint8_t *restrict block, const uint8_t *restrict pixels,           \
++        (uint8_t *block, const uint8_t *pixels,           \
+          int line_size, int h)                                              \
+ {                                                                           \
+     if ((size_t) pixels & 0x7) {                                            \
+@@ -241,7 +241,7 @@
+ }                                                                           \
+                                                                             \
+ static void OPNAME ## _pixels16 ## SUFF ## _axp                             \
+-        (uint8_t *restrict block, const uint8_t *restrict pixels,           \
++        (uint8_t *block, const uint8_t *pixels,           \
+          int line_size, int h)                                              \
+ {                                                                           \
+     OPNAME ## _pixels ## SUFF ## _axp(block,     pixels,     line_size, h); \
+diff -Naur ./ffmpeg-mt_orig/libavcodec/alpha/motion_est_alpha.c ./ffmpeg-mt/libavcodec/alpha/motion_est_alpha.c
+--- ./ffmpeg-mt_orig/libavcodec/alpha/motion_est_alpha.c	2009-08-19 16:13:29.861951000 +0530
++++ ./ffmpeg-mt/libavcodec/alpha/motion_est_alpha.c	2009-08-31 14:10:19.675323000 +0530
+@@ -22,8 +22,8 @@
+ #include "libavcodec/dsputil.h"
+ #include "asm.h"
+ 
+-void get_pixels_mvi(DCTELEM *restrict block,
+-                    const uint8_t *restrict pixels, int line_size)
++void get_pixels_mvi(DCTELEM *block,
++                    const uint8_t *pixels, int line_size)
+ {
+     int h = 8;
+ 
+diff -Naur ./ffmpeg-mt_orig/libavcodec/dnxhdenc.c ./ffmpeg-mt/libavcodec/dnxhdenc.c
+--- ./ffmpeg-mt_orig/libavcodec/dnxhdenc.c	2009-08-19 16:13:30.283951000 +0530
++++ ./ffmpeg-mt/libavcodec/dnxhdenc.c	2009-08-31 14:10:19.707375000 +0530
+@@ -33,7 +33,7 @@
+ 
+ #define LAMBDA_FRAC_BITS 10
+ 
+-static av_always_inline void dnxhd_get_pixels_8x4(DCTELEM *restrict block, const uint8_t *pixels, int line_size)
++static av_always_inline void dnxhd_get_pixels_8x4(DCTELEM *block, const uint8_t *pixels, int line_size)
+ {
+     int i;
+     for (i = 0; i < 4; i++) {
+diff -Naur ./ffmpeg-mt_orig/libavcodec/dsputil.c ./ffmpeg-mt/libavcodec/dsputil.c
+--- ./ffmpeg-mt_orig/libavcodec/dsputil.c	2009-08-19 16:13:30.329953000 +0530
++++ ./ffmpeg-mt/libavcodec/dsputil.c	2009-08-31 14:10:19.751428000 +0530
+@@ -541,7 +541,7 @@
+     }
+ }
+ 
+-static void get_pixels_c(DCTELEM *restrict block, const uint8_t *pixels, int line_size)
++static void get_pixels_c(DCTELEM *block, const uint8_t *pixels, int line_size)
+ {
+     int i;
+ 
+@@ -560,7 +560,7 @@
+     }
+ }
+ 
+-static void diff_pixels_c(DCTELEM *restrict block, const uint8_t *s1,
++static void diff_pixels_c(DCTELEM *block, const uint8_t *s1,
+                           const uint8_t *s2, int stride){
+     int i;
+ 
+@@ -581,7 +581,7 @@
+ }
+ 
+ 
+-static void put_pixels_clamped_c(const DCTELEM *block, uint8_t *restrict pixels,
++static void put_pixels_clamped_c(const DCTELEM *block, uint8_t *pixels,
+                                  int line_size)
+ {
+     int i;
+@@ -603,7 +603,7 @@
+     }
+ }
+ 
+-static void put_pixels_clamped4_c(const DCTELEM *block, uint8_t *restrict pixels,
++static void put_pixels_clamped4_c(const DCTELEM *block, uint8_t *pixels,
+                                  int line_size)
+ {
+     int i;
+@@ -621,7 +621,7 @@
+     }
+ }
+ 
+-static void put_pixels_clamped2_c(const DCTELEM *block, uint8_t *restrict pixels,
++static void put_pixels_clamped2_c(const DCTELEM *block, uint8_t *pixels,
+                                  int line_size)
+ {
+     int i;
+@@ -638,7 +638,7 @@
+ }
+ 
+ static void put_signed_pixels_clamped_c(const DCTELEM *block,
+-                                        uint8_t *restrict pixels,
++                                        uint8_t *pixels,
+                                         int line_size)
+ {
+     int i, j;
+@@ -658,7 +658,7 @@
+     }
+ }
+ 
+-static void add_pixels_clamped_c(const DCTELEM *block, uint8_t *restrict pixels,
++static void add_pixels_clamped_c(const DCTELEM *block, uint8_t *pixels,
+                           int line_size)
+ {
+     int i;
+@@ -679,7 +679,7 @@
+     }
+ }
+ 
+-static void add_pixels_clamped4_c(const DCTELEM *block, uint8_t *restrict pixels,
++static void add_pixels_clamped4_c(const DCTELEM *block, uint8_t *pixels,
+                           int line_size)
+ {
+     int i;
+@@ -696,7 +696,7 @@
+     }
+ }
+ 
+-static void add_pixels_clamped2_c(const DCTELEM *block, uint8_t *restrict pixels,
++static void add_pixels_clamped2_c(const DCTELEM *block, uint8_t *pixels,
+                           int line_size)
+ {
+     int i;
+@@ -711,7 +711,7 @@
+     }
+ }
+ 
+-static void add_pixels8_c(uint8_t *restrict pixels, DCTELEM *block, int line_size)
++static void add_pixels8_c(uint8_t *pixels, DCTELEM *block, int line_size)
+ {
+     int i;
+     for(i=0;i<8;i++) {
+@@ -728,7 +728,7 @@
+     }
+ }
+ 
+-static void add_pixels4_c(uint8_t *restrict pixels, DCTELEM *block, int line_size)
++static void add_pixels4_c(uint8_t *pixels, DCTELEM *block, int line_size)
+ {
+     int i;
+     for(i=0;i<4;i++) {
+diff -Naur ./ffmpeg-mt_orig/libavcodec/h263.c ./ffmpeg-mt/libavcodec/h263.c
+--- ./ffmpeg-mt_orig/libavcodec/h263.c	2009-08-19 16:13:30.612951000 +0530
++++ ./ffmpeg-mt/libavcodec/h263.c	2009-08-31 14:10:19.799457000 +0530
+@@ -3298,7 +3298,7 @@
+  * @param end pointer to the end of the buffer
+  * @return pointer to the next resync_marker, or \p end if none was found
+  */
+-const uint8_t *ff_h263_find_resync_marker(const uint8_t *restrict p, const uint8_t * restrict end)
++const uint8_t *ff_h263_find_resync_marker(const uint8_t *p, const uint8_t * end)
+ {
+     assert(p < end);
+ 
+diff -Naur ./ffmpeg-mt_orig/libavcodec/mlib/dsputil_mlib.c ./ffmpeg-mt/libavcodec/mlib/dsputil_mlib.c
+--- ./ffmpeg-mt_orig/libavcodec/mlib/dsputil_mlib.c	2009-08-19 16:13:31.045904000 +0530
++++ ./ffmpeg-mt/libavcodec/mlib/dsputil_mlib.c	2009-08-31 14:10:19.816468000 +0530
+@@ -30,7 +30,7 @@
+ 
+ /* misc */
+ 
+-static void get_pixels_mlib(DCTELEM *restrict block, const uint8_t *pixels, int line_size)
++static void get_pixels_mlib(DCTELEM *block, const uint8_t *pixels, int line_size)
+ {
+   int i;
+ 
+@@ -42,7 +42,7 @@
+   }
+ }
+ 
+-static void diff_pixels_mlib(DCTELEM *restrict block, const uint8_t *s1, const uint8_t *s2, int line_size)
++static void diff_pixels_mlib(DCTELEM *block, const uint8_t *s1, const uint8_t *s2, int line_size)
+ {
+   int i;
+ 
+diff -Naur ./ffmpeg-mt_orig/libavcodec/mpegvideo.c ./ffmpeg-mt/libavcodec/mpegvideo.c
+--- ./ffmpeg-mt_orig/libavcodec/mpegvideo.c	2009-08-19 16:13:31.258904000 +0530
++++ ./ffmpeg-mt/libavcodec/mpegvideo.c	2009-08-31 14:10:19.851490000 +0530
+@@ -87,7 +87,7 @@
+     PIX_FMT_NONE
+ };
+ 
+-const uint8_t *ff_find_start_code(const uint8_t * restrict p, const uint8_t *end, uint32_t * restrict state){
++const uint8_t *ff_find_start_code(const uint8_t * p, const uint8_t *end, uint32_t * state){
+     int i;
+ 
+     assert(p<=end);
+diff -Naur ./ffmpeg-mt_orig/libavcodec/ppc/dsputil_altivec.c ./ffmpeg-mt/libavcodec/ppc/dsputil_altivec.c
+--- ./ffmpeg-mt_orig/libavcodec/ppc/dsputil_altivec.c	2009-08-19 16:13:31.436904000 +0530
++++ ./ffmpeg-mt/libavcodec/ppc/dsputil_altivec.c	2009-08-31 14:10:19.878532000 +0530
+@@ -479,7 +479,7 @@
+     return s;
+ }
+ 
+-void get_pixels_altivec(DCTELEM *restrict block, const uint8_t *pixels, int line_size)
++void get_pixels_altivec(DCTELEM *block, const uint8_t *pixels, int line_size)
+ {
+     int i;
+     vector unsigned char perm, bytes, *pixv;
+@@ -504,7 +504,7 @@
+     }
+ }
+ 
+-void diff_pixels_altivec(DCTELEM *restrict block, const uint8_t *s1,
++void diff_pixels_altivec(DCTELEM *block, const uint8_t *s1,
+         const uint8_t *s2, int stride)
+ {
+     int i;
+diff -Naur ./ffmpeg-mt_orig/libavcodec/utils.c ./ffmpeg-mt/libavcodec/utils.c
+--- ./ffmpeg-mt_orig/libavcodec/utils.c	2009-08-19 16:13:31.991859000 +0530
++++ ./ffmpeg-mt/libavcodec/utils.c	2010-01-18 15:24:47.380658000 +0530
+@@ -46,6 +46,13 @@
+ #include <fcntl.h>
+ #endif
+ 
++/* Added by DEEPAK to enable logging inside the Android logcat utility */
++#define LOG_TAG "DEEPAK: FFmpeg_libavcodec_utils: "
++#include <utils/Log.h>
++#include<sys/types.h>
++int DEEPAK_flag=0;
++/* Added by DEEPAK to enable logging inside the Android logcat utility */
++
+ const uint8_t ff_reverse[256]={
+ 0x00,0x80,0x40,0xC0,0x20,0xA0,0x60,0xE0,0x10,0x90,0x50,0xD0,0x30,0xB0,0x70,0xF0,
+ 0x08,0x88,0x48,0xC8,0x28,0xA8,0x68,0xE8,0x18,0x98,0x58,0xD8,0x38,0xB8,0x78,0xF8,
+@@ -448,21 +455,27 @@
+ int attribute_align_arg avcodec_open(AVCodecContext *avctx, AVCodec *codec)
+ {
+     int ret= -1;
++	LOGI("Inside %s 1: TID= %u, PID=%u : DEEPAK_flag = %d\n",__func__,gettid(),getpid(),DEEPAK_flag++);
+ 
+     /* If there is a user-supplied mutex locking routine, call it. */
+     if (ff_lockmgr_cb) {
++    	LOGI("Inside %s: 2a\n",__func__);
+         if ((*ff_lockmgr_cb)(&codec_mutex, AV_LOCK_OBTAIN))
+             return -1;
+     }
+ 
++    LOGI("Inside %s: 2\n",__func__);
+     entangled_thread_counter++;
+     if(entangled_thread_counter != 1){
+         av_log(avctx, AV_LOG_ERROR, "insufficient thread locking around avcodec_open/close()\n");
++        LOGI("insufficient thread locking around avcodec_open/close()\n");
+         goto end;
+     }
++    LOGI("Inside %s: 3\n",__func__);
+ 
+     if(avctx->codec || !codec)
+         goto end;
++    LOGI("Inside %s: 4\n",__func__);
+ 
+     if (codec->priv_data_size > 0) {
+         avctx->priv_data = av_mallocz(codec->priv_data_size);
+@@ -473,6 +486,7 @@
+     } else {
+         avctx->priv_data = NULL;
+     }
++    LOGI("Inside %s: 5\n",__func__);
+ 
+     if(avctx->coded_width && avctx->coded_height)
+         avcodec_set_dimensions(avctx, avctx->coded_width, avctx->coded_height);
+@@ -484,6 +498,7 @@
+         ret = AVERROR(EINVAL);
+         goto end;
+     }
++    LOGI("Inside %s: 6\n",__func__);
+ 
+     avctx->codec = codec;
+     avctx->codec_id = codec->id;
+@@ -497,19 +512,24 @@
+             goto end;
+         }
+     }
++    LOGI("Inside %s: 7\n",__func__);
+ 
+     if(avctx->codec->init && !USE_FRAME_THREADING(avctx)){
+         ret = avctx->codec->init(avctx);
++    LOGI("Inside %s 7b: TID = %u \n",__func__,gettid());
+         if (ret < 0) {
+             av_freep(&avctx->priv_data);
+             avctx->codec= NULL;
++    LOGI("Inside %s: 7c\n",__func__);
+             goto end;
+         }
+     }
++    LOGI("Inside %s 8: TID = %u \n",__func__,gettid());
+     ret=0;
+ end:
+     entangled_thread_counter--;
+ 
++    LOGI("Inside %s 9: TID = %u \n",__func__,gettid());
+     /* Release any user-supplied mutex. */
+     if (ff_lockmgr_cb) {
+         (*ff_lockmgr_cb)(&codec_mutex, AV_LOCK_RELEASE);
+@@ -577,6 +597,7 @@
+     avpkt.size = buf_size;
+     // HACK for CorePNG to decode as normal PNG by default
+     avpkt.flags = AV_PKT_FLAG_KEY;
++	LOGI("Inside %s 1: TID= %u : \n",__func__,gettid());
+ 
+     return avcodec_decode_video2(avctx, picture, got_picture_ptr, &avpkt);
+ }
+@@ -590,6 +611,7 @@
+     int threaded = USE_FRAME_THREADING(avctx);
+ 
+     *got_picture_ptr= 0;
++	LOGI("Inside %s 1: TID= %u : \n",__func__,gettid());
+     if((avctx->coded_width||avctx->coded_height) && avcodec_check_dimensions(avctx,avctx->coded_width,avctx->coded_height))
+         return -1;
+     if((avctx->codec->capabilities & CODEC_CAP_DELAY) || avpkt->size || threaded){
+@@ -598,13 +620,17 @@
+         else ret = avctx->codec->decode(avctx, picture, got_picture_ptr,
+                                 avpkt);
+ 
++	LOGI("Inside %s 2: TID= %u : threaded =%d \n",__func__,gettid(), threaded);
+         emms_c(); //needed to avoid an emms_c() call before every return;
+ 
+         if (*got_picture_ptr)
+             avctx->frame_number++;
+     }else
+-        ret= 0;
+-
++	{ //DEEPAK
++	  ret= 0;
++	LOGI("Inside %s 3: TID= %u : \n",__func__,gettid());
++	} //DEEPAK
++	LOGI("Inside %s 4: TID= %u : \n",__func__,gettid());
+     return ret;
+ }
+ 
+@@ -1071,7 +1097,7 @@
+         return -1;
+     }
+ #if !HAVE_MKSTEMP
+-    fd = open(*filename, O_RDWR | O_BINARY | O_CREAT, 0444);
++    fd = open(*filename, O_RDWR | O_CREAT, 0444);
+ #else
+     snprintf(*filename, len, "/tmp/%sXXXXXX", prefix);
+     fd = mkstemp(*filename);
+@@ -1266,16 +1292,21 @@
+ 
+ int av_lockmgr_register(int (*cb)(void **mutex, enum AVLockOp op))
+ {
++    LOGI("Inside %s: 1\n",__func__);
+     if (ff_lockmgr_cb) {
++    LOGI("Inside %s: 2\n",__func__);
+         if (ff_lockmgr_cb(&codec_mutex, AV_LOCK_DESTROY))
+             return -1;
+     }
+ 
++    LOGI("Inside %s: 3\n",__func__);
+     ff_lockmgr_cb = cb;
+ 
+     if (ff_lockmgr_cb) {
++    LOGI("Inside %s: 4\n",__func__);
+         if (ff_lockmgr_cb(&codec_mutex, AV_LOCK_CREATE))
+             return -1;
+     }
++    LOGI("Inside %s: 5\n",__func__);
+     return 0;
+ }
+diff -Naur ./ffmpeg-mt_orig/libavformat/img2.c ./ffmpeg-mt/libavformat/img2.c
+--- ./ffmpeg-mt_orig/libavformat/img2.c	2009-08-19 16:13:32.904810000 +0530
++++ ./ffmpeg-mt/libavformat/img2.c	2009-08-31 16:31:16.646542000 +0530
+@@ -23,6 +23,7 @@
+ #include "libavutil/intreadwrite.h"
+ #include "libavutil/avstring.h"
+ #include "avformat.h"
++#include <sys/types.h>
+ #include <strings.h>
+ 
+ typedef struct {
+diff -Naur ./ffmpeg-mt_orig/libavformat/metadata.c ./ffmpeg-mt/libavformat/metadata.c
+--- ./ffmpeg-mt_orig/libavformat/metadata.c	2009-08-19 16:13:32.965810000 +0530
++++ ./ffmpeg-mt/libavformat/metadata.c	2009-08-31 16:31:16.650549000 +0530
+@@ -18,6 +18,7 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
++#include <sys/types.h>
+ #include <strings.h>
+ #include "avformat.h"
+ #include "metadata.h"
+diff -Naur ./ffmpeg-mt_orig/libavformat/metadata_compat.c ./ffmpeg-mt/libavformat/metadata_compat.c
+--- ./ffmpeg-mt_orig/libavformat/metadata_compat.c	2009-08-19 16:13:32.970810000 +0530
++++ ./ffmpeg-mt/libavformat/metadata_compat.c	2009-08-31 16:31:16.655530000 +0530
+@@ -18,6 +18,7 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
++#include <sys/types.h>
+ #include <strings.h>
+ #include "avformat.h"
+ #include "metadata.h"
+diff -Naur ./ffmpeg-mt_orig/libavformat/mp3.c ./ffmpeg-mt/libavformat/mp3.c
+--- ./ffmpeg-mt_orig/libavformat/mp3.c	2009-08-19 16:13:32.998810000 +0530
++++ ./ffmpeg-mt/libavformat/mp3.c	2009-08-31 16:31:16.660524000 +0530
+@@ -19,6 +19,7 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
++#include <sys/types.h>
+ #include <strings.h>
+ #include "libavutil/avstring.h"
+ #include "libavcodec/mpegaudio.h"
+diff -Naur ./ffmpeg-mt_orig/libavformat/nutdec.c ./ffmpeg-mt/libavformat/nutdec.c
+--- ./ffmpeg-mt_orig/libavformat/nutdec.c	2009-08-19 16:13:33.091810000 +0530
++++ ./ffmpeg-mt/libavformat/nutdec.c	2009-08-31 16:31:16.667518000 +0530
+@@ -20,6 +20,7 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
++#include <sys/types.h>
+ #include <strings.h>
+ #include "libavutil/avstring.h"
+ #include "libavutil/bswap.h"
+diff -Naur ./ffmpeg-mt_orig/libavformat/os_support.c ./ffmpeg-mt/libavformat/os_support.c
+--- ./ffmpeg-mt_orig/libavformat/os_support.c	2009-08-19 16:13:33.136810000 +0530
++++ ./ffmpeg-mt/libavformat/os_support.c	2009-08-31 16:31:16.672509000 +0530
+@@ -43,6 +43,7 @@
+ 
+ #if !HAVE_INET_ATON
+ #include <stdlib.h>
++#include <sys/types.h>
+ #include <strings.h>
+ 
+ int inet_aton (const char * str, struct in_addr * add)
+diff -Naur ./ffmpeg-mt_orig/libavformat/rtp_h263.c ./ffmpeg-mt/libavformat/rtp_h263.c
+--- ./ffmpeg-mt_orig/libavformat/rtp_h263.c	2009-08-19 16:13:33.223811000 +0530
++++ ./ffmpeg-mt/libavformat/rtp_h263.c	2009-08-31 16:47:28.104109000 +0530
+@@ -23,8 +23,8 @@
+ #include "avformat.h"
+ #include "rtpenc.h"
+ 
+-static const uint8_t *find_resync_marker_reverse(const uint8_t *restrict start,
+-                                                 const uint8_t *restrict end)
++static const uint8_t *find_resync_marker_reverse(const uint8_t *start,
++                                                 const uint8_t *end)
+ {
+     const uint8_t *p = end - 1;
+     start += 1; /* Make sure we never return the original start. */
+diff -Naur ./ffmpeg-mt_orig/libavformat/rtsp.c ./ffmpeg-mt/libavformat/rtsp.c
+--- ./ffmpeg-mt_orig/libavformat/rtsp.c	2009-08-19 16:13:33.271810000 +0530
++++ ./ffmpeg-mt/libavformat/rtsp.c	2009-08-31 16:31:16.682502000 +0530
+@@ -30,6 +30,7 @@
+ #if HAVE_SYS_SELECT_H
+ #include <sys/select.h>
+ #endif
++#include <sys/types.h>
+ #include <strings.h>
+ #include "network.h"
+ #include "rtsp.h"
+diff -Naur ./ffmpeg-mt_orig/libavformat/udp.c ./ffmpeg-mt/libavformat/udp.c
+--- ./ffmpeg-mt_orig/libavformat/udp.c	2009-08-19 16:13:33.339810000 +0530
++++ ./ffmpeg-mt/libavformat/udp.c	2009-08-31 16:31:16.689497000 +0530
+@@ -101,7 +101,7 @@
+         struct ipv6_mreq mreq6;
+ 
+         memcpy(&mreq6.ipv6mr_multiaddr, &(((struct sockaddr_in6 *)addr)->sin6_addr), sizeof(struct in6_addr));
+-        mreq6.ipv6mr_interface= 0;
++        mreq6.ipv6mr_ifindex= 0;
+         if (setsockopt(sockfd, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, &mreq6, sizeof(mreq6)) < 0) {
+             av_log(NULL, AV_LOG_ERROR, "setsockopt(IPV6_ADD_MEMBERSHIP): %s\n", strerror(errno));
+             return -1;
+@@ -129,7 +129,7 @@
+         struct ipv6_mreq mreq6;
+ 
+         memcpy(&mreq6.ipv6mr_multiaddr, &(((struct sockaddr_in6 *)addr)->sin6_addr), sizeof(struct in6_addr));
+-        mreq6.ipv6mr_interface= 0;
++        mreq6.ipv6mr_ifindex= 0;
+         if (setsockopt(sockfd, IPPROTO_IPV6, IPV6_DROP_MEMBERSHIP, &mreq6, sizeof(mreq6)) < 0) {
+             av_log(NULL, AV_LOG_ERROR, "setsockopt(IPV6_DROP_MEMBERSHIP): %s\n", strerror(errno));
+             return -1;
+diff -Naur ./ffmpeg-mt_orig/libavformat/utils.c ./ffmpeg-mt/libavformat/utils.c
+--- ./ffmpeg-mt_orig/libavformat/utils.c	2009-08-19 16:13:33.352810000 +0530
++++ ./ffmpeg-mt/libavformat/utils.c	2009-08-31 16:31:16.703485000 +0530
+@@ -26,6 +26,7 @@
+ #include "riff.h"
+ #include <sys/time.h>
+ #include <time.h>
++#include <sys/types.h>
+ #include <strings.h>
+ 
+ #undef NDEBUG
