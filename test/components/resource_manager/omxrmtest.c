@@ -272,7 +272,7 @@ OMX_ERRORTYPE rmEventHandler(
 
   if(eEvent == OMX_EventCmdComplete) {
     if (Data1 == OMX_CommandStateSet) {
-      DEBUG(DEB_LEV_SIMPLE_SEQ, "Volume Component %x State changed in ", (int)hComponent);
+      DEBUG(DEB_LEV_SIMPLE_SEQ, "Volume Component %p State changed in ", hComponent);
       switch ((int)Data2) {
       case OMX_StateInvalid:
         DEBUG(DEB_LEV_SIMPLE_SEQ, "OMX_StateInvalid\n");

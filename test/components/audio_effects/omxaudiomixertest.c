@@ -557,8 +557,8 @@ OMX_ERRORTYPE audiomixerFillBufferDone(
   OMX_ERRORTYPE err;
   int i;
 
-  DEBUG(DEB_LEV_FULL_SEQ, "Hi there, I am in the %s callback. Got buflen %i for buffer at 0x%08x\n",
-                          __func__, (int)pBuffer->nFilledLen, (int)pBuffer);
+  DEBUG(DEB_LEV_FULL_SEQ, "Hi there, I am in the %s callback. Got buflen %i for buffer at 0x%p\n",
+                          __func__, (int)pBuffer->nFilledLen, pBuffer);
 
   /* Output data to standard output */
   if(pBuffer != NULL) {
