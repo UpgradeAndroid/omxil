@@ -259,7 +259,7 @@ void RM_printList(ComponentListType *list, int viewFlag) {
 			printf("Name %s ", omx_base_component_Private->name);
 		}
 		if ((viewFlag & RM_SHOW_ADDRESS) == RM_SHOW_ADDRESS) {
-			printf("Address %x ", (int)componentTemp->openmaxStandComp);
+			printf("Address %p ", componentTemp->openmaxStandComp);
 		}
 		printf("\n");
 		index++;

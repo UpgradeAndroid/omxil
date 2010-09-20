@@ -277,8 +277,8 @@ int main(int argc, char** argv) {
   /* Wait for commands to complete */
   tsem_down(appPriv->eventSem);
 
-  DEBUG(DEB_LEV_PARAMS, "Had buffers at:\n0x%08x\n0x%08x\n0x%08x\n0x%08x\n",
-                (int)inBuffer1->pBuffer, (int)inBuffer2->pBuffer, (int)outBuffer1->pBuffer, (int)outBuffer2->pBuffer);
+  DEBUG(DEB_LEV_PARAMS, "Had buffers at:\n0x%p\n0x%p\n0x%p\n0x%p\n",
+                inBuffer1->pBuffer, inBuffer2->pBuffer, outBuffer1->pBuffer, outBuffer2->pBuffer);
   DEBUG(DEB_LEV_PARAMS, "After switch to executing\n");
 
   data_read1 = read(fd, inBuffer1->pBuffer, BUFFER_IN_SIZE);
@@ -429,8 +429,8 @@ OMX_ERRORTYPE volcFillBufferDone(
   OMX_ERRORTYPE err;
   int i;
 
-  DEBUG(DEB_LEV_FULL_SEQ, "Hi there, I am in the %s callback. Got buflen %i for buffer at 0x%08x\n",
-                          __func__, (int)pBuffer->nFilledLen, (int)pBuffer);
+  DEBUG(DEB_LEV_FULL_SEQ, "Hi there, I am in the %s callback. Got buflen %i for buffer at 0x%p\n",
+                          __func__, (int)pBuffer->nFilledLen, pBuffer);
 
   /* Output data to standard output */
   if(pBuffer != NULL) {
