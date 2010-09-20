@@ -201,7 +201,7 @@ AC_CHECK_HEADERS([fcntl.h malloc.h netdb.h netinet/in.h stdlib.h string.h string
 ################################################################################
 
 AC_TYPE_SIZE_T
-AC_TYPE_SSIZE_T
+#AC_TYPE_SSIZE_T
 
 ################################################################################
 # Check for structures                                                         #
