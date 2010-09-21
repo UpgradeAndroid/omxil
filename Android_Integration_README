@@ -1,27 +1,45 @@
+In order to compile the Bellagio core and components into the Android framework
+
 1) Place this omxil directory in the 
    {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/ folder.
-2) Apply the patch patch_bellagio_src_android.patch in the Android_extras 
-   directory on the omxil sources for Android porting (this is needed if you
-	 are not on Android Integration branch).
 2) Get the OMX components source from bellagio/components.git and place the
    components folder again in the 
-	 {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/ folder.
-3) The ffmpeg (or ffmpeg-mt) libraries can be downloaded from 
-   git://gitorious.org/~astrange/ffmpeg/ffmpeg-mt.git. Make the android 
-	 specific changes (by applying the patch ffmpeg-mt_Android_porting.patch)
-	 and then place in the {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/lib/
-	 folder.
-4) For the omxil sources and ffmpeg library sources run the configure script
-   on a PC and copy the config.h file over here in the src directory.
+   {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/ folder.
+
+4) run the ./configure script on a PC and copy the config.h file over here 
+   in the src directory.
+
 5) Place the ./android_extras/Android_bellagio_omx_sharedlibrary.mk file in
    the {android_root}/external/opencore/build_config/opencore_dynamic/ directory.
+
 6) Edit the {android_root}/external/opencore/Android.mk file to include the 
    above Android makefile:
 
-include $(PV_TOP)/build_config/opencore_dynamic/Android_bellagio_omx_sharedlibrary.mk
+  include $(PV_TOP)/build_config/opencore_dynamic/Android_bellagio_omx_sharedlibrary.mk
 
 7) Edit the {android_root}/external/opencore/pvplayer.cfg file to add the following line:
 
-(0xa054369c,0x22c5,0x412e,0x19,0x17,0x87,0x4c,0x1a,0x19,0xd4,0x5f),"libomxil-bellagio_sharedlibrary.so"
+  (0xa054369c,0x22c5,0x412e,0x19,0x17,0x87,0x4c,0x1a,0x19,0xd4,0x5f),"libomxil-bellagio_sharedlibrary.so"
+
 8) Build Android.
 
+
+FFMPEG
+
+1) The ffmpeg 0.5 (http://www.ffmpeg.org/releases/ffmpeg-0.5.tar.bz2) library should be 
+used. Alternatively the ffmpeg-mt can be used, but the latest version has not been 
+tested. It can be downloaded from git://gitorious.org/~astrange/ffmpeg/ffmpeg-mt.git.
+Make the android specific changes:
+- add Android.mk file
+
+...
+(by applying the patch ffmpeg-mt_Android_porting.patch)
+and then place in the {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/lib/
+folder.
+
+2) run the ./configure script on a PC and copy the config.h file over here 
+   in the src directory.
+
+
+
+??...??
