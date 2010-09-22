@@ -35,10 +35,13 @@ LOCAL_SRC_FILES := \
 	src/content_pipe_inet.c \
 	src/omx_create_loaders_linux.c \
 	src/omxcore.c \
+  src/omx_reference_resource_manager.c \
 	src/omxregister.c \
 	src/queue.c \
 	src/st_static_component_loader.c \
 	src/tsemaphore.c \
+	src/utils.c \
+  src/base/OMXComponentRMExt.c \
 	src/base/omx_base_audio_port.c \
 	src/base/omx_base_clock_port.c \
 	src/base/omx_base_component.c \
@@ -47,11 +50,12 @@ LOCAL_SRC_FILES := \
 	src/base/omx_base_port.c \
 	src/base/omx_base_sink.c \
 	src/base/omx_base_source.c \
-	src/base/omx_base_video_port.c
+	src/base/omx_base_video_port.c \
+  src/core_extensions/OMXCoreRMExt.c
 
 LOCAL_MODULE := libomxil-bellagio_lib
 
-LOCAL_CFLAGS :=  -DOMXILCOMPONENTSPATH=\"lib\" $(PV_CFLAGS)
+LOCAL_CFLAGS :=  -DOMXILCOMPONENTSPATH=\"lib\" $(PV_CFLAGS) -DANDROID_COMPILATION
 
 LOCAL_ARM_MODE := arm
 
@@ -64,9 +68,9 @@ LOCAL_C_INCLUDES := \
  	$(PV_TOP)/extern_libs_v2/khronos/openmax/include \
 	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src \
 	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src/base \
+	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src/core_extensions \
  	$(PV_INCLUDES)
 
 include $(BUILD_STATIC_LIBRARY)
 
-include $(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/components/ffmpeg-dist/Android.mk
-include $(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/lib/ffmpeg-mt/Android.mk
+

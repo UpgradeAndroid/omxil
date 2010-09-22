@@ -81,7 +81,6 @@ OMX_ERRORTYPE BOSA_ST_InitComponentLoader(BOSA_COMPONENTLOADER *loader) {
   stLoaderComponentType** templateList;
   stLoaderComponentType** stComponentsTemp;
   void* handle;
-  size_t len;
   int (*fptr)(stLoaderComponentType **stComponents);
   int i;
   int index;
@@ -104,7 +103,11 @@ OMX_ERRORTYPE BOSA_ST_InitComponentLoader(BOSA_COMPONENTLOADER *loader) {
 
   fseek(omxregistryfp, 0, 0);
   listindex = 0;
+#ifdef ANDROID_COMPILATION
+ 	while((read = fscanf(omxregistryfp, "%s\n", line)) != 0) {
+#else
   while((read = getline(&line, &len, omxregistryfp)) != -1) {
+#endif
     if ((*line == ' ') && (*(line+1) == '=')) {
       // not a library line. skip
       continue;

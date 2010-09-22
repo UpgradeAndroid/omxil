@@ -172,7 +172,11 @@ OMX_ERRORTYPE readRegistryFile() {
 	libname = malloc(OMX_MAX_STRINGNAME_SIZE * 2);
 	fseek(omxregistryfp, 0, 0);
 
+#ifdef ANDROID_COMPILATION
+ 	while((read = fscanf(omxregistryfp, "%s\n", line)) != 0) {
+#else
 	while((read = getline(&line, &len, omxregistryfp)) != -1) {
+#endif
 		if ((*line == ' ') && (*(line+1) == '=')) {
 			numberOfLines++;
 		} else {
@@ -183,7 +187,11 @@ OMX_ERRORTYPE readRegistryFile() {
 	qualityList = malloc(numberOfLines * sizeof (stLoaderComponentType*));
 	qualityListItems = numberOfLines;
 	listindex = 0;
+#ifdef ANDROID_COMPILATION
+ 	while((read = fscanf(omxregistryfp, "%s\n", line)) != 0) {
+#else
 	while((read = getline(&line, &len, omxregistryfp)) != -1) {
+#endif
 		if ((*line == ' ') && (*(line+1) == '=')) {
 	        qualityList[listindex] = NULL;
 			qualityList[listindex] = calloc(1,sizeof(stLoaderComponentType));

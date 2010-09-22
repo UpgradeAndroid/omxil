@@ -59,7 +59,6 @@ int createComponentLoaders() {
 	void (*fptr)(BOSA_COMPONENTLOADER *loader);
 	char *libraryFileName = NULL;
 	FILE *loaderFP;
-	size_t len = 0;
 	int read;
 	char *omxloader_registry_filename;
 	char *dir, *dirp;
