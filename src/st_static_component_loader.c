@@ -3,7 +3,7 @@
 
   ST specific component loader for local components.
 
-  Copyright (C) 2007-2009  STMicroelectronics
+  Copyright (C) 2007-2010  STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
@@ -77,15 +77,14 @@ OMX_ERRORTYPE BOSA_ST_InitComponentLoader(BOSA_COMPONENTLOADER *loader) {
   char* line = NULL;
   char *libname;
   int num_of_comp=0;
-  int read;
   stLoaderComponentType** templateList;
   stLoaderComponentType** stComponentsTemp;
   void* handle;
   int (*fptr)(stLoaderComponentType **stComponents);
   int i;
-  int index;
   int listindex;
   char *registry_filename;
+  int index_readline = 0;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
 
@@ -100,48 +99,54 @@ OMX_ERRORTYPE BOSA_ST_InitComponentLoader(BOSA_COMPONENTLOADER *loader) {
 
   templateList = malloc(sizeof (stLoaderComponentType*));
   templateList[0] = NULL;
-
+  line = malloc(MAX_LINE_LENGTH);
   fseek(omxregistryfp, 0, 0);
   listindex = 0;
-#ifdef ANDROID_COMPILATION
- 	while((read = fscanf(omxregistryfp, "%s\n", line)) != 0) {
-#else
-  while((read = getline(&line, &len, omxregistryfp)) != -1) {
-#endif
-    if ((*line == ' ') && (*(line+1) == '=')) {
-      // not a library line. skip
-      continue;
-    }
-    index = 0;
-    while (*(line+index)!= '\n') index++;
-    *(line+index) = 0;
-    strcpy(libname, line);
-    DEBUG(DEB_LEV_FULL_SEQ, "libname: %s\n",libname);
-    if((handle = dlopen(libname, RTLD_NOW)) == NULL) {
-      DEBUG(DEB_LEV_ERR, "could not load %s: %s\n", libname, dlerror());
-    } else {
-      handleLibList[numLib]=handle;
-      numLib++;
-      if ((fptr = dlsym(handle, "omx_component_library_Setup")) == NULL) {
-        DEBUG(DEB_LEV_ERR, "the library %s is not compatible with ST static component loader - %s\n", libname, dlerror());
-      } else {
-        num_of_comp = (int)(*fptr)(NULL);
-        templateList = realloc(templateList, (listindex + num_of_comp + 1) * sizeof (stLoaderComponentType*));
-        templateList[listindex + num_of_comp] = NULL;
-        stComponentsTemp = calloc(num_of_comp,sizeof(stLoaderComponentType*));
-        for (i = 0; i<num_of_comp; i++) {
-          stComponentsTemp[i] = calloc(1,sizeof(stLoaderComponentType));
-        }
-        (*fptr)(stComponentsTemp);
-        for (i = 0; i<num_of_comp; i++) {
-          templateList[listindex + i] = stComponentsTemp[i];
-          DEBUG(DEB_LEV_FULL_SEQ, "In %s comp name[%d]=%s\n",__func__,listindex + i,templateList[listindex + i]->name);
-        }
-        free(stComponentsTemp);
-        stComponentsTemp = NULL;
-        listindex+= i;
-      }
-    }
+
+  while(1) {
+	  index_readline = 0;
+	  while(index_readline < MAX_LINE_LENGTH) {
+		  *(line+index_readline) = fgetc(omxregistryfp);
+		  if ((*(line+index_readline) == '\n') || (*(line+index_readline) == '\0')) {
+			  break;
+		  }
+		  index_readline++;
+	  }
+	  *(line+index_readline) = '\0';
+	  if ((index_readline >= MAX_LINE_LENGTH) || (index_readline == 0)) {
+		  break;
+	  }
+	  if ((*line == ' ') && (*(line+1) == '=')) {
+		  // not a library line. skip
+		  continue;
+	  }
+	  strcpy(libname, line);
+	  DEBUG(DEB_LEV_FULL_SEQ, "libname: >%s<\n",libname);
+	  if((handle = dlopen(libname, RTLD_NOW)) == NULL) {
+		  DEBUG(DEB_LEV_ERR, "could not load %s: %s\n", libname, dlerror());
+	  } else {
+		  handleLibList[numLib]=handle;
+		  numLib++;
+		  if ((fptr = dlsym(handle, "omx_component_library_Setup")) == NULL) {
+			  DEBUG(DEB_LEV_ERR, "the library %s is not compatible with ST static component loader - %s\n", libname, dlerror());
+		  } else {
+			  num_of_comp = (int)(*fptr)(NULL);
+			  templateList = realloc(templateList, (listindex + num_of_comp + 1) * sizeof (stLoaderComponentType*));
+			  templateList[listindex + num_of_comp] = NULL;
+			  stComponentsTemp = calloc(num_of_comp,sizeof(stLoaderComponentType*));
+			  for (i = 0; i<num_of_comp; i++) {
+				  stComponentsTemp[i] = calloc(1,sizeof(stLoaderComponentType));
+			  }
+			  (*fptr)(stComponentsTemp);
+			  for (i = 0; i<num_of_comp; i++) {
+				  templateList[listindex + i] = stComponentsTemp[i];
+				  DEBUG(DEB_LEV_FULL_SEQ, "In %s comp name[%d]=%s\n",__func__,listindex + i,templateList[listindex + i]->name);
+			  }
+			  free(stComponentsTemp);
+			  stComponentsTemp = NULL;
+			  listindex+= i;
+		  }
+	  }
   }
   if(line) {
     free(line);

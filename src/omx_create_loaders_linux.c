@@ -5,7 +5,7 @@
   of every component loader in linux. In the current implementation
   only the ST static loader is called.
 
-  Copyright (C) 2007-2009 STMicroelectronics
+  Copyright (C) 2007-2010 STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
@@ -59,11 +59,11 @@ int createComponentLoaders() {
 	void (*fptr)(BOSA_COMPONENTLOADER *loader);
 	char *libraryFileName = NULL;
 	FILE *loaderFP;
-	int read;
 	char *omxloader_registry_filename;
 	char *dir, *dirp;
 	int onlyDefault = 0;
 	int oneAtLeast = 0;
+	int index_readline;
 
 	omxloader_registry_filename = loadersRegistryGetFilename(OMX_LOADERS_FILENAME);
 
@@ -105,26 +105,29 @@ int createComponentLoaders() {
 			return OMX_ErrorInsufficientResources;
 	}
 	// dlopen all loaders defined in .omxloaders file
-#ifdef ANDROID_COMPILATION
- 	while((read = fscanf(loaderFP, "%s\n",libraryFileName)) != 0) {
-#else
-  while((read = getline(&libraryFileName, &len, loaderFP)) != -1) {
-#endif
-
-		// strip delimeter, the dlopen doesn't like it
-		if(libraryFileName[read-1] == '\n') {
-			libraryFileName[read-1] = 0;
+	libraryFileName = malloc(MAX_LINE_LENGTH);
+	while(1) {
+		index_readline = 0;
+		while(index_readline < MAX_LINE_LENGTH) {
+			*(libraryFileName + index_readline) = fgetc(loaderFP);
+			if ((*(libraryFileName + index_readline) == '\n') || (*(libraryFileName + index_readline) == '\0')) {
+				break;
+			}
+			index_readline++;
 		}
+		*(libraryFileName + index_readline) = '\0';
+		if ((index_readline >= MAX_LINE_LENGTH) || (index_readline == 0)) {
+			break;
+		}
+
 		handle = dlopen(libraryFileName, RTLD_NOW);
 
-	    if (!handle)
-		{
+	    if (!handle) {
 			DEBUG(DEB_LEV_ERR, "library %s dlopen error: %s\n", libraryFileName, dlerror());
 			continue;
 	    }
 
-	    if ((functionPointer = dlsym(handle, "setup_component_loader")) == NULL)
-		{
+	    if ((functionPointer = dlsym(handle, "setup_component_loader")) == NULL) {
 				DEBUG(DEB_LEV_ERR, "the library %s is not compatible - %s\n", libraryFileName, dlerror());
 				continue;
 		}
@@ -132,8 +135,7 @@ int createComponentLoaders() {
 
 		loader = calloc(1, sizeof(BOSA_COMPONENTLOADER));
 
-		if (loader == NULL)
-		{
+		if (loader == NULL) {
 				DEBUG(DEB_LEV_ERR, "not enough memory for this loader\n");
 				return OMX_ErrorInsufficientResources;
 		}
@@ -149,8 +151,7 @@ int createComponentLoaders() {
 		st_static_setup_component_loader(loader);
 		BOSA_AddComponentLoader(loader);
 	}
-	if (libraryFileName)
-	{
+	if (libraryFileName) {
 		free(libraryFileName);
 	}
 

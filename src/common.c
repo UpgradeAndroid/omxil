@@ -3,7 +3,7 @@
 
   This file implements some useful common functionalities for handling the register files used in Bellagio
 
-  Copyright (C) 2007-2009 STMicroelectronics
+  Copyright (C) 2007-2010 STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
