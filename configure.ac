@@ -113,6 +113,14 @@ AC_ARG_ENABLE(
     [with_debug_level=$enableval],
     [with_debug_level=no])
 
+AC_ARG_ENABLE(
+    [android],
+    [AC_HELP_STRING(
+        [--enable-android],
+        [whether to enable android compilation])],
+    [with_android=$enableval],
+    [with_android=no])
+
 ################################################################################
 # Check for programs                                                           #
 ################################################################################
@@ -186,6 +194,10 @@ fi
 
 AC_SUBST(CFG_DEBUG_LEVEL)
 CFLAGS="${CFLAGS} -DCONFIG_DEBUG_LEVEL=$CFG_DEBUG_LEVEL"
+
+if test "x$with_android" = "xyes"; then
+ CFLAGS="${CFLAGS} -DANDROID_COMPILATION"
+fi
 ################################################################################
 # Check for header files                                                       #
 ################################################################################
@@ -201,7 +213,6 @@ AC_CHECK_HEADERS([fcntl.h malloc.h netdb.h netinet/in.h stdlib.h string.h string
 ################################################################################
 
 AC_TYPE_SIZE_T
-#AC_TYPE_SSIZE_T
 
 ################################################################################
 # Check for structures                                                         #
