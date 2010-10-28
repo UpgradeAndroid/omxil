@@ -942,8 +942,7 @@ OMX_ERRORTYPE base_port_ReturnBufferFunction(omx_base_PortType* openmaxStandPort
         __func__, eError,omx_base_component_Private->name);
       }
     }
-  }
-  else if (PORT_IS_TUNNELED_N_BUFFER_SUPPLIER(openmaxStandPort) &&
+  } else if (PORT_IS_TUNNELED_N_BUFFER_SUPPLIER(openmaxStandPort) &&
             !PORT_IS_BEING_FLUSHED(openmaxStandPort)) {
     if (openmaxStandPort->sPortParam.eDir == OMX_DirInput) {
       eError = ((OMX_COMPONENTTYPE*)(openmaxStandPort->hTunneledComponent))->FillThisBuffer(openmaxStandPort->hTunneledComponent, pBuffer);
@@ -978,13 +977,12 @@ OMX_ERRORTYPE base_port_ReturnBufferFunction(omx_base_PortType* openmaxStandPort
         tsem_up(pSem);
       }
     }
-  }else if (! PORT_IS_TUNNELED(openmaxStandPort)){
-    (*(openmaxStandPort->BufferProcessedCallback))(
-      openmaxStandPort->standCompContainer,
-      omx_base_component_Private->callbackData,
-      pBuffer);
-  }
-  else {
+  } else if (!PORT_IS_TUNNELED(openmaxStandPort)){
+	  (*(openmaxStandPort->BufferProcessedCallback))(
+			  openmaxStandPort->standCompContainer,
+			  omx_base_component_Private->callbackData,
+			  pBuffer);
+  } else {
       errQue = queue(pQueue, pBuffer);
       if (errQue) {
     	  /* /TODO the queue is full. This can be handled in a fine way with
