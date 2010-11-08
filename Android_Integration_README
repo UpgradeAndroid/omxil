@@ -11,8 +11,12 @@ In order to compile the Bellagio core and components into the Android framework
 5) Place the ./android_extras/Android_bellagio_omx_sharedlibrary.mk file in
    the {android_root}/external/opencore/build_config/opencore_dynamic/ directory.
 
+From omxil directory can be executed:
+cp Android_extras/Android_bellagio_omx_sharedlibrary.mk ../../../../build_config/opencore_dynamic/
+
 6) Edit the {android_root}/external/opencore/Android.mk file to include the 
-   above Android makefile:
+
+above Android makefile:
 
   include $(PV_TOP)/build_config/opencore_dynamic/Android_bellagio_omx_sharedlibrary.mk
 
@@ -22,23 +26,3 @@ In order to compile the Bellagio core and components into the Android framework
 
 8) Build Android.
 
-
-FFMPEG
-
-1) The ffmpeg 0.5 (http://www.ffmpeg.org/releases/ffmpeg-0.5.tar.bz2) library should be 
-used. Alternatively the ffmpeg-mt can be used, but the latest version has not been 
-tested. It can be downloaded from git://gitorious.org/~astrange/ffmpeg/ffmpeg-mt.git.
-Make the android specific changes:
-- add Android.mk file
-
-...
-(by applying the patch ffmpeg-mt_Android_porting.patch)
-and then place in the {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/lib/
-folder.
-
-2) run the ./configure script on a PC and copy the config.h file over here 
-   in the src directory.
-
-
-
-??...??
