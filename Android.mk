@@ -35,13 +35,13 @@ LOCAL_SRC_FILES := \
 	src/content_pipe_inet.c \
 	src/omx_create_loaders_linux.c \
 	src/omxcore.c \
-  src/omx_reference_resource_manager.c \
+  	src/omx_reference_resource_manager.c \
 	src/omxregister.c \
 	src/queue.c \
 	src/st_static_component_loader.c \
 	src/tsemaphore.c \
 	src/utils.c \
-  src/base/OMXComponentRMExt.c \
+  	src/base/OMXComponentRMExt.c \
 	src/base/omx_base_audio_port.c \
 	src/base/omx_base_clock_port.c \
 	src/base/omx_base_component.c \
@@ -51,7 +51,7 @@ LOCAL_SRC_FILES := \
 	src/base/omx_base_sink.c \
 	src/base/omx_base_source.c \
 	src/base/omx_base_video_port.c \
-  src/core_extensions/OMXCoreRMExt.c
+  	src/core_extensions/OMXCoreRMExt.c
 
 LOCAL_MODULE := libomxil-bellagio_lib
 

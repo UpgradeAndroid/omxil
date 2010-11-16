@@ -6,23 +6,21 @@ In order to compile the Bellagio core and components into the Android framework
    components folder again in the 
    {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/ folder.
 
-4) run the ./configure  script
-
-5) Place the ./android_extras/Android_bellagio_omx_sharedlibrary.mk file in
+4) Place the ./android_extras/Android_bellagio_omx_sharedlibrary.mk file in
    the {android_root}/external/opencore/build_config/opencore_dynamic/ directory.
 
-From omxil directory can be executed:
-cp Android_extras/Android_bellagio_omx_sharedlibrary.mk ../../../../build_config/opencore_dynamic/
+Form Android root:
+cp ./external/opencore/codecs_v2/omx/omx_sharedlibrary/omxil/Android_extras/Android_bellagio_omx_sharedlibrary.mk ./external/opencore/build_config/opencore_dynamic/
 
-6) Edit the {android_root}/external/opencore/Android.mk file to include the 
+5) Edit the {android_root}/external/opencore/Android.mk file to include the 
 
 above Android makefile:
 
   include $(PV_TOP)/build_config/opencore_dynamic/Android_bellagio_omx_sharedlibrary.mk
 
-7) Edit the {android_root}/external/opencore/pvplayer.cfg file to add the following line:
+6) Edit the {android_root}/external/opencore/pvplayer.cfg file to add the following line:
 
   (0xa054369c,0x22c5,0x412e,0x19,0x17,0x87,0x4c,0x1a,0x19,0xd4,0x5f),"libomxil-bellagio_sharedlibrary.so"
 
-8) Build Android.
+7) Build Android.
 
