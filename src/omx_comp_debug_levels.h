@@ -69,9 +69,9 @@
 
 #ifdef CONFIG_DEBUG_LEVEL
 /** \def DEBUG_LEVEL is the current level do debug output on standard err */
-#define DEBUG_LEVEL (DEB_LEV_ERR | CONFIG_DEBUG_LEVEL)
+#define DEBUG_LEVEL (DEB_LEV_ERR | CONFIG_DEBUG_LEVEL | DEB_ALL_MESS)
 #else
-#define DEBUG_LEVEL (DEB_LEV_ERR)
+#define DEBUG_LEVEL (DEB_LEV_ERR | DEB_ALL_MESS)
 #endif
 #if DEBUG_LEVEL > 0
 #define DEBUG(n, fmt, args...) do { if (DEBUG_LEVEL & (n)){fprintf(stderr, "OMX-" fmt, ##args);} } while (0)

@@ -1,8 +1,8 @@
 LOCAL_PATH := $(call my-dir)
+
 include $(CLEAR_VARS)
 
-LOCAL_WHOLE_STATIC_LIBRARIES := \
-	libomxil-bellagio_lib
+LOCAL_WHOLE_STATIC_LIBRARIES := libomxil-bellagio_lib
 
 LOCAL_MODULE := libomxil-bellagio_sharedlibrary
 LOCAL_PRELINK_MODULE := false

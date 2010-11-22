@@ -23,7 +23,7 @@
 #include "pv_omxcore.h"
 #include "omx_interface.h"
 
-#define OMX_CORE_LIBRARY "libomxil-bellagio_sharedlibrary.so"
+#define OMX_CORE_LIBRARY "libomx_on2.so"
 
 class PVOMXInterface : public OMXInterface
 {

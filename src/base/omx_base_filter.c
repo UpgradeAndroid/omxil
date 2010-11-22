@@ -31,7 +31,7 @@
 
 #include "omx_base_filter.h"
 
-OMX_ERRORTYPE omx_base_filter_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OMX_STRING cComponentName) {
+OSCL_EXPORT_REF OMX_ERRORTYPE omx_base_filter_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OMX_STRING cComponentName) {
   OMX_ERRORTYPE err;
   omx_base_filter_PrivateType* omx_base_filter_Private;
 
@@ -63,7 +63,7 @@ OMX_ERRORTYPE omx_base_filter_Constructor(OMX_COMPONENTTYPE *openmaxStandComp,OM
   return OMX_ErrorNone;
 }
 
-OMX_ERRORTYPE omx_base_filter_Destructor(OMX_COMPONENTTYPE *openmaxStandComp) {
+OSCL_EXPORT_REF OMX_ERRORTYPE omx_base_filter_Destructor(OMX_COMPONENTTYPE *openmaxStandComp) {
 	OMX_ERRORTYPE err;
 	  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s of component %p\n", __func__, openmaxStandComp);
 	  err = omx_base_component_Destructor(openmaxStandComp);
