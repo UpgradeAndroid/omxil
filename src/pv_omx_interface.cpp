@@ -15,7 +15,7 @@
  * and limitations under the License.
  * -------------------------------------------------------------------
  */
-#define LOG_TAG "omx_interface"
+#define LOG_TAG "bellagio_omx_interface"
 #include <utils/Log.h>
 
 #include "pvlogger.h"
@@ -23,7 +23,7 @@
 #include "pv_omxcore.h"
 #include "omx_interface.h"
 
-#define OMX_CORE_LIBRARY "libomx_on2.so"
+#define OMX_CORE_LIBRARY "libomx-bellagio_sharedlibrary.so"
 
 class PVOMXInterface : public OMXInterface
 {
