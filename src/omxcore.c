@@ -89,7 +89,7 @@ OMX_ERRORTYPE BOSA_AddComponentLoader(BOSA_COMPONENTLOADER *pLoader)
  *
  * @return OMX_ErrorNone
  */
-OMX_ERRORTYPE OMX_Init() {
+OSCL_EXPORT_REF OMX_ERRORTYPE OMX_Init() {
   int i = 0;
   OMX_ERRORTYPE err;
 
@@ -118,7 +118,7 @@ OMX_ERRORTYPE OMX_Init() {
  *
  * In this function the Deinit function for each component loader is performed
  */
-OMX_ERRORTYPE OMX_Deinit() {
+OSCL_EXPORT_REF OMX_ERRORTYPE OMX_Deinit() {
   int i = 0;
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
   if(initialized == 1) {
@@ -148,7 +148,7 @@ OMX_ERRORTYPE OMX_Deinit() {
  *         OMX_ErrorComponentNotFound if the requested component has not been found
  *                                    in any loader
  */
-OMX_ERRORTYPE OMX_GetHandle(OMX_HANDLETYPE* pHandle,
+OSCL_EXPORT_REF OMX_ERRORTYPE OMX_GetHandle(OMX_HANDLETYPE* pHandle,
   OMX_STRING cComponentName,
   OMX_PTR pAppData,
   OMX_CALLBACKTYPE* pCallBacks) {
@@ -185,7 +185,7 @@ OMX_ERRORTYPE OMX_GetHandle(OMX_HANDLETYPE* pHandle,
  *
  * @return The error of the BOSA_DestroyComponent function or OMX_ErrorNone
  */
-OMX_ERRORTYPE OMX_FreeHandle(OMX_HANDLETYPE hComponent) {
+OSCL_EXPORT_REF OMX_ERRORTYPE OMX_FreeHandle(OMX_HANDLETYPE hComponent) {
 	int i;
     OMX_ERRORTYPE err;
     DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for %p\n", __func__, hComponent);
@@ -211,7 +211,7 @@ OMX_ERRORTYPE OMX_FreeHandle(OMX_HANDLETYPE hComponent) {
  * list, with a common index. This implementation orders the loaders and the
  * related list of components.
  */
-OMX_ERRORTYPE OMX_ComponentNameEnum(
+OSCL_EXPORT_REF OMX_ERRORTYPE OMX_ComponentNameEnum(
 		OMX_STRING cComponentName,
 		OMX_U32 nNameLength,
 		OMX_U32 nIndex)
@@ -257,7 +257,7 @@ OMX_ERRORTYPE OMX_ComponentNameEnum(
  * @return OMX_ErrorBadParameter, OMX_ErrorPortsNotCompatible, tunnel rejected by a component
  * or OMX_ErrorNone if the tunnel has been established
  */
-OMX_ERRORTYPE OMX_SetupTunnel(
+OSCL_EXPORT_REF OMX_ERRORTYPE OMX_SetupTunnel(
   OMX_HANDLETYPE hOutput,
   OMX_U32 nPortOutput,
   OMX_HANDLETYPE hInput,
@@ -321,7 +321,7 @@ OMX_ERRORTYPE OMX_SetupTunnel(
 
 /** @brief the OMX_GetRolesOfComponent standard function
  */
-OMX_ERRORTYPE OMX_GetRolesOfComponent (
+OSCL_EXPORT_REF OMX_ERRORTYPE OMX_GetRolesOfComponent (
   OMX_STRING CompName,
   OMX_U32 *pNumRoles,
   OMX_U8 **roles) {
@@ -353,7 +353,7 @@ OMX_ERRORTYPE OMX_GetRolesOfComponent (
  * @param compNames See spec
  *
  */
-OMX_ERRORTYPE OMX_GetComponentsOfRole (
+OSCL_EXPORT_REF OMX_ERRORTYPE OMX_GetComponentsOfRole (
   OMX_STRING role,
   OMX_U32 *pNumComps,
   OMX_U8  **compNames) {
@@ -408,7 +408,7 @@ OMX_ERRORTYPE OMX_GetComponentsOfRole (
   return OMX_ErrorNone;
 }
 
-OMX_ERRORTYPE OMX_GetContentPipe(
+OSCL_EXPORT_REF OMX_ERRORTYPE OMX_GetContentPipe(
     OMX_HANDLETYPE *hPipe,
     OMX_STRING szURI) {
 	  OMX_ERRORTYPE err = OMX_ErrorContentPipeCreationFailed;

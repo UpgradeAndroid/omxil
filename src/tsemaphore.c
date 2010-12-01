@@ -36,7 +36,7 @@
  * @param val the initial value of the semaphore
  *
  */
-int tsem_init(tsem_t* tsem, unsigned int val) {
+OSCL_EXPORT_REF int tsem_init(tsem_t* tsem, unsigned int val) {
 	int i;
 	i = pthread_cond_init(&tsem->condition, NULL);
 	if (i!=0) {
@@ -54,7 +54,7 @@ int tsem_init(tsem_t* tsem, unsigned int val) {
  *
  * @param tsem the semaphore to destroy
  */
-void tsem_deinit(tsem_t* tsem) {
+OSCL_EXPORT_REF void tsem_deinit(tsem_t* tsem) {
   pthread_cond_destroy(&tsem->condition);
   pthread_mutex_destroy(&tsem->mutex);
 }
@@ -66,7 +66,7 @@ void tsem_deinit(tsem_t* tsem) {
  * @param tsem the semaphore to decrease
  * @param timevalue the value of delay for the timeout
  */
-int tsem_timed_down(tsem_t* tsem, unsigned int milliSecondsDelay) {
+OSCL_EXPORT_REF int tsem_timed_down(tsem_t* tsem, unsigned int milliSecondsDelay) {
 	int err = 0;
     struct timespec final_time;
     struct timeval currentTime;
@@ -94,7 +94,7 @@ int tsem_timed_down(tsem_t* tsem, unsigned int milliSecondsDelay) {
  *
  * @param tsem the semaphore to decrease
  */
-void tsem_down(tsem_t* tsem) {
+OSCL_EXPORT_REF void tsem_down(tsem_t* tsem) {
   pthread_mutex_lock(&tsem->mutex);
   while (tsem->semval == 0) {
     pthread_cond_wait(&tsem->condition, &tsem->mutex);
@@ -107,7 +107,7 @@ void tsem_down(tsem_t* tsem) {
  *
  * @param tsem the semaphore to increase
  */
-void tsem_up(tsem_t* tsem) {
+OSCL_EXPORT_REF void tsem_up(tsem_t* tsem) {
   pthread_mutex_lock(&tsem->mutex);
   tsem->semval++;
   pthread_cond_signal(&tsem->condition);
@@ -118,7 +118,7 @@ void tsem_up(tsem_t* tsem) {
  *
  * @param tsem the semaphore to reset
  */
-void tsem_reset(tsem_t* tsem) {
+OSCL_EXPORT_REF void tsem_reset(tsem_t* tsem) {
   pthread_mutex_lock(&tsem->mutex);
   tsem->semval=0;
   pthread_mutex_unlock(&tsem->mutex);
@@ -128,7 +128,7 @@ void tsem_reset(tsem_t* tsem) {
  *
  * @param tsem the semaphore to wait
  */
-void tsem_wait(tsem_t* tsem) {
+OSCL_EXPORT_REF void tsem_wait(tsem_t* tsem) {
   pthread_mutex_lock(&tsem->mutex);
   pthread_cond_wait(&tsem->condition, &tsem->mutex);
   pthread_mutex_unlock(&tsem->mutex);
@@ -138,7 +138,7 @@ void tsem_wait(tsem_t* tsem) {
  *
  * @param tsem the semaphore to signal
  */
-void tsem_signal(tsem_t* tsem) {
+OSCL_EXPORT_REF void tsem_signal(tsem_t* tsem) {
   pthread_mutex_lock(&tsem->mutex);
   pthread_cond_signal(&tsem->condition);
   pthread_mutex_unlock(&tsem->mutex);
