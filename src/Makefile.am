@@ -53,6 +53,6 @@ include_extra_HEADERS = $(srcdir)/omxcore.h \
 			$(srcdir)/base/omx_base_image_port.h \
 			$(srcdir)/extension_struct.h \
 			$(srcdir)/base/OMXComponentRMExt.h \
-			$(srcdir)/core_extensions/OMXCoreRMExt.h
-
+			$(srcdir)/core_extensions/OMXCoreRMExt.h \
+			$(top_srcdir)/test/components/common/user_debug_levels.h
 

@@ -73,7 +73,7 @@ LOCAL_C_INCLUDES := \
 	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src/core_extensions \
 	$(PV_INCLUDES)
 
-LOCAL_COPY_HEADERS_TO := $(PV_COPY_HEADERS_TO)
+LOCAL_COPY_HEADERS_TO := $(PV_COPY_HEADERS_TO)/bellagio
 
 LOCAL_COPY_HEADERS := \
 src/omx_reference_resource_manager.h \
@@ -100,7 +100,8 @@ src/omx_create_loaders.h \
 src/omxcore.h \
 src/common.h \
 src/queue.h \
-src/content_pipe_inet.h
+src/content_pipe_inet.h \
+test/components/common/user_debug_levels.h
 
 include $(BUILD_STATIC_LIBRARY)
 
