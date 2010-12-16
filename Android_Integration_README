@@ -6,7 +6,7 @@ In order to compile the Bellagio core and components into the Android framework
    components folder again in the 
    {android_root}/external/opencore/codecs_v2/omx/omx_sharedlibrary/ folder.
 
-4) Place the ./android_extras/Android_bellagio_omx_sharedlibrary.mk file in
+4) Place the ./Android_bellagio_omx_sharedlibrary.mk file in
    the {android_root}/external/opencore/build_config/opencore_dynamic/ directory.
 
 Form Android root:
