@@ -3,7 +3,7 @@
 
   This file implements some useful common functionalities for handling the register files used in Bellagio
 
-  Copyright (C) 2007-2010 STMicroelectronics
+  Copyright (C) 2007-2011 STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
@@ -76,6 +76,14 @@ char* componentsRegistryGetFilename() {
   return omxregistryfile;
 }
 
+/* This function return the absolute path of the registry_name file or
+ * directory depending by the environment variable set.
+ * the variables considered in order are:
+ * $XDG_DATA_HOME
+ * $HOME
+ * TMP_DATA_DIRECTORY (/tmp by default on Linux)
+ * The function does not check for file/dir existence
+ */
 char* loadersRegistryGetFilename(char* registry_name) {
 	char *omxregistryfile = NULL;
 	char *buffer;
@@ -148,6 +156,17 @@ int makedir (const char *newdir) {
 	}
   free(buffer);
   return 0;
+
+}
+
+int exists(const char* fname) {
+	FILE *file;
+	if ((file = fopen(fname, "r")))
+	{
+		fclose(file);
+		return 1;
+	}
+	return 0;
 }
 
 #ifdef COMMON_TEST

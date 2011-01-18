@@ -4,7 +4,7 @@
   OpenMAX Integration Layer Core. This library implements the OpenMAX core
   responsible for environment setup, component tunneling and communication.
 
-  Copyright (C) 2007-2010 STMicroelectronics
+  Copyright (C) 2007-2011 STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
@@ -33,6 +33,7 @@ int makedir(const char *newdir);
 
 char *componentsRegistryGetFilename(void);
 char* loadersRegistryGetFilename(char* registry_name);
+int exists(const char* fname);
 
 typedef struct nameList {
 	char* name;
