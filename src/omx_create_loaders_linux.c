@@ -36,7 +36,10 @@
 #include "common.h"
 
 #define OMX_LOADERS_FILENAME ".omxloaders"
-#define OMX_LOADERS_DIRNAME "omxloaders"
+
+#ifndef OMX_LOADERS_DIRNAME
+#define OMX_LOADERS_DIRNAME "/usr/lib/omxloaders/"
+#endif
 
 #ifndef INSTALL_PATH_STR
 #define INSTALL_PATH_STR "/usr/local/lib/bellagio"
@@ -63,7 +66,6 @@ int createComponentLoaders() {
 	char *libraryFileName = NULL;
 	FILE *loaderFP;
 	char *omxloader_registry_filename;
-	char *omxloader_registry_dirname;
 	int onlyDefault = 0;
 	int oneAtLeast = 0;
 	int index_readline;
@@ -73,8 +75,7 @@ int createComponentLoaders() {
 	omxloader_registry_filename = loadersRegistryGetFilename(OMX_LOADERS_FILENAME);
 	isFileExisting = exists(omxloader_registry_filename);
 
-	omxloader_registry_dirname = loadersRegistryGetFilename(OMX_LOADERS_DIRNAME);
-	isDirExisting = exists(omxloader_registry_dirname);
+	isDirExisting = exists(OMX_LOADERS_DIRNAME);
 
 	/* test the existence of the file */
 	if (!isDirExisting && !isFileExisting) {
@@ -143,14 +144,13 @@ int createComponentLoaders() {
 	}
 
 	if (isDirExisting) {
-		dirp_name = opendir(omxloader_registry_dirname);
+		dirp_name = opendir(OMX_LOADERS_DIRNAME);
 		while ((dp = readdir(dirp_name)) != NULL) {
 			int len = strlen(dp->d_name);
 			if(len >= 3) {
 				if(strncmp(dp->d_name+len-3, ".so", 3) == 0){
-					char lib_absolute_path[strlen(omxloader_registry_dirname) + len + 1];
-					strcpy(lib_absolute_path, omxloader_registry_dirname);
-					strcat(lib_absolute_path, "/");
+					char lib_absolute_path[strlen(OMX_LOADERS_DIRNAME) + len + 1];
+					strcpy(lib_absolute_path, OMX_LOADERS_DIRNAME);
 					strcat(lib_absolute_path, dp->d_name);
 					handle = dlopen(lib_absolute_path, RTLD_NOW);
 					if (!handle) {
@@ -188,7 +188,6 @@ int createComponentLoaders() {
 		BOSA_AddComponentLoader(loader);
 	}
 	free(omxloader_registry_filename);
-	free(omxloader_registry_dirname);
 
 	return 0;
 }
