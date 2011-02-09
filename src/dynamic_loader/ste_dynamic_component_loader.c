@@ -94,8 +94,6 @@ OMX_ERRORTYPE BOSA_STE_InitComponentLoader(BOSA_COMPONENTLOADER *loader) {
   if(dirp == NULL){
 	DEBUG(DEB_LEV_ERR, "Failed to open directory %s\n", OMX_COMPONENT_PATH);
 	return OMX_ErrorUndefined;
-  } else {
-	DEBUG(DEB_LEV_ERR,"Scanning directory for STE ENS based components %s\n", OMX_COMPONENT_PATH);
   }
 
   templateList = malloc(sizeof (steLoaderComponentType*));
