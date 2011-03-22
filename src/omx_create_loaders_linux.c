@@ -67,12 +67,12 @@ int createComponentLoaders() {
 	FILE *loaderFP;
 	char *omxloader_registry_filename;
 	int onlyDefault = 0;
-	int oneAtLeast = 0;
 	int index_readline;
 	int isFileExisting = 0;
 	int isDirExisting = 0;
 
 	omxloader_registry_filename = loadersRegistryGetFilename(OMX_LOADERS_FILENAME);
+
 	isFileExisting = exists(omxloader_registry_filename);
 
 	isDirExisting = exists(OMX_LOADERS_DIRNAME);
@@ -135,7 +135,6 @@ int createComponentLoaders() {
 
 			/* add loader to core */
 			BOSA_AddComponentLoader(loader);
-			oneAtLeast = 1;
 		}
 		if (libraryFileName) {
 			free(libraryFileName);
@@ -171,22 +170,20 @@ int createComponentLoaders() {
 					(*fptr)(loader);
 					/* add loader to core */
 					BOSA_AddComponentLoader(loader);
-					oneAtLeast = 1;
 				}
 			}
 		}
 		closedir(dirp_name);
 	}
-	if (!oneAtLeast) {
-		/* add the ST static component loader */
-		loader = calloc(1, sizeof(BOSA_COMPONENTLOADER));
-		if (loader == NULL) {
-				DEBUG(DEB_LEV_ERR, "not enough memory for this loader\n");
-				return OMX_ErrorInsufficientResources;
-		}
-		st_static_setup_component_loader(loader);
-		BOSA_AddComponentLoader(loader);
+	/* add the ST static component loader */
+	loader = calloc(1, sizeof(BOSA_COMPONENTLOADER));
+	if (loader == NULL) {
+		DEBUG(DEB_LEV_ERR, "not enough memory for this loader\n");
+		return OMX_ErrorInsufficientResources;
 	}
+	st_static_setup_component_loader(loader);
+	BOSA_AddComponentLoader(loader);
+
 	free(omxloader_registry_filename);
 
 	return 0;

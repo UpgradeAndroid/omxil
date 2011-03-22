@@ -64,6 +64,8 @@ BOSA_COMPONENTLOADER **loadersList = NULL;
 OMX_ERRORTYPE BOSA_AddComponentLoader(BOSA_COMPONENTLOADER *pLoader)
 {
   BOSA_COMPONENTLOADER **newLoadersList = NULL;
+  DEBUG(DEB_LEV_FUNCTION_NAME, "In %s\n", __func__);
+
   assert(pLoader);
 
   bosa_loaders++;
