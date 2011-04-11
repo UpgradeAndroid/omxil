@@ -151,8 +151,18 @@ Some makefiles and instructions are contained in the actual packet.
 =============================
 This version has been tested on:
 
-- UBUNTU 9.10
+- UBUNTU 10.10 and older
 - Fedora Core 11
 
+================================
+UBUNTU Installation instructions
+================================
 
-Last modified: Dec 23, 2009
+In order to compile properly the bellagio framework in Ubuntu some packages
+should be added. These packages are not included in the base ubuntu installation.
+the packages to be installed with sudo apt-get install are:
+autoconf
+libtool
+g++
+
+Last modified: Jan 12, 2011
