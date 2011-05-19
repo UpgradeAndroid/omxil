@@ -1,12 +1,12 @@
-AC_INIT([OpenMAX Bellagio], [0.9.2.1], [giulio.urlini@st.com], [libomxil-bellagio])
+AC_INIT([OpenMAX Bellagio], [0.9.3], [giulio.urlini@st.com], [libomxil-bellagio])
 AM_INIT_AUTOMAKE()
 
 # Prerequisite autoconf version
 AC_PREREQ([2.59])
 
 AC_CONFIG_HEADERS([config.h])
-CFLAGS="${CFLAGS} -Wall -Werror"
-
+CFLAGS="${CFLAGS} -Wall -Werror -pg"
+LDFLAGS="${LDFLAGS} -pg"
 ################################################################################
 # Set the shared versioning info, according to section 6.3 of the libtool info #
 # pages. CURRENT:REVISION:AGE must be updated immediately before each release: #

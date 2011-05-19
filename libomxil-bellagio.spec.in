@@ -46,7 +46,6 @@ make
 %{_includedir}/OMX_Other.h
 %{_includedir}/OMX_Types.h
 %{_includedir}/OMX_Video.h
-%{_includedir}/user_debug_levels.h
 %{_includedir}/bellagio/common.h
 %{_includedir}/bellagio/component_loader.h
 %{_includedir}/bellagio/extension_struct.h
@@ -64,9 +63,11 @@ make
 %{_includedir}/bellagio/OMXComponentRMExt.h
 %{_includedir}/bellagio/omxcore.h
 %{_includedir}/bellagio/OMXCoreRMExt.h
+%{_includedir}/bellagio/omx_reference_resource_manager.h
 %{_includedir}/bellagio/queue.h
 %{_includedir}/bellagio/st_static_component_loader.h
 %{_includedir}/bellagio/tsemaphore.h
+%{_includedir}/bellagio/user_debug_levels.h
 %{_includedir}/bellagio/utils.h
 %{_libdir}/libomxil-bellagio.so
 %{_libdir}/libomxil-bellagio.a
@@ -75,19 +76,19 @@ make
 %{_libdir}/libomxil-bellagio.so.0.0.0
 %{_libdir}/bellagio/libomxaudio_effects.a
 %{_libdir}/bellagio/libomxaudio_effects.la
+%{_libdir}/bellagio/libomxaudio_effects.so
 %{_libdir}/bellagio/libomxaudio_effects.so.0
 %{_libdir}/bellagio/libomxaudio_effects.so.0.0.0
 %{_libdir}/bellagio/libomxclocksrc.a
 %{_libdir}/bellagio/libomxclocksrc.la
+%{_libdir}/bellagio/libomxclocksrc.so
 %{_libdir}/bellagio/libomxclocksrc.so.0
 %{_libdir}/bellagio/libomxclocksrc.so.0.0.0
 %{_libdir}/bellagio/libomxvideosched.a
 %{_libdir}/bellagio/libomxvideosched.la
+%{_libdir}/bellagio/libomxvideosched.so
 %{_libdir}/bellagio/libomxvideosched.so.0
 %{_libdir}/bellagio/libomxvideosched.so.0.0.0
-%{_libdir}/bellagio/libomxaudio_effects.so
-%{_libdir}/bellagio/libomxclocksrc.so
-%{_libdir}/bellagio/libomxvideosched.so
 %{_libdir}/pkgconfig/libomxil-bellagio.pc
 %{_docdir}/libomxil-bellagio/ChangeLog
 %{_docdir}/libomxil-bellagio/README
@@ -95,6 +96,8 @@ make
 %{_mandir}/man1/omxregister-bellagio.1.gz
 
 %changelog
+* Thu May 19 2011 Giulio Urlini
+- Update the list of files for release 0.9.3
 * Wed Dec 23 2009 Giulio Urlini
 - Added quality levels extension
 * Tue Oct 20 2009 Giulio Urlini
