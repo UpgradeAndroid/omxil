@@ -5,8 +5,8 @@ AM_INIT_AUTOMAKE()
 AC_PREREQ([2.59])
 
 AC_CONFIG_HEADERS([config.h])
-CFLAGS="${CFLAGS} -Wall -Werror -pg"
-LDFLAGS="${LDFLAGS} -pg"
+CFLAGS="${CFLAGS} -Wall -Werror"
+
 ################################################################################
 # Set the shared versioning info, according to section 6.3 of the libtool info #
 # pages. CURRENT:REVISION:AGE must be updated immediately before each release: #

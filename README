@@ -42,6 +42,18 @@ If you need more details you can check the download page in the Bellagio web sit
 http://omxil.sourceforge.net/downloads.html
 
 =============================
+ENVIRONMENT VARIABLES
+=============================
+
+export PATH=$INSTALL_DIR/bin:$PATH
+export LD_LIBRARY_PATH=$INSTALL_DIR/lib:$LD_LIBRARY_PATH
+export BELLAGIO_SEARCH_PATH=$INSTALL_DIR/lib/bellagio/:$INSTALL_DIR/lib/extern_omxcomp/lib/:$INSTALL_DIR/lib/
+export PKG_CONFIG_PATH=$INSTALL_DIR/lib/pkgconfig/:/usr/local/lib/pkgconfig/:/usr/lib/pkgconfig/
+
+where $INSTALL_DIR is by default /usr/local or can be specified with configure with the following command option:
+./configure --prefix=$INSTALL_DIR
+
+=============================
  BUILD the bellagio library
 =============================
 
