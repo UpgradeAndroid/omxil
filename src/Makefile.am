@@ -1,13 +1,13 @@
 # Build order is important
 # First base, then core, finally components
 
-SUBDIRS = base core_extensions . components
+SUBDIRS = base core_extensions . components dynamic_loader
 
 bin_PROGRAMS = omxregister-bellagio
 omxregister_bellagio_SOURCES = omxregister.c common.c common.h
 omxregister_bellagio_CFLAGS = -DOMXILCOMPONENTSPATH=\"$(plugindir)/\" \
 			      -I$(top_srcdir)/include
-omxregister_bellagio_LDFLAGS = $(OMXIL_LIBS) #-L$(builddir) 
+omxregister_bellagio_LDFLAGS = -lomxil-bellagio -L$(builddir)
 
 lib_LTLIBRARIES = libomxil-bellagio.la
 libomxil_bellagio_la_SOURCES = component_loader.h \
@@ -26,7 +26,7 @@ libomxil_bellagio_la_SOURCES = component_loader.h \
 			       omx_reference_resource_manager.h
 
 libomxil_bellagio_la_CFLAGS = -I$(top_srcdir)/include -I$(srcdir)/base -I$(srcdir)/core_extensions \
-                              -DINSTALL_PATH_STR=\"$(plugindir)\"
+                              -DINSTALL_PATH_STR=\"$(plugindir)\" -DOMX_LOADERS_DIRNAME=\"$(libdir)/omxloaders\/\"
 libomxil_bellagio_la_LIBADD = base/libomxbase.la core_extensions/libomxcoreext.la -lpthread
 libomxil_bellagio_la_LDFLAGS = -version-info @SHARED_VERSION_INFO@
 

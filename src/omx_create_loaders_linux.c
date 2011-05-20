@@ -28,6 +28,7 @@
 #define _GNU_SOURCE
 #include <stdlib.h>
 #include <dlfcn.h>
+#include <dirent.h>
 #include <string.h>
 #include "component_loader.h"
 #include "omx_create_loaders.h"
@@ -36,10 +37,13 @@
 
 #define OMX_LOADERS_FILENAME ".omxloaders"
 
+#ifndef OMX_LOADERS_DIRNAME
+#define OMX_LOADERS_DIRNAME "/usr/lib/omxloaders/"
+#endif
+
 #ifndef INSTALL_PATH_STR
 #define INSTALL_PATH_STR "/usr/local/lib/bellagio"
 #endif
-#define DEFAULT_LOADER_LIBRARY_NAME "/libstbaseloader.so"
 
 /**
  * This function allocates all the structures needed by the component loaders
@@ -54,39 +58,30 @@
 int createComponentLoaders() {
 	// load component loaders
 	BOSA_COMPONENTLOADER *loader;
+	DIR *dirp_name;
+	struct dirent *dp;
 	void *handle;
 	void *functionPointer;
 	void (*fptr)(BOSA_COMPONENTLOADER *loader);
 	char *libraryFileName = NULL;
 	FILE *loaderFP;
 	char *omxloader_registry_filename;
-	char *dir, *dirp;
 	int onlyDefault = 0;
-	int oneAtLeast = 0;
 	int index_readline;
+	int isFileExisting = 0;
+	int isDirExisting = 0;
 
 	omxloader_registry_filename = loadersRegistryGetFilename(OMX_LOADERS_FILENAME);
 
-	/* make sure the registry directory exists */
-	dir = strdup(omxloader_registry_filename);
-	if (dir == NULL) {
-		DEBUG(DEB_LEV_ERR, "The directory has not been specified\n");
-		onlyDefault = 1;
-	}
-	dirp = strrchr(dir, '/');
-	if (dirp != NULL) {
-		*dirp = '\0';
-		if (makedir(dir)) {
-			DEBUG(DEB_LEV_ERR, "Cannot create OpenMAX registry directory %s\n", dir);
-			onlyDefault = 1;
-		}
-	}
-	free(dir);
+	isFileExisting = exists(omxloader_registry_filename);
+
+	isDirExisting = exists(OMX_LOADERS_DIRNAME);
+
 	/* test the existence of the file */
-	loaderFP = fopen(omxloader_registry_filename, "r");
-	if (loaderFP == NULL){
+	if (!isDirExisting && !isFileExisting) {
 		onlyDefault = 1;
 	}
+
 	if (onlyDefault) {
 		loader = calloc(1, sizeof(BOSA_COMPONENTLOADER));
 		if (loader == NULL) {
@@ -97,65 +92,99 @@ int createComponentLoaders() {
 		BOSA_AddComponentLoader(loader);
 		return 0;
 	}
-	free(omxloader_registry_filename);
+	if (isFileExisting) {
+		loaderFP = fopen(omxloader_registry_filename, "r");
+		// dlopen all loaders defined in .omxloaders file
+		libraryFileName = malloc(MAX_LINE_LENGTH);
+		while(1) {
+			index_readline = 0;
+			while(index_readline < MAX_LINE_LENGTH) {
+				*(libraryFileName + index_readline) = fgetc(loaderFP);
+				if ((*(libraryFileName + index_readline) == '\n') || (*(libraryFileName + index_readline) == '\0')) {
+					break;
+				}
+				index_readline++;
+			}
+			*(libraryFileName + index_readline) = '\0';
+			if ((index_readline >= MAX_LINE_LENGTH) || (index_readline == 0)) {
+				break;
+			}
+
+			handle = dlopen(libraryFileName, RTLD_NOW);
+
+		    if (!handle) {
+				DEBUG(DEB_LEV_ERR, "library %s dlopen error: %s\n", libraryFileName, dlerror());
+				continue;
+		    }
+
+		    if ((functionPointer = dlsym(handle, "setup_component_loader")) == NULL) {
+					DEBUG(DEB_LEV_ERR, "the library %s is not compatible - %s\n", libraryFileName, dlerror());
+					continue;
+			}
+		    fptr = functionPointer;
+
+			loader = calloc(1, sizeof(BOSA_COMPONENTLOADER));
+
+			if (loader == NULL) {
+					DEBUG(DEB_LEV_ERR, "not enough memory for this loader\n");
+					return OMX_ErrorInsufficientResources;
+			}
+
+			/* setup the function pointers */
+			(*fptr)(loader);
+
+			/* add loader to core */
+			BOSA_AddComponentLoader(loader);
+		}
+		if (libraryFileName) {
+			free(libraryFileName);
+		}
+		fclose(loaderFP);
+	}
+
+	if (isDirExisting) {
+		dirp_name = opendir(OMX_LOADERS_DIRNAME);
+		while ((dp = readdir(dirp_name)) != NULL) {
+			int len = strlen(dp->d_name);
+			if(len >= 3) {
+				if(strncmp(dp->d_name+len-3, ".so", 3) == 0){
+					char lib_absolute_path[strlen(OMX_LOADERS_DIRNAME) + len + 1];
+					strcpy(lib_absolute_path, OMX_LOADERS_DIRNAME);
+					strcat(lib_absolute_path, dp->d_name);
+					handle = dlopen(lib_absolute_path, RTLD_NOW);
+					if (!handle) {
+						DEBUG(DEB_LEV_ERR, "library %s dlopen error: %s\n", lib_absolute_path, dlerror());
+						continue;
+					}
+					if ((functionPointer = dlsym(handle, "setup_component_loader")) == NULL) {
+						DEBUG(DEB_LEV_ERR, "the library %s is not compatible - %s\n", lib_absolute_path, dlerror());
+						continue;
+					}
+					fptr = functionPointer;
+					loader = calloc(1, sizeof(BOSA_COMPONENTLOADER));
+					if (loader == NULL) {
+						DEBUG(DEB_LEV_ERR, "not enough memory for this loader\n");
+						return OMX_ErrorInsufficientResources;
+					}
+					/* setup the function pointers */
+					(*fptr)(loader);
+					/* add loader to core */
+					BOSA_AddComponentLoader(loader);
+				}
+			}
+		}
+		closedir(dirp_name);
+	}
 	/* add the ST static component loader */
 	loader = calloc(1, sizeof(BOSA_COMPONENTLOADER));
 	if (loader == NULL) {
-			DEBUG(DEB_LEV_ERR, "not enough memory for this loader\n");
-			return OMX_ErrorInsufficientResources;
+		DEBUG(DEB_LEV_ERR, "not enough memory for this loader\n");
+		return OMX_ErrorInsufficientResources;
 	}
-	// dlopen all loaders defined in .omxloaders file
-	libraryFileName = malloc(MAX_LINE_LENGTH);
-	while(1) {
-		index_readline = 0;
-		while(index_readline < MAX_LINE_LENGTH) {
-			*(libraryFileName + index_readline) = fgetc(loaderFP);
-			if ((*(libraryFileName + index_readline) == '\n') || (*(libraryFileName + index_readline) == '\0')) {
-				break;
-			}
-			index_readline++;
-		}
-		*(libraryFileName + index_readline) = '\0';
-		if ((index_readline >= MAX_LINE_LENGTH) || (index_readline == 0)) {
-			break;
-		}
+	st_static_setup_component_loader(loader);
+	BOSA_AddComponentLoader(loader);
 
-		handle = dlopen(libraryFileName, RTLD_NOW);
-
-	    if (!handle) {
-			DEBUG(DEB_LEV_ERR, "library %s dlopen error: %s\n", libraryFileName, dlerror());
-			continue;
-	    }
-
-	    if ((functionPointer = dlsym(handle, "setup_component_loader")) == NULL) {
-				DEBUG(DEB_LEV_ERR, "the library %s is not compatible - %s\n", libraryFileName, dlerror());
-				continue;
-		}
-	    fptr = functionPointer;
-
-		loader = calloc(1, sizeof(BOSA_COMPONENTLOADER));
-
-		if (loader == NULL) {
-				DEBUG(DEB_LEV_ERR, "not enough memory for this loader\n");
-				return OMX_ErrorInsufficientResources;
-		}
-
-		/* setup the function pointers */
-		(*fptr)(loader);
-
-		/* add loader to core */
-		BOSA_AddComponentLoader(loader);
-		oneAtLeast = 1;
-	}
-	if (!oneAtLeast) {
-		st_static_setup_component_loader(loader);
-		BOSA_AddComponentLoader(loader);
-	}
-	if (libraryFileName) {
-		free(libraryFileName);
-	}
-
-	fclose(loaderFP);
+	free(omxloader_registry_filename);
 
 	return 0;
 }

@@ -14,7 +14,7 @@ CORE FUNCTIONALITIES
 - A component loader for static libraries for Linux
 - A simple resource manager
 - A framework of components and ports base classes for Bellagio Hierarchy
-- a draft support to content pipes
+- A draft support to content pipes
 
 AUDIO
 - OMX audio volume control
@@ -144,7 +144,11 @@ directory of the source code:
 
 dpkg-buildpackage -S
 
-
+=============================
+Android Support
+=============================
+Actually the Bellagio framework can be executed in Android Froyo 2.2 using the stagefright multimedia framework.
+Some makefiles and instructions are contained in the actual packet.
 
 =============================
  DITRIBUTIONS

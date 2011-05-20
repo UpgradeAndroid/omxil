@@ -49,6 +49,7 @@ AC_CONFIG_FILES([
     src/components/audio_effects/Makefile
     src/components/clocksrc/Makefile
     src/components/videoscheduler/Makefile
+    src/dynamic_loader/Makefile
     m4/Makefile
     test/Makefile
     test/components/Makefile

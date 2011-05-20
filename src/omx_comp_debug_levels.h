@@ -5,7 +5,7 @@
   be composed with binary OR.
   The debug levels defined here belong to OpenMAX components and IL core
 
-  Copyright (C) 2007-2009 STMicroelectronics
+  Copyright (C) 2007-2011 STMicroelectronics
   Copyright (C) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
 
   This library is free software; you can redistribute it and/or modify it under
@@ -69,9 +69,9 @@
 
 #ifdef CONFIG_DEBUG_LEVEL
 /** \def DEBUG_LEVEL is the current level do debug output on standard err */
-#define DEBUG_LEVEL (DEB_LEV_ERR | CONFIG_DEBUG_LEVEL | DEB_ALL_MESS)
+#define DEBUG_LEVEL (DEB_LEV_ERR | CONFIG_DEBUG_LEVEL)
 #else
-#define DEBUG_LEVEL (DEB_LEV_ERR | DEB_ALL_MESS)
+#define DEBUG_LEVEL (DEB_LEV_ERR)
 #endif
 #if DEBUG_LEVEL > 0
 #define DEBUG(n, fmt, args...) do { if (DEBUG_LEVEL & (n)){fprintf(stderr, "OMX-" fmt, ##args);} } while (0)
