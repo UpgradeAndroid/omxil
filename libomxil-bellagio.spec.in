@@ -89,6 +89,11 @@ make
 %{_libdir}/bellagio/libomxvideosched.so
 %{_libdir}/bellagio/libomxvideosched.so.0
 %{_libdir}/bellagio/libomxvideosched.so.0.0.0
+%{_libdir}/omxloaders/libomxdynamicloader.a
+%{_libdir}/omxloaders/libomxdynamicloader.la
+%{_libdir}/omxloaders/libomxdynamicloader.so
+%{_libdir}/omxloaders/libomxdynamicloader.so.0
+%{_libdir}/omxloaders/libomxdynamicloader.so.0.0.0
 %{_libdir}/pkgconfig/libomxil-bellagio.pc
 %{_docdir}/libomxil-bellagio/ChangeLog
 %{_docdir}/libomxil-bellagio/README

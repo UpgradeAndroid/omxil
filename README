@@ -138,9 +138,10 @@ http://omxil.sourceforge.net/downloads.html
 =============================
  BUILD DEB
 =============================
-To build the installable deb package with the Bellagio libraries run:
-sudo checkinstall --pkgsource=$(source_path) --install=no --maintainer=giulio.urlini@st.com --spec=$(source_path)/libomxil-bellagio.spec --inspect
+To build the installable deb package with the Bellagio libraries run in the source directory:
 
+sudo checkinstall --pkgsource=$(source_path) --install=no --maintainer=giulio.urlini@st.com --spec=$(source_path)/libomxil-bellagio.spec --inspect
+Note: the deb package will store the intallation path set by the last configure executed
 
 =============================
  SOURCE CODE PACKAGE
