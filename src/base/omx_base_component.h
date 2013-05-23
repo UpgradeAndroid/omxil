@@ -34,12 +34,9 @@
 #include <errno.h>
 #include <asm/unistd.h>
 
-#ifdef ANDROID_COMPILATION
-#include <oscl_base_macros.h>
-#else
 #define OSCL_IMPORT_REF
 #define OSCL_EXPORT_REF
-#endif
+
 #include "omxcore.h"
 #include "OMXComponentRMExt.h"
 #include "tsemaphore.h"

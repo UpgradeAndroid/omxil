@@ -29,12 +29,14 @@
 #include <errno.h>
 #include <sys/stat.h>
 
+#ifndef HAVE_ANDROID_OS
 #include "config.h"
+#endif
 #include "common.h"
 
 #define REGISTRY_FILENAME ".omxregister"
 
-#ifdef ANDROID_COMPILATION
+#ifdef HAVE_ANDROID_OS
 #define TMP_DATA_DIRECTORY "/data/omx/"
 #else
 #define TMP_DATA_DIRECTORY "/tmp/"

@@ -26,12 +26,9 @@
 
 #ifndef __TSEMAPHORE_H__
 #define __TSEMAPHORE_H__
-#ifdef ANDROID_COMPILATION
-#include <oscl_base_macros.h>
-#else
+
 #define OSCL_IMPORT_REF
 #define OSCL_EXPORT_REF
-#endif
 
 /** The structure contains the semaphore value, mutex and green light flag
  */
