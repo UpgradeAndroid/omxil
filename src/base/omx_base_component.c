@@ -1229,7 +1229,7 @@ OSCL_EXPORT_REF OSCL_EXPORT_REF OMX_ERRORTYPE omx_base_component_GetConfig(
   OMX_HANDLETYPE hComponent,
   OMX_INDEXTYPE nIndex,
   OMX_PTR pComponentConfigStructure) {
-  return OMX_ErrorNone;
+  return OMX_ErrorNotImplemented;
 }
 
 /** @brief base SetConfig function
@@ -1243,7 +1243,7 @@ OSCL_EXPORT_REF OMX_ERRORTYPE omx_base_component_SetConfig(
   OMX_HANDLETYPE hComponent,
   OMX_INDEXTYPE nIndex,
   OMX_PTR pComponentConfigStructure) {
-  return OMX_ErrorNone;
+  return OMX_ErrorNotImplemented;
 }
 
 /** @brief base function not implemented
