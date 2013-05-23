@@ -74,7 +74,14 @@
 #define DEBUG_LEVEL (DEB_LEV_ERR)
 #endif
 #if DEBUG_LEVEL > 0
+#ifdef HAVE_ANDROID_OS
+#define LOG_TAG "BOSA"
+#define LOG_NDEBUG 0
+#include <cutils/log.h>
+#define DEBUG(n, fmt, args...) do { if (DEBUG_LEVEL & (n)){ALOGE(fmt, ##args);} } while (0)
+#else
 #define DEBUG(n, fmt, args...) do { if (DEBUG_LEVEL & (n)){fprintf(stderr, "OMX-" fmt, ##args);} } while (0)
+#endif
 #else
 #define DEBUG(n, fmt, args...) {}
 #endif
