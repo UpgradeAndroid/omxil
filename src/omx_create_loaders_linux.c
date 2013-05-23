@@ -158,12 +158,14 @@ int createComponentLoaders() {
 					}
 					if ((functionPointer = dlsym(handle, "setup_component_loader")) == NULL) {
 						DEBUG(DEB_LEV_ERR, "the library %s is not compatible - %s\n", lib_absolute_path, dlerror());
+						dlclose(handle);
 						continue;
 					}
 					fptr = functionPointer;
 					loader = calloc(1, sizeof(BOSA_COMPONENTLOADER));
 					if (loader == NULL) {
 						DEBUG(DEB_LEV_ERR, "not enough memory for this loader\n");
+						dlclose(handle);
 						return OMX_ErrorInsufficientResources;
 					}
 					/* setup the function pointers */
