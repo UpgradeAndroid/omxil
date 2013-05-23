@@ -46,7 +46,7 @@ OMX_ERRORTYPE BOSA_AddComponentLoader(struct BOSA_COMPONENTLOADER *pLoader);
 /** Defines the major version of the core */
 #define SPECVERSIONMAJOR  1
 /** Defines the minor version of the core */
-#define SPECVERSIONMINOR  1
+#define SPECVERSIONMINOR  0
 /** Defines the revision of the core */
 #define SPECREVISION      0
 /** Defines the step version of the core */
