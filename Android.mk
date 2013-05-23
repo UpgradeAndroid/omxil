@@ -1,5 +1,25 @@
 LOCAL_PATH := $(call my-dir)
 
+OMX_INCLUDES := \
+	frameworks/native/include/media/openmax \
+
+# build libomxil-bellagio_sharedlibrary library which will be placed in the /system/lib folder
+include $(CLEAR_VARS)
+
+LOCAL_WHOLE_STATIC_LIBRARIES := libomxil-bellagio_lib
+
+LOCAL_MODULE := libomxil-bellagio_sharedlibrary
+LOCAL_MODULE_TAGS := optional
+LOCAL_PRELINK_MODULE := false
+
+LOCAL_SHARED_LIBRARIES := \
+	libutils \
+	libcutils \
+	liblog \
+	libdl
+
+include $(BUILD_SHARED_LIBRARY)
+
 #Building omxregister-bellagio binary which will be placed in the /system/bin folder
 include $(CLEAR_VARS)
 
@@ -9,27 +29,28 @@ LOCAL_SRC_FILES := \
 	src/omxregister.h 
 
 LOCAL_MODULE := omxregister-bellagio
+LOCAL_MODULE_TAGS := optional
 
-LOCAL_CFLAGS :=  -DOMXILCOMPONENTSPATH=\"/system/lib\"
+LOCAL_CFLAGS :=  \
+	-DOMXILCOMPONENTSPATH=\"/system/lib\" \
 
 LOCAL_C_INCLUDES := \
-	$(PV_TOP)/codecs_v2/omx/omx_mastercore/src \
- 	$(PV_TOP)/codecs_v2/omx/omx_mastercore/include \
- 	$(PV_TOP)/codecs_v2/omx/omx_common/include \
- 	$(PV_TOP)/extern_libs_v2/khronos/openmax/include \
-	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src \
-	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src/base \
- 	$(PV_INCLUDES)
+	$(OMX_INCLUDES)
 
 LOCAL_ARM_MODE := arm
 
+LOCAL_SHARED_LIBRARIES := \
+	libutils \
+	libcutils \
+	liblog \
+	libdl
+
 include $(BUILD_EXECUTABLE)
 
-# Building the libomxil-bellagio 
+# Building the libomxil-bellagio static library
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
- 	src/pv_omx_interface.cpp \
 	src/common.c \
 	src/content_pipe_file.c \
 	src/content_pipe_inet.c \
@@ -54,27 +75,25 @@ LOCAL_SRC_FILES := \
  	src/core_extensions/OMXCoreRMExt.c
 
 LOCAL_MODULE := libomxil-bellagio_lib
+LOCAL_MODULE_TAGS := optional
 
-LOCAL_CFLAGS :=  -DOMXILCOMPONENTSPATH=\"lib\" $(PV_CFLAGS) \
-   -DANDROID_COMPILATION -DCONFIG_DEBUG_LEVEL=6
+LOCAL_CFLAGS :=  \
+	-DOMX_LOADERS_DIRNAME=\"/system/lib/\" \
+	-DOMXILCOMPONENTSPATH=\"/system/lib/\"
+
+# For debugging
+#LOCAL_CFLAGS += -DCONFIG_DEBUG_LEVEL=6
 
 LOCAL_ARM_MODE := arm
-
-LOCAL_STATIC_LIBRARIES := 
 
 LOCAL_SHARED_LIBRARIES := libutils
 
 LOCAL_C_INCLUDES := \
-	$(PV_TOP)/codecs_v2/omx/omx_mastercore/src \
- 	$(PV_TOP)/codecs_v2/omx/omx_mastercore/include \
- 	$(PV_TOP)/codecs_v2/omx/omx_common/include \
- 	$(PV_TOP)/extern_libs_v2/khronos/openmax/include \
-	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src \
-	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src/base \
-	$(PV_TOP)/codecs_v2/omx/omx_sharedlibrary/omxil/src/core_extensions \
-	$(PV_INCLUDES)
+	$(OMX_INCLUDES) \
+	external/omxil/src/ \
+	external/omxil/src/base \
 
-LOCAL_COPY_HEADERS_TO := $(PV_COPY_HEADERS_TO)/bellagio
+LOCAL_COPY_HEADERS_TO := bellagio
 
 LOCAL_COPY_HEADERS := \
 src/omx_reference_resource_manager.h \
@@ -105,4 +124,3 @@ src/content_pipe_inet.h \
 test/components/common/user_debug_levels.h
 
 include $(BUILD_STATIC_LIBRARY)
-
