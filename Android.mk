@@ -3,12 +3,12 @@ LOCAL_PATH := $(call my-dir)
 OMX_INCLUDES := \
 	frameworks/native/include/media/openmax \
 
-# build libomxil-bellagio_sharedlibrary library which will be placed in the /system/lib folder
+# build libOMX_Core library which will be placed in the /system/lib folder
 include $(CLEAR_VARS)
 
 LOCAL_WHOLE_STATIC_LIBRARIES := libomxil-bellagio_lib
 
-LOCAL_MODULE := libomxil-bellagio_sharedlibrary
+LOCAL_MODULE := libOMX_Core
 LOCAL_MODULE_TAGS := optional
 LOCAL_PRELINK_MODULE := false
 
@@ -82,7 +82,7 @@ LOCAL_CFLAGS :=  \
 	-DOMXILCOMPONENTSPATH=\"/system/lib/\"
 
 # For debugging
-#LOCAL_CFLAGS += -DCONFIG_DEBUG_LEVEL=6
+#LOCAL_CFLAGS += -DCONFIG_DEBUG_LEVEL=255
 
 LOCAL_ARM_MODE := arm
 
