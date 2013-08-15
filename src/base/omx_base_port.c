@@ -33,7 +33,7 @@
 #include "omx_base_port.h"
 
 /** The default value for the number of needed buffers for each port. */
-#define DEFAULT_NUMBER_BUFFERS_PER_PORT 2
+#define DEFAULT_NUMBER_BUFFERS_PER_PORT 4
 /** The default value for the minimum number of needed buffers for each port. */
 #define DEFAULT_MIN_NUMBER_BUFFERS_PER_PORT 2
 /**
