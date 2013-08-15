@@ -160,6 +160,10 @@ CLASS(omx_base_component_PrivateType)
 	int currentQualityLevel; /** if supported the current quality level set for this component */
 ENDCLASS(omx_base_component_PrivateType)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void base_constructor_remove_garbage_collected(omx_base_component_PrivateType* omx_base_component_Private);
 
 /**
@@ -425,5 +429,9 @@ OSCL_IMPORT_REF OMX_ERRORTYPE omx_base_component_ComponentTunnelRequest(
   OMX_HANDLETYPE hTunneledComp,
   OMX_U32 nTunneledPort,
   OMX_TUNNELSETUPTYPE* pTunnelSetup);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

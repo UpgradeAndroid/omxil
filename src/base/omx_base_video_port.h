@@ -47,6 +47,10 @@ DERIVEDCLASS(omx_base_video_PortType, omx_base_PortType)
   OMX_VIDEO_PARAM_PORTFORMATTYPE sVideoParam; 
 ENDCLASS(omx_base_video_PortType)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** 
   * @brief The base contructor for the generic OpenMAX ST Video port
   * 
@@ -84,5 +88,9 @@ OSCL_IMPORT_REF OMX_ERRORTYPE base_video_port_Constructor(
 
 OSCL_IMPORT_REF OMX_ERRORTYPE base_video_port_Destructor(
   omx_base_PortType *openmaxStandPort);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -56,6 +56,10 @@ DERIVEDCLASS(omx_base_filter_PrivateType, omx_base_component_PrivateType)
   void (*BufferMgmtCallback)(OMX_COMPONENTTYPE* openmaxStandComp, OMX_BUFFERHEADERTYPE* inputbuffer, OMX_BUFFERHEADERTYPE* outputbuffer);
 ENDCLASS(omx_base_filter_PrivateType)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief The base filter contructor for the OpenMAX ST components
  *
@@ -78,5 +82,9 @@ OSCL_IMPORT_REF OMX_ERRORTYPE omx_base_filter_Destructor(OMX_COMPONENTTYPE *open
  * is available on the given port.
  */
 void* omx_base_filter_BufferMgmtFunction(void* param);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
