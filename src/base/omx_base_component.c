@@ -1441,6 +1441,10 @@ void* compMessageHandlerFunction(void* param) {
   internalRequestMessageType *message;
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s for component %p\n", __func__, openmaxStandComp);
+  if (omx_base_component_Private == NULL || omx_base_component_Private->bellagioThreads == NULL) {
+    DEBUG(DEB_LEV_ERR, "In %s: ouch!! Component already partially destroyed!\n", __func__);
+    return NULL;
+  }
   omx_base_component_Private->bellagioThreads->nThreadMessageID = (long int)syscall(__NR_gettid);
   DEBUG(DEB_LEV_SIMPLE_SEQ, "In %s the thread ID is %i\n", __func__, (int)omx_base_component_Private->bellagioThreads->nThreadMessageID);
 
