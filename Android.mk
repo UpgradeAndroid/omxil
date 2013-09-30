@@ -78,7 +78,7 @@ LOCAL_MODULE := libomxil-bellagio_lib
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_CFLAGS :=  \
-	-DOMX_LOADERS_DIRNAME=\"/system/lib/\" \
+	-DOMX_LOADERS_DIRNAME=\"/system/lib/omx/\" \
 	-DOMXILCOMPONENTSPATH=\"/system/lib/\"
 
 # For debugging
