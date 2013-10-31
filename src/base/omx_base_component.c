@@ -279,7 +279,7 @@ OSCL_EXPORT_REF OMX_ERRORTYPE omx_base_component_Destructor(OMX_COMPONENTTYPE *o
   tsem_up(omx_base_component_Private->messageSem);
 
   DEBUG(DEB_LEV_FUNCTION_NAME, "In %s before pthread_detach\n", __func__);
-  err = pthread_detach(omx_base_component_Private->messageHandlerThread);
+  err = pthread_join(omx_base_component_Private->messageHandlerThread, NULL);
   if(err!=0) {
     DEBUG(DEB_LEV_FUNCTION_NAME,"In %s pthread_detach returned err=%d\n", __func__, err);
   }
